@@ -80,12 +80,16 @@ class CapabilityProfile(PublicModel):
     model_profile_digest: str
     qualification_evidence_digest: str
     qualification_expires_at: float | None = None
+    qualification_state: Literal["qualified", "expired"] = "qualified"
     capabilities: dict[str, CapabilityMode]
 
 
 class CapabilityResponse(PublicModel):
     api_version: str = API_VERSION
     capability_profile: CapabilityProfile
+    capability_matrix: list[CapabilityProfile] = Field(default_factory=list)
+    generated_from_evidence: bool = False
+    matrix_digest: str = ""
 
 
 class Approval(PublicModel):

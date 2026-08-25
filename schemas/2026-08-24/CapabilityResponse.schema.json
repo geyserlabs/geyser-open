@@ -56,6 +56,15 @@
           "default": null,
           "title": "Qualification Expires At"
         },
+        "qualification_state": {
+          "default": "qualified",
+          "enum": [
+            "qualified",
+            "expired"
+          ],
+          "title": "Qualification State",
+          "type": "string"
+        },
         "runtime_profile_digest": {
           "title": "Runtime Profile Digest",
           "type": "string"
@@ -83,8 +92,25 @@
       "title": "Api Version",
       "type": "string"
     },
+    "capability_matrix": {
+      "items": {
+        "$ref": "#/$defs/CapabilityProfile"
+      },
+      "title": "Capability Matrix",
+      "type": "array"
+    },
     "capability_profile": {
       "$ref": "#/$defs/CapabilityProfile"
+    },
+    "generated_from_evidence": {
+      "default": false,
+      "title": "Generated From Evidence",
+      "type": "boolean"
+    },
+    "matrix_digest": {
+      "default": "",
+      "title": "Matrix Digest",
+      "type": "string"
     }
   },
   "required": [
