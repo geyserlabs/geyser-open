@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "Approval": {
+      "additionalProperties": true,
+      "properties": {
+        "approval_id": {
+          "title": "Approval Id",
+          "type": "string"
+        },
+        "binding_digest": {
+          "default": "",
+          "title": "Binding Digest",
+          "type": "string"
+        },
+        "consequence_summary": {
+          "default": "",
+          "title": "Consequence Summary",
+          "type": "string"
+        },
+        "data_boundary": {
+          "default": "",
+          "title": "Data Boundary",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "risk_class": {
+          "default": "",
+          "title": "Risk Class",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "version": {
+          "default": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "approval_id",
+        "state"
+      ],
+      "title": "Approval",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "approval": {
+      "$ref": "#/$defs/Approval"
+    }
+  },
+  "required": [
+    "approval"
+  ],
+  "title": "ApprovalResponse",
+  "type": "object"
+}

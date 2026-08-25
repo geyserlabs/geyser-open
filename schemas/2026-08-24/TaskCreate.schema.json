@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "additionalProperties": true,
+      "title": "Budget",
+      "type": "object"
+    },
+    "input_digest": {
+      "title": "Input Digest",
+      "type": "string"
+    },
+    "input_ref": {
+      "title": "Input Ref",
+      "type": "string"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "outcome_contract_ref": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Outcome Contract Ref",
+      "type": "string"
+    },
+    "required_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Required Capabilities",
+      "type": "array"
+    }
+  },
+  "required": [
+    "input_ref",
+    "input_digest"
+  ],
+  "title": "TaskCreate",
+  "type": "object"
+}

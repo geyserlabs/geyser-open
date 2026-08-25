@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "Trace": {
+      "additionalProperties": true,
+      "properties": {
+        "approval_count": {
+          "title": "Approval Count",
+          "type": "integer"
+        },
+        "artifact_count": {
+          "title": "Artifact Count",
+          "type": "integer"
+        },
+        "budget_enforcement": {
+          "additionalProperties": true,
+          "title": "Budget Enforcement",
+          "type": "object"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "number"
+        },
+        "effect_count": {
+          "title": "Effect Count",
+          "type": "integer"
+        },
+        "evaluation_count": {
+          "title": "Evaluation Count",
+          "type": "integer"
+        },
+        "finished_at": {
+          "title": "Finished At",
+          "type": "number"
+        },
+        "framework": {
+          "title": "Framework",
+          "type": "string"
+        },
+        "model_ref": {
+          "title": "Model Ref",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "spans": {
+          "items": {
+            "$ref": "#/$defs/TraceSpan"
+          },
+          "title": "Spans",
+          "type": "array"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "number"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "trace_digest": {
+          "title": "Trace Digest",
+          "type": "string"
+        },
+        "trace_id": {
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "usage": {
+          "additionalProperties": true,
+          "title": "Usage",
+          "type": "object"
+        },
+        "usage_precision": {
+          "title": "Usage Precision",
+          "type": "string"
+        },
+        "visibility": {
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "trace_id",
+        "run_id",
+        "state",
+        "framework",
+        "model_ref",
+        "visibility",
+        "started_at",
+        "finished_at",
+        "duration_ms",
+        "usage",
+        "usage_precision",
+        "budget_enforcement",
+        "effect_count",
+        "approval_count",
+        "artifact_count",
+        "evaluation_count",
+        "spans",
+        "trace_digest"
+      ],
+      "title": "Trace",
+      "type": "object"
+    },
+    "TraceSpan": {
+      "additionalProperties": true,
+      "properties": {
+        "attributes": {
+          "additionalProperties": true,
+          "title": "Attributes",
+          "type": "object"
+        },
+        "event_digest": {
+          "title": "Event Digest",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "sequence": {
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "span_id": {
+          "title": "Span Id",
+          "type": "string"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "number"
+        }
+      },
+      "required": [
+        "span_id",
+        "sequence",
+        "name",
+        "started_at",
+        "attributes",
+        "event_digest"
+      ],
+      "title": "TraceSpan",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "trace": {
+      "$ref": "#/$defs/Trace"
+    }
+  },
+  "required": [
+    "trace"
+  ],
+  "title": "TraceResponse",
+  "type": "object"
+}

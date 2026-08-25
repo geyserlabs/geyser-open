@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "evaluation_id": {
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "evaluator_ref": {
+      "title": "Evaluator Ref",
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "expected_sequence": {
+      "minimum": 1,
+      "title": "Expected Sequence",
+      "type": "integer"
+    },
+    "score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    },
+    "verdict": {
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "expected_sequence",
+    "evaluator_ref",
+    "verdict",
+    "score"
+  ],
+  "title": "EvaluationCreate",
+  "type": "object"
+}

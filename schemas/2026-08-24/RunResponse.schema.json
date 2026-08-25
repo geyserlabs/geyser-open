@@ -1,0 +1,329 @@
+{
+  "$defs": {
+    "Approval": {
+      "additionalProperties": true,
+      "properties": {
+        "approval_id": {
+          "title": "Approval Id",
+          "type": "string"
+        },
+        "binding_digest": {
+          "default": "",
+          "title": "Binding Digest",
+          "type": "string"
+        },
+        "consequence_summary": {
+          "default": "",
+          "title": "Consequence Summary",
+          "type": "string"
+        },
+        "data_boundary": {
+          "default": "",
+          "title": "Data Boundary",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "risk_class": {
+          "default": "",
+          "title": "Risk Class",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "version": {
+          "default": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "approval_id",
+        "state"
+      ],
+      "title": "Approval",
+      "type": "object"
+    },
+    "Artifact": {
+      "additionalProperties": true,
+      "properties": {
+        "artifact_digest": {
+          "default": "",
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "artifact_id": {
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "artifact_ref": {
+          "default": "",
+          "title": "Artifact Ref",
+          "type": "string"
+        },
+        "media_type": {
+          "default": "",
+          "title": "Media Type",
+          "type": "string"
+        },
+        "state": {
+          "default": "",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "Effect": {
+      "additionalProperties": true,
+      "properties": {
+        "arguments_digest": {
+          "default": "",
+          "title": "Arguments Digest",
+          "type": "string"
+        },
+        "effect_class": {
+          "default": "",
+          "title": "Effect Class",
+          "type": "string"
+        },
+        "effect_id": {
+          "title": "Effect Id",
+          "type": "string"
+        },
+        "result_digest": {
+          "default": "",
+          "title": "Result Digest",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "tool_name": {
+          "default": "",
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "verification": {
+          "default": "",
+          "title": "Verification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_id",
+        "state"
+      ],
+      "title": "Effect",
+      "type": "object"
+    },
+    "Evaluation": {
+      "additionalProperties": true,
+      "properties": {
+        "evaluation_id": {
+          "title": "Evaluation Id",
+          "type": "string"
+        },
+        "evaluator_ref": {
+          "title": "Evaluator Ref",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "score": {
+          "title": "Score",
+          "type": "number"
+        },
+        "verdict": {
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evaluation_id",
+        "evaluator_ref",
+        "verdict",
+        "score"
+      ],
+      "title": "Evaluation",
+      "type": "object"
+    },
+    "Run": {
+      "additionalProperties": true,
+      "properties": {
+        "agent_name": {
+          "title": "Agent Name",
+          "type": "string"
+        },
+        "approval_count": {
+          "minimum": 0,
+          "title": "Approval Count",
+          "type": "integer"
+        },
+        "approvals": {
+          "items": {
+            "$ref": "#/$defs/Approval"
+          },
+          "title": "Approvals",
+          "type": "array"
+        },
+        "artifact_count": {
+          "minimum": 0,
+          "title": "Artifact Count",
+          "type": "integer"
+        },
+        "artifacts": {
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "backend": {
+          "title": "Backend",
+          "type": "string"
+        },
+        "budget_enforcement": {
+          "additionalProperties": true,
+          "title": "Budget Enforcement",
+          "type": "object"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "number"
+        },
+        "effect_count": {
+          "minimum": 0,
+          "title": "Effect Count",
+          "type": "integer"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/Effect"
+          },
+          "title": "Effects",
+          "type": "array"
+        },
+        "evaluation_count": {
+          "minimum": 0,
+          "title": "Evaluation Count",
+          "type": "integer"
+        },
+        "evaluations": {
+          "items": {
+            "$ref": "#/$defs/Evaluation"
+          },
+          "title": "Evaluations",
+          "type": "array"
+        },
+        "framework": {
+          "title": "Framework",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "model_profile_digest": {
+          "title": "Model Profile Digest",
+          "type": "string"
+        },
+        "model_ref": {
+          "title": "Model Ref",
+          "type": "string"
+        },
+        "qualification_evidence_digest": {
+          "title": "Qualification Evidence Digest",
+          "type": "string"
+        },
+        "runtime_profile_digest": {
+          "title": "Runtime Profile Digest",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "number"
+        },
+        "usage": {
+          "additionalProperties": true,
+          "title": "Usage",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "task_id",
+        "state",
+        "sequence",
+        "agent_name",
+        "framework",
+        "backend",
+        "model_ref",
+        "runtime_profile_digest",
+        "model_profile_digest",
+        "qualification_evidence_digest",
+        "usage",
+        "budget_enforcement",
+        "effect_count",
+        "approval_count",
+        "artifact_count",
+        "evaluation_count",
+        "created_at",
+        "updated_at"
+      ],
+      "title": "Run",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "run": {
+      "$ref": "#/$defs/Run"
+    }
+  },
+  "required": [
+    "run"
+  ],
+  "title": "RunResponse",
+  "type": "object"
+}

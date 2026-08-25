@@ -1,0 +1,95 @@
+{
+  "$defs": {
+    "CapabilityProfile": {
+      "additionalProperties": true,
+      "properties": {
+        "adapter_id": {
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "adapter_version": {
+          "title": "Adapter Version",
+          "type": "string"
+        },
+        "agent_name": {
+          "title": "Agent Name",
+          "type": "string"
+        },
+        "backend": {
+          "title": "Backend",
+          "type": "string"
+        },
+        "capabilities": {
+          "additionalProperties": {
+            "enum": [
+              "native",
+              "geyser_emulated",
+              "unsupported",
+              "forbidden"
+            ],
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "object"
+        },
+        "framework": {
+          "title": "Framework",
+          "type": "string"
+        },
+        "model_profile_digest": {
+          "title": "Model Profile Digest",
+          "type": "string"
+        },
+        "qualification_evidence_digest": {
+          "title": "Qualification Evidence Digest",
+          "type": "string"
+        },
+        "qualification_expires_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Qualification Expires At"
+        },
+        "runtime_profile_digest": {
+          "title": "Runtime Profile Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "agent_name",
+        "framework",
+        "backend",
+        "adapter_id",
+        "adapter_version",
+        "runtime_profile_digest",
+        "model_profile_digest",
+        "qualification_evidence_digest",
+        "capabilities"
+      ],
+      "title": "CapabilityProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "capability_profile": {
+      "$ref": "#/$defs/CapabilityProfile"
+    }
+  },
+  "required": [
+    "capability_profile"
+  ],
+  "title": "CapabilityResponse",
+  "type": "object"
+}

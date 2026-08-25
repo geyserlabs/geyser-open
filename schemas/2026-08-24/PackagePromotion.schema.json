@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_digest": {
+      "title": "Expected Digest",
+      "type": "string"
+    },
+    "promotion_id": {
+      "title": "Promotion Id",
+      "type": "string"
+    },
+    "target": {
+      "enum": [
+        "staging",
+        "canary",
+        "production"
+      ],
+      "title": "Target",
+      "type": "string"
+    }
+  },
+  "required": [
+    "promotion_id",
+    "target",
+    "expected_digest"
+  ],
+  "title": "PackagePromotion",
+  "type": "object"
+}
