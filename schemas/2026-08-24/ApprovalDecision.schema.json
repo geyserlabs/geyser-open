@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "binding_digest": {
+      "title": "Binding Digest",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "approve",
+        "reject"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "decision_id": {
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "expected_approval_sequence": {
+      "minimum": 1,
+      "title": "Expected Approval Sequence",
+      "type": "integer"
+    },
+    "reason_code": {
+      "title": "Reason Code",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "decision",
+    "expected_approval_sequence",
+    "binding_digest",
+    "reason_code"
+  ],
+  "title": "ApprovalDecision",
+  "type": "object"
+}

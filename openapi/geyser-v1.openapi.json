@@ -1,0 +1,2146 @@
+{
+  "components": {
+    "schemas": {
+      "ApprovalDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "binding_digest": {
+            "title": "Binding Digest",
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "decision_id": {
+            "title": "Decision Id",
+            "type": "string"
+          },
+          "expected_approval_sequence": {
+            "minimum": 1,
+            "title": "Expected Approval Sequence",
+            "type": "integer"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision_id",
+          "decision",
+          "expected_approval_sequence",
+          "binding_digest",
+          "reason_code"
+        ],
+        "title": "ApprovalDecision",
+        "type": "object"
+      },
+      "ApprovalPage": {
+        "$defs": {
+          "Approval": {
+            "additionalProperties": true,
+            "properties": {
+              "approval_id": {
+                "title": "Approval Id",
+                "type": "string"
+              },
+              "binding_digest": {
+                "default": "",
+                "title": "Binding Digest",
+                "type": "string"
+              },
+              "consequence_summary": {
+                "default": "",
+                "title": "Consequence Summary",
+                "type": "string"
+              },
+              "data_boundary": {
+                "default": "",
+                "title": "Data Boundary",
+                "type": "string"
+              },
+              "expires_at": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Expires At"
+              },
+              "risk_class": {
+                "default": "",
+                "title": "Risk Class",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "version": {
+                "default": 0,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "approval_id",
+              "state"
+            ],
+            "title": "Approval",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/Approval"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "next_cursor": {
+            "default": "",
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "ApprovalPage",
+        "type": "object"
+      },
+      "ApprovalResponse": {
+        "$defs": {
+          "Approval": {
+            "additionalProperties": true,
+            "properties": {
+              "approval_id": {
+                "title": "Approval Id",
+                "type": "string"
+              },
+              "binding_digest": {
+                "default": "",
+                "title": "Binding Digest",
+                "type": "string"
+              },
+              "consequence_summary": {
+                "default": "",
+                "title": "Consequence Summary",
+                "type": "string"
+              },
+              "data_boundary": {
+                "default": "",
+                "title": "Data Boundary",
+                "type": "string"
+              },
+              "expires_at": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Expires At"
+              },
+              "risk_class": {
+                "default": "",
+                "title": "Risk Class",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "version": {
+                "default": 0,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "approval_id",
+              "state"
+            ],
+            "title": "Approval",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "approval": {
+            "$ref": "#/$defs/Approval"
+          }
+        },
+        "required": [
+          "approval"
+        ],
+        "title": "ApprovalResponse",
+        "type": "object"
+      },
+      "CancelRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "cancellation_id": {
+            "title": "Cancellation Id",
+            "type": "string"
+          },
+          "expected_sequence": {
+            "minimum": 1,
+            "title": "Expected Sequence",
+            "type": "integer"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cancellation_id",
+          "expected_sequence",
+          "reason_code"
+        ],
+        "title": "CancelRequest",
+        "type": "object"
+      },
+      "CapabilityResponse": {
+        "$defs": {
+          "CapabilityProfile": {
+            "additionalProperties": true,
+            "properties": {
+              "adapter_id": {
+                "title": "Adapter Id",
+                "type": "string"
+              },
+              "adapter_version": {
+                "title": "Adapter Version",
+                "type": "string"
+              },
+              "agent_name": {
+                "title": "Agent Name",
+                "type": "string"
+              },
+              "backend": {
+                "title": "Backend",
+                "type": "string"
+              },
+              "capabilities": {
+                "additionalProperties": {
+                  "enum": [
+                    "native",
+                    "geyser_emulated",
+                    "unsupported",
+                    "forbidden"
+                  ],
+                  "type": "string"
+                },
+                "title": "Capabilities",
+                "type": "object"
+              },
+              "framework": {
+                "title": "Framework",
+                "type": "string"
+              },
+              "model_profile_digest": {
+                "title": "Model Profile Digest",
+                "type": "string"
+              },
+              "qualification_evidence_digest": {
+                "title": "Qualification Evidence Digest",
+                "type": "string"
+              },
+              "qualification_expires_at": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Qualification Expires At"
+              },
+              "runtime_profile_digest": {
+                "title": "Runtime Profile Digest",
+                "type": "string"
+              }
+            },
+            "required": [
+              "agent_name",
+              "framework",
+              "backend",
+              "adapter_id",
+              "adapter_version",
+              "runtime_profile_digest",
+              "model_profile_digest",
+              "qualification_evidence_digest",
+              "capabilities"
+            ],
+            "title": "CapabilityProfile",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "capability_profile": {
+            "$ref": "#/$defs/CapabilityProfile"
+          }
+        },
+        "required": [
+          "capability_profile"
+        ],
+        "title": "CapabilityResponse",
+        "type": "object"
+      },
+      "EvaluationCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "evaluation_id": {
+            "title": "Evaluation Id",
+            "type": "string"
+          },
+          "evaluator_ref": {
+            "title": "Evaluator Ref",
+            "type": "string"
+          },
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "expected_sequence": {
+            "minimum": 1,
+            "title": "Expected Sequence",
+            "type": "integer"
+          },
+          "score": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Score",
+            "type": "number"
+          },
+          "verdict": {
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evaluation_id",
+          "expected_sequence",
+          "evaluator_ref",
+          "verdict",
+          "score"
+        ],
+        "title": "EvaluationCreate",
+        "type": "object"
+      },
+      "ForkCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "child_run_id": {
+            "title": "Child Run Id",
+            "type": "string"
+          },
+          "expected_sequence": {
+            "minimum": 1,
+            "title": "Expected Sequence",
+            "type": "integer"
+          },
+          "fork_id": {
+            "title": "Fork Id",
+            "type": "string"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fork_id",
+          "child_run_id",
+          "expected_sequence",
+          "reason_code"
+        ],
+        "title": "ForkCreate",
+        "type": "object"
+      },
+      "PackagePage": {
+        "$defs": {
+          "PackageRecord": {
+            "additionalProperties": true,
+            "properties": {
+              "created_at": {
+                "default": 0,
+                "title": "Created At",
+                "type": "number"
+              },
+              "digest": {
+                "title": "Digest",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "package_id": {
+                "title": "Package Id",
+                "type": "string"
+              },
+              "project_id": {
+                "default": "",
+                "title": "Project Id",
+                "type": "string"
+              },
+              "stage": {
+                "title": "Stage",
+                "type": "string"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "updated_at": {
+                "default": 0,
+                "title": "Updated At",
+                "type": "number"
+              },
+              "version": {
+                "title": "Version",
+                "type": "string"
+              }
+            },
+            "required": [
+              "package_id",
+              "name",
+              "version",
+              "digest",
+              "stage",
+              "status"
+            ],
+            "title": "PackageRecord",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PackageRecord"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "next_cursor": {
+            "default": "",
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "PackagePage",
+        "type": "object"
+      },
+      "PackagePromotion": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_digest": {
+            "title": "Expected Digest",
+            "type": "string"
+          },
+          "promotion_id": {
+            "title": "Promotion Id",
+            "type": "string"
+          },
+          "target": {
+            "enum": [
+              "staging",
+              "canary",
+              "production"
+            ],
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "promotion_id",
+          "target",
+          "expected_digest"
+        ],
+        "title": "PackagePromotion",
+        "type": "object"
+      },
+      "PackageResponse": {
+        "$defs": {
+          "PackageRecord": {
+            "additionalProperties": true,
+            "properties": {
+              "created_at": {
+                "default": 0,
+                "title": "Created At",
+                "type": "number"
+              },
+              "digest": {
+                "title": "Digest",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "package_id": {
+                "title": "Package Id",
+                "type": "string"
+              },
+              "project_id": {
+                "default": "",
+                "title": "Project Id",
+                "type": "string"
+              },
+              "stage": {
+                "title": "Stage",
+                "type": "string"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "updated_at": {
+                "default": 0,
+                "title": "Updated At",
+                "type": "number"
+              },
+              "version": {
+                "title": "Version",
+                "type": "string"
+              }
+            },
+            "required": [
+              "package_id",
+              "name",
+              "version",
+              "digest",
+              "stage",
+              "status"
+            ],
+            "title": "PackageRecord",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "package": {
+            "$ref": "#/$defs/PackageRecord"
+          }
+        },
+        "required": [
+          "package"
+        ],
+        "title": "PackageResponse",
+        "type": "object"
+      },
+      "PackageUpload": {
+        "additionalProperties": false,
+        "properties": {
+          "content_base64": {
+            "title": "Content Base64",
+            "type": "string"
+          },
+          "digest": {
+            "title": "Digest",
+            "type": "string"
+          },
+          "media_type": {
+            "title": "Media Type",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "signature_bundle": {
+            "additionalProperties": true,
+            "title": "Signature Bundle",
+            "type": "object"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "digest",
+          "media_type",
+          "content_base64"
+        ],
+        "title": "PackageUpload",
+        "type": "object"
+      },
+      "RunEventPage": {
+        "$defs": {
+          "RunEvent": {
+            "additionalProperties": true,
+            "properties": {
+              "created_at": {
+                "title": "Created At",
+                "type": "number"
+              },
+              "data": {
+                "additionalProperties": true,
+                "title": "Data",
+                "type": "object"
+              },
+              "digest": {
+                "title": "Digest",
+                "type": "string"
+              },
+              "event_id": {
+                "title": "Event Id",
+                "type": "string"
+              },
+              "event_type": {
+                "title": "Event Type",
+                "type": "string"
+              },
+              "observed_at": {
+                "title": "Observed At",
+                "type": "number"
+              },
+              "sequence": {
+                "minimum": 1,
+                "title": "Sequence",
+                "type": "integer"
+              },
+              "step_id": {
+                "default": "",
+                "title": "Step Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "sequence",
+              "event_type",
+              "event_id",
+              "observed_at",
+              "created_at",
+              "data",
+              "digest"
+            ],
+            "title": "RunEvent",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "current_sequence": {
+            "title": "Current Sequence",
+            "type": "integer"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RunEvent"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "next_cursor": {
+            "default": "",
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data",
+          "current_sequence"
+        ],
+        "title": "RunEventPage",
+        "type": "object"
+      },
+      "RunPage": {
+        "$defs": {
+          "Approval": {
+            "additionalProperties": true,
+            "properties": {
+              "approval_id": {
+                "title": "Approval Id",
+                "type": "string"
+              },
+              "binding_digest": {
+                "default": "",
+                "title": "Binding Digest",
+                "type": "string"
+              },
+              "consequence_summary": {
+                "default": "",
+                "title": "Consequence Summary",
+                "type": "string"
+              },
+              "data_boundary": {
+                "default": "",
+                "title": "Data Boundary",
+                "type": "string"
+              },
+              "expires_at": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Expires At"
+              },
+              "risk_class": {
+                "default": "",
+                "title": "Risk Class",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "version": {
+                "default": 0,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "approval_id",
+              "state"
+            ],
+            "title": "Approval",
+            "type": "object"
+          },
+          "Artifact": {
+            "additionalProperties": true,
+            "properties": {
+              "artifact_digest": {
+                "default": "",
+                "title": "Artifact Digest",
+                "type": "string"
+              },
+              "artifact_id": {
+                "title": "Artifact Id",
+                "type": "string"
+              },
+              "artifact_ref": {
+                "default": "",
+                "title": "Artifact Ref",
+                "type": "string"
+              },
+              "media_type": {
+                "default": "",
+                "title": "Media Type",
+                "type": "string"
+              },
+              "state": {
+                "default": "",
+                "title": "State",
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "title": "Artifact",
+            "type": "object"
+          },
+          "Effect": {
+            "additionalProperties": true,
+            "properties": {
+              "arguments_digest": {
+                "default": "",
+                "title": "Arguments Digest",
+                "type": "string"
+              },
+              "effect_class": {
+                "default": "",
+                "title": "Effect Class",
+                "type": "string"
+              },
+              "effect_id": {
+                "title": "Effect Id",
+                "type": "string"
+              },
+              "result_digest": {
+                "default": "",
+                "title": "Result Digest",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "tool_name": {
+                "default": "",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "verification": {
+                "default": "",
+                "title": "Verification",
+                "type": "string"
+              }
+            },
+            "required": [
+              "effect_id",
+              "state"
+            ],
+            "title": "Effect",
+            "type": "object"
+          },
+          "Evaluation": {
+            "additionalProperties": true,
+            "properties": {
+              "evaluation_id": {
+                "title": "Evaluation Id",
+                "type": "string"
+              },
+              "evaluator_ref": {
+                "title": "Evaluator Ref",
+                "type": "string"
+              },
+              "evidence_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Refs",
+                "type": "array"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              },
+              "verdict": {
+                "title": "Verdict",
+                "type": "string"
+              }
+            },
+            "required": [
+              "evaluation_id",
+              "evaluator_ref",
+              "verdict",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          },
+          "Run": {
+            "additionalProperties": true,
+            "properties": {
+              "agent_name": {
+                "title": "Agent Name",
+                "type": "string"
+              },
+              "approval_count": {
+                "minimum": 0,
+                "title": "Approval Count",
+                "type": "integer"
+              },
+              "approvals": {
+                "items": {
+                  "$ref": "#/$defs/Approval"
+                },
+                "title": "Approvals",
+                "type": "array"
+              },
+              "artifact_count": {
+                "minimum": 0,
+                "title": "Artifact Count",
+                "type": "integer"
+              },
+              "artifacts": {
+                "items": {
+                  "$ref": "#/$defs/Artifact"
+                },
+                "title": "Artifacts",
+                "type": "array"
+              },
+              "backend": {
+                "title": "Backend",
+                "type": "string"
+              },
+              "budget_enforcement": {
+                "additionalProperties": true,
+                "title": "Budget Enforcement",
+                "type": "object"
+              },
+              "created_at": {
+                "title": "Created At",
+                "type": "number"
+              },
+              "effect_count": {
+                "minimum": 0,
+                "title": "Effect Count",
+                "type": "integer"
+              },
+              "effects": {
+                "items": {
+                  "$ref": "#/$defs/Effect"
+                },
+                "title": "Effects",
+                "type": "array"
+              },
+              "evaluation_count": {
+                "minimum": 0,
+                "title": "Evaluation Count",
+                "type": "integer"
+              },
+              "evaluations": {
+                "items": {
+                  "$ref": "#/$defs/Evaluation"
+                },
+                "title": "Evaluations",
+                "type": "array"
+              },
+              "framework": {
+                "title": "Framework",
+                "type": "string"
+              },
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "model_profile_digest": {
+                "title": "Model Profile Digest",
+                "type": "string"
+              },
+              "model_ref": {
+                "title": "Model Ref",
+                "type": "string"
+              },
+              "qualification_evidence_digest": {
+                "title": "Qualification Evidence Digest",
+                "type": "string"
+              },
+              "runtime_profile_digest": {
+                "title": "Runtime Profile Digest",
+                "type": "string"
+              },
+              "sequence": {
+                "minimum": 1,
+                "title": "Sequence",
+                "type": "integer"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "task_id": {
+                "title": "Task Id",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "type": "number"
+              },
+              "usage": {
+                "additionalProperties": true,
+                "title": "Usage",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "task_id",
+              "state",
+              "sequence",
+              "agent_name",
+              "framework",
+              "backend",
+              "model_ref",
+              "runtime_profile_digest",
+              "model_profile_digest",
+              "qualification_evidence_digest",
+              "usage",
+              "budget_enforcement",
+              "effect_count",
+              "approval_count",
+              "artifact_count",
+              "evaluation_count",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "Run",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/Run"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "next_cursor": {
+            "default": "",
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "RunPage",
+        "type": "object"
+      },
+      "RunResponse": {
+        "$defs": {
+          "Approval": {
+            "additionalProperties": true,
+            "properties": {
+              "approval_id": {
+                "title": "Approval Id",
+                "type": "string"
+              },
+              "binding_digest": {
+                "default": "",
+                "title": "Binding Digest",
+                "type": "string"
+              },
+              "consequence_summary": {
+                "default": "",
+                "title": "Consequence Summary",
+                "type": "string"
+              },
+              "data_boundary": {
+                "default": "",
+                "title": "Data Boundary",
+                "type": "string"
+              },
+              "expires_at": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Expires At"
+              },
+              "risk_class": {
+                "default": "",
+                "title": "Risk Class",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "version": {
+                "default": 0,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "approval_id",
+              "state"
+            ],
+            "title": "Approval",
+            "type": "object"
+          },
+          "Artifact": {
+            "additionalProperties": true,
+            "properties": {
+              "artifact_digest": {
+                "default": "",
+                "title": "Artifact Digest",
+                "type": "string"
+              },
+              "artifact_id": {
+                "title": "Artifact Id",
+                "type": "string"
+              },
+              "artifact_ref": {
+                "default": "",
+                "title": "Artifact Ref",
+                "type": "string"
+              },
+              "media_type": {
+                "default": "",
+                "title": "Media Type",
+                "type": "string"
+              },
+              "state": {
+                "default": "",
+                "title": "State",
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "title": "Artifact",
+            "type": "object"
+          },
+          "Effect": {
+            "additionalProperties": true,
+            "properties": {
+              "arguments_digest": {
+                "default": "",
+                "title": "Arguments Digest",
+                "type": "string"
+              },
+              "effect_class": {
+                "default": "",
+                "title": "Effect Class",
+                "type": "string"
+              },
+              "effect_id": {
+                "title": "Effect Id",
+                "type": "string"
+              },
+              "result_digest": {
+                "default": "",
+                "title": "Result Digest",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "tool_name": {
+                "default": "",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "verification": {
+                "default": "",
+                "title": "Verification",
+                "type": "string"
+              }
+            },
+            "required": [
+              "effect_id",
+              "state"
+            ],
+            "title": "Effect",
+            "type": "object"
+          },
+          "Evaluation": {
+            "additionalProperties": true,
+            "properties": {
+              "evaluation_id": {
+                "title": "Evaluation Id",
+                "type": "string"
+              },
+              "evaluator_ref": {
+                "title": "Evaluator Ref",
+                "type": "string"
+              },
+              "evidence_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Refs",
+                "type": "array"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              },
+              "verdict": {
+                "title": "Verdict",
+                "type": "string"
+              }
+            },
+            "required": [
+              "evaluation_id",
+              "evaluator_ref",
+              "verdict",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          },
+          "Run": {
+            "additionalProperties": true,
+            "properties": {
+              "agent_name": {
+                "title": "Agent Name",
+                "type": "string"
+              },
+              "approval_count": {
+                "minimum": 0,
+                "title": "Approval Count",
+                "type": "integer"
+              },
+              "approvals": {
+                "items": {
+                  "$ref": "#/$defs/Approval"
+                },
+                "title": "Approvals",
+                "type": "array"
+              },
+              "artifact_count": {
+                "minimum": 0,
+                "title": "Artifact Count",
+                "type": "integer"
+              },
+              "artifacts": {
+                "items": {
+                  "$ref": "#/$defs/Artifact"
+                },
+                "title": "Artifacts",
+                "type": "array"
+              },
+              "backend": {
+                "title": "Backend",
+                "type": "string"
+              },
+              "budget_enforcement": {
+                "additionalProperties": true,
+                "title": "Budget Enforcement",
+                "type": "object"
+              },
+              "created_at": {
+                "title": "Created At",
+                "type": "number"
+              },
+              "effect_count": {
+                "minimum": 0,
+                "title": "Effect Count",
+                "type": "integer"
+              },
+              "effects": {
+                "items": {
+                  "$ref": "#/$defs/Effect"
+                },
+                "title": "Effects",
+                "type": "array"
+              },
+              "evaluation_count": {
+                "minimum": 0,
+                "title": "Evaluation Count",
+                "type": "integer"
+              },
+              "evaluations": {
+                "items": {
+                  "$ref": "#/$defs/Evaluation"
+                },
+                "title": "Evaluations",
+                "type": "array"
+              },
+              "framework": {
+                "title": "Framework",
+                "type": "string"
+              },
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "model_profile_digest": {
+                "title": "Model Profile Digest",
+                "type": "string"
+              },
+              "model_ref": {
+                "title": "Model Ref",
+                "type": "string"
+              },
+              "qualification_evidence_digest": {
+                "title": "Qualification Evidence Digest",
+                "type": "string"
+              },
+              "runtime_profile_digest": {
+                "title": "Runtime Profile Digest",
+                "type": "string"
+              },
+              "sequence": {
+                "minimum": 1,
+                "title": "Sequence",
+                "type": "integer"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "task_id": {
+                "title": "Task Id",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "type": "number"
+              },
+              "usage": {
+                "additionalProperties": true,
+                "title": "Usage",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "task_id",
+              "state",
+              "sequence",
+              "agent_name",
+              "framework",
+              "backend",
+              "model_ref",
+              "runtime_profile_digest",
+              "model_profile_digest",
+              "qualification_evidence_digest",
+              "usage",
+              "budget_enforcement",
+              "effect_count",
+              "approval_count",
+              "artifact_count",
+              "evaluation_count",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "Run",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "run": {
+            "$ref": "#/$defs/Run"
+          }
+        },
+        "required": [
+          "run"
+        ],
+        "title": "RunResponse",
+        "type": "object"
+      },
+      "TaskCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "budget": {
+            "additionalProperties": true,
+            "title": "Budget",
+            "type": "object"
+          },
+          "input_digest": {
+            "title": "Input Digest",
+            "type": "string"
+          },
+          "input_ref": {
+            "title": "Input Ref",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          },
+          "outcome_contract_ref": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Outcome Contract Ref",
+            "type": "string"
+          },
+          "required_capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 64,
+            "title": "Required Capabilities",
+            "type": "array"
+          }
+        },
+        "required": [
+          "input_ref",
+          "input_digest"
+        ],
+        "title": "TaskCreate",
+        "type": "object"
+      },
+      "TaskPage": {
+        "$defs": {
+          "Task": {
+            "additionalProperties": true,
+            "properties": {
+              "agent_name": {
+                "title": "Agent Name",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "type": "number"
+              },
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "input_digest": {
+                "title": "Input Digest",
+                "type": "string"
+              },
+              "input_ref": {
+                "title": "Input Ref",
+                "type": "string"
+              },
+              "project_id": {
+                "title": "Project Id",
+                "type": "string"
+              },
+              "run_id": {
+                "default": "",
+                "title": "Run Id",
+                "type": "string"
+              },
+              "spec": {
+                "additionalProperties": true,
+                "title": "Spec",
+                "type": "object"
+              },
+              "state": {
+                "enum": [
+                  "queued",
+                  "claimed",
+                  "completed",
+                  "failed",
+                  "canceled"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "type": "number"
+              },
+              "version": {
+                "minimum": 1,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "project_id",
+              "agent_name",
+              "input_ref",
+              "input_digest",
+              "spec",
+              "state",
+              "version",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "Task",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/Task"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "next_cursor": {
+            "default": "",
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "TaskPage",
+        "type": "object"
+      },
+      "TaskResponse": {
+        "$defs": {
+          "Task": {
+            "additionalProperties": true,
+            "properties": {
+              "agent_name": {
+                "title": "Agent Name",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "type": "number"
+              },
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "input_digest": {
+                "title": "Input Digest",
+                "type": "string"
+              },
+              "input_ref": {
+                "title": "Input Ref",
+                "type": "string"
+              },
+              "project_id": {
+                "title": "Project Id",
+                "type": "string"
+              },
+              "run_id": {
+                "default": "",
+                "title": "Run Id",
+                "type": "string"
+              },
+              "spec": {
+                "additionalProperties": true,
+                "title": "Spec",
+                "type": "object"
+              },
+              "state": {
+                "enum": [
+                  "queued",
+                  "claimed",
+                  "completed",
+                  "failed",
+                  "canceled"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "type": "number"
+              },
+              "version": {
+                "minimum": 1,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "project_id",
+              "agent_name",
+              "input_ref",
+              "input_digest",
+              "spec",
+              "state",
+              "version",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "Task",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "idempotent_replay": {
+            "default": false,
+            "title": "Idempotent Replay",
+            "type": "boolean"
+          },
+          "task": {
+            "$ref": "#/$defs/Task"
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "title": "TaskResponse",
+        "type": "object"
+      },
+      "TraceResponse": {
+        "$defs": {
+          "Trace": {
+            "additionalProperties": true,
+            "properties": {
+              "approval_count": {
+                "title": "Approval Count",
+                "type": "integer"
+              },
+              "artifact_count": {
+                "title": "Artifact Count",
+                "type": "integer"
+              },
+              "budget_enforcement": {
+                "additionalProperties": true,
+                "title": "Budget Enforcement",
+                "type": "object"
+              },
+              "duration_ms": {
+                "title": "Duration Ms",
+                "type": "number"
+              },
+              "effect_count": {
+                "title": "Effect Count",
+                "type": "integer"
+              },
+              "evaluation_count": {
+                "title": "Evaluation Count",
+                "type": "integer"
+              },
+              "finished_at": {
+                "title": "Finished At",
+                "type": "number"
+              },
+              "framework": {
+                "title": "Framework",
+                "type": "string"
+              },
+              "model_ref": {
+                "title": "Model Ref",
+                "type": "string"
+              },
+              "run_id": {
+                "title": "Run Id",
+                "type": "string"
+              },
+              "spans": {
+                "items": {
+                  "$ref": "#/$defs/TraceSpan"
+                },
+                "title": "Spans",
+                "type": "array"
+              },
+              "started_at": {
+                "title": "Started At",
+                "type": "number"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "trace_digest": {
+                "title": "Trace Digest",
+                "type": "string"
+              },
+              "trace_id": {
+                "title": "Trace Id",
+                "type": "string"
+              },
+              "usage": {
+                "additionalProperties": true,
+                "title": "Usage",
+                "type": "object"
+              },
+              "usage_precision": {
+                "title": "Usage Precision",
+                "type": "string"
+              },
+              "visibility": {
+                "title": "Visibility",
+                "type": "string"
+              }
+            },
+            "required": [
+              "trace_id",
+              "run_id",
+              "state",
+              "framework",
+              "model_ref",
+              "visibility",
+              "started_at",
+              "finished_at",
+              "duration_ms",
+              "usage",
+              "usage_precision",
+              "budget_enforcement",
+              "effect_count",
+              "approval_count",
+              "artifact_count",
+              "evaluation_count",
+              "spans",
+              "trace_digest"
+            ],
+            "title": "Trace",
+            "type": "object"
+          },
+          "TraceSpan": {
+            "additionalProperties": true,
+            "properties": {
+              "attributes": {
+                "additionalProperties": true,
+                "title": "Attributes",
+                "type": "object"
+              },
+              "event_digest": {
+                "title": "Event Digest",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "sequence": {
+                "title": "Sequence",
+                "type": "integer"
+              },
+              "span_id": {
+                "title": "Span Id",
+                "type": "string"
+              },
+              "started_at": {
+                "title": "Started At",
+                "type": "number"
+              }
+            },
+            "required": [
+              "span_id",
+              "sequence",
+              "name",
+              "started_at",
+              "attributes",
+              "event_digest"
+            ],
+            "title": "TraceSpan",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "api_version": {
+            "default": "2026-08-24",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "trace": {
+            "$ref": "#/$defs/Trace"
+          }
+        },
+        "required": [
+          "trace"
+        ],
+        "title": "TraceResponse",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "DeveloperBearer": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "title": "Geyser Developer API",
+    "version": "2026-08-24"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/capabilities": {
+      "get": {
+        "operationId": "getCapabilities",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapabilityResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/approvals": {
+      "get": {
+        "operationId": "listApprovals",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/approvals/{approval_id}": {
+      "get": {
+        "operationId": "getApproval",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancelRun",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/packages": {
+      "get": {
+        "operationId": "listPackages",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagePage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "uploadPackage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackageUpload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/packages/{package_id}/promotions": {
+      "post": {
+        "operationId": "promotePackage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackagePromotion"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/runs": {
+      "get": {
+        "operationId": "listRuns",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/runs/{run_id}": {
+      "get": {
+        "operationId": "getRun",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/runs/{run_id}/events": {
+      "get": {
+        "operationId": "listRunEvents",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunEventPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/runs/{run_id}/trace": {
+      "get": {
+        "operationId": "getRunTrace",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraceResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tasks": {
+      "get": {
+        "operationId": "listTasks",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createTask",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tasks/{task_id}": {
+      "get": {
+        "operationId": "getTask",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://agents.geyserlabs.ai"
+    }
+  ]
+}

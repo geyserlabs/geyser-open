@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "RunEvent": {
+      "additionalProperties": true,
+      "properties": {
+        "created_at": {
+          "title": "Created At",
+          "type": "number"
+        },
+        "data": {
+          "additionalProperties": true,
+          "title": "Data",
+          "type": "object"
+        },
+        "digest": {
+          "title": "Digest",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "observed_at": {
+          "title": "Observed At",
+          "type": "number"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "step_id": {
+          "default": "",
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sequence",
+        "event_type",
+        "event_id",
+        "observed_at",
+        "created_at",
+        "data",
+        "digest"
+      ],
+      "title": "RunEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "current_sequence": {
+      "title": "Current Sequence",
+      "type": "integer"
+    },
+    "data": {
+      "items": {
+        "$ref": "#/$defs/RunEvent"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "next_cursor": {
+      "default": "",
+      "title": "Next Cursor",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data",
+    "current_sequence"
+  ],
+  "title": "RunEventPage",
+  "type": "object"
+}

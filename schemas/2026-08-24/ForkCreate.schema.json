@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "child_run_id": {
+      "title": "Child Run Id",
+      "type": "string"
+    },
+    "expected_sequence": {
+      "minimum": 1,
+      "title": "Expected Sequence",
+      "type": "integer"
+    },
+    "fork_id": {
+      "title": "Fork Id",
+      "type": "string"
+    },
+    "reason_code": {
+      "title": "Reason Code",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fork_id",
+    "child_run_id",
+    "expected_sequence",
+    "reason_code"
+  ],
+  "title": "ForkCreate",
+  "type": "object"
+}

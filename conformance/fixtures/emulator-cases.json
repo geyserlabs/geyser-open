@@ -1,0 +1,18 @@
+{
+  "cases": [
+    {"case_id": "admission-before-provider", "expected": "admitted"},
+    {"case_id": "crash-after-durable-event", "expected": "idempotent-recovery"},
+    {"case_id": "duplicate-key-same-payload", "expected": "replay"},
+    {"case_id": "duplicate-key-drift", "expected": "deny"},
+    {"case_id": "out-of-order-event", "expected": "deny"},
+    {"case_id": "approval-exact-binding", "expected": "allow"},
+    {"case_id": "approval-argument-drift", "expected": "deny"},
+    {"case_id": "checkpoint-exact-bytes", "expected": "digest-match"},
+    {"case_id": "structured-outcome-valid", "expected": "accept"},
+    {"case_id": "structured-outcome-invalid", "expected": "deny"},
+    {"case_id": "ambient-network", "expected": "none"},
+    {"case_id": "ambient-credentials", "expected": "none"}
+  ],
+  "frozen": true,
+  "schema_version": 1
+}

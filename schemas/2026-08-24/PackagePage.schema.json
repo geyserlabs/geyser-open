@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "PackageRecord": {
+      "additionalProperties": true,
+      "properties": {
+        "created_at": {
+          "default": 0,
+          "title": "Created At",
+          "type": "number"
+        },
+        "digest": {
+          "title": "Digest",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "package_id": {
+          "title": "Package Id",
+          "type": "string"
+        },
+        "project_id": {
+          "default": "",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "stage": {
+          "title": "Stage",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": 0,
+          "title": "Updated At",
+          "type": "number"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "package_id",
+        "name",
+        "version",
+        "digest",
+        "stage",
+        "status"
+      ],
+      "title": "PackageRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "data": {
+      "items": {
+        "$ref": "#/$defs/PackageRecord"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "next_cursor": {
+      "default": "",
+      "title": "Next Cursor",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data"
+  ],
+  "title": "PackagePage",
+  "type": "object"
+}

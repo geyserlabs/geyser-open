@@ -1,0 +1,25 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cancellation_id": {
+      "title": "Cancellation Id",
+      "type": "string"
+    },
+    "expected_sequence": {
+      "minimum": 1,
+      "title": "Expected Sequence",
+      "type": "integer"
+    },
+    "reason_code": {
+      "title": "Reason Code",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cancellation_id",
+    "expected_sequence",
+    "reason_code"
+  ],
+  "title": "CancelRequest",
+  "type": "object"
+}

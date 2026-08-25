@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "Task": {
+      "additionalProperties": true,
+      "properties": {
+        "agent_name": {
+          "title": "Agent Name",
+          "type": "string"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "number"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "input_digest": {
+          "title": "Input Digest",
+          "type": "string"
+        },
+        "input_ref": {
+          "title": "Input Ref",
+          "type": "string"
+        },
+        "project_id": {
+          "title": "Project Id",
+          "type": "string"
+        },
+        "run_id": {
+          "default": "",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "spec": {
+          "additionalProperties": true,
+          "title": "Spec",
+          "type": "object"
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "claimed",
+            "completed",
+            "failed",
+            "canceled"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "number"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "project_id",
+        "agent_name",
+        "input_ref",
+        "input_digest",
+        "spec",
+        "state",
+        "version",
+        "created_at",
+        "updated_at"
+      ],
+      "title": "Task",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "task": {
+      "$ref": "#/$defs/Task"
+    }
+  },
+  "required": [
+    "task"
+  ],
+  "title": "TaskResponse",
+  "type": "object"
+}
