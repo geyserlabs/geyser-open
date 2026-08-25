@@ -51,6 +51,12 @@ signed SBOM attestations are retained with the artifacts. GitHub Actions are
 pinned to immutable commits; publication uses short-lived OIDC identities and
 does not use a stored PyPI token or signing key.
 
+PyPI publication is project-scoped. The `geyser-sdk` trusted publisher uses
+the `pypi` GitHub environment, while `geyser-open` uses
+`pypi-geyser-open`; both identities are bound to `.github/workflows/release.yml`.
+The release workflow uploads each project's distributions in its own job so a
+credential minted for one project is never reused for the other.
+
 ## Rollback, yank, and revocation
 
 Released bytes are immutable. A defect is corrected in a new version; an
