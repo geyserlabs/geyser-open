@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.1.0b1 — Developer Preview
+## 0.1.0b2 — Developer Preview
+
+The `v0.1.0b1` workflow stopped before publication because its hidden
+standalone-artifact directory was excluded from upload. No package or release
+was published from that tag.
 
 - Public, platform-independent Python SDK with synchronous and asynchronous clients.
 - Public CLI for local scaffolding, validation, emulator testing, package lifecycle, durable-run
