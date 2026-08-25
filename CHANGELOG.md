@@ -5,6 +5,13 @@ the date-versioned schema/API contract.
 
 ## 0.1.0b4 — Developer Preview
 
+`v0.1.0b4` was published from protected `main` commit
+`b105031a2de27633a183d82729b375168b138fcf` to both PyPI projects and GitHub Releases. Its
+platform-independent distributions, macOS ARM64 and Linux AMD64 standalone archives, checksums,
+SBOMs, provenance, PyPI attestations, and keyless Sigstore bundles passed the release workflow and
+clean consumer qualification. Homebrew publication and production enablement are tracked
+separately.
+
 The `v0.1.0b1` release attempt stopped before publication when its hidden
 standalone-artifact directory was excluded from upload. No PyPI project or
 GitHub Release was created from that tag. The `v0.1.0b2` attempt reached the
