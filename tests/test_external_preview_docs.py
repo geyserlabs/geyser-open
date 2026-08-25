@@ -41,4 +41,8 @@ def test_compatibility_matrix_reports_stable_production_api() -> None:
     assert "Production and GA routes yes" in page
     assert "owner-waived independent validation" in page
     assert "844f8123-f853-4c59-bdbc-a364da4d2517" in page
+    assert "32866021028" in page
+    assert "437ff79041c6d763a2991e47d16794cf9e4f94e8" in page
+    assert "32867264866" in page
+    assert "All 16 retained Sigstore bundles verified" in page
     assert "not public" not in page
