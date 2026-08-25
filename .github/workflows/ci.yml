@@ -37,3 +37,25 @@ jobs:
         with:
           fail-on-severity: moderate
           deny-licenses: GPL-3.0, AGPL-3.0
+
+  pr-gate:
+    name: pr-gate
+    if: always()
+    needs: [python, dependency-review]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Require the complete SDK and CLI gate
+        env:
+          PYTHON_RESULT: ${{ needs.python.result }}
+          DEPENDENCY_REVIEW_RESULT: ${{ needs['dependency-review'].result }}
+        run: |
+          set -euo pipefail
+          [[ "$PYTHON_RESULT" == "success" ]] || {
+            echo "Python matrix did not pass: $PYTHON_RESULT" >&2
+            exit 1
+          }
+          [[ "$DEPENDENCY_REVIEW_RESULT" == "success" || "$DEPENDENCY_REVIEW_RESULT" == "skipped" ]] || {
+            echo "Dependency review did not pass: $DEPENDENCY_REVIEW_RESULT" >&2
+            exit 1
+          }
