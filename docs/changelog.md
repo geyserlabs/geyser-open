@@ -8,7 +8,8 @@
 distributions and the macOS ARM64/Linux AMD64 standalone archives reproducibly, generated
 checksums, SBOMs, SLSA provenance, PyPI attestations, and 16 keyless Sigstore bundles, then passed
 clean public-install and downloaded-artifact qualification on Apple-Silicon macOS and native Intel
-Ubuntu. Homebrew and production enablement remain separate gates.
+Ubuntu. The `geyser-open` formula was then published and qualified through the public
+`geyserlabs/tap`. Production enablement remains a separate gate.
 
 The `v0.1.0b1` workflow stopped before publication because its hidden
 standalone-artifact directory was excluded from upload. No package or release
