@@ -190,6 +190,10 @@ jobs:
           cp "$CYCLONEDX" release-assets/geyser-open-cyclonedx.intoto.jsonl
       - name: Keyless-sign every retained artifact
         uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        env:
+          # setup-uv exports UV_PYTHON for this job, but the Sigstore action
+          # creates its own Python 3.14 environment and must install into it.
+          UV_PYTHON: ""
         with:
           inputs: release-assets/*
           verify: true

@@ -19,9 +19,9 @@ only qualified standalone targets are Apple-Silicon macOS and AMD64 Linux.
 Pin the Developer Preview version when validating a deployment:
 
 ```console
-python -m pip install geyser-sdk==0.1.0b2 geyser-open==0.1.0b2
-uv tool install geyser-open==0.1.0b2
-pipx install geyser-open==0.1.0b2
+python -m pip install geyser-sdk==0.1.0b3 geyser-open==0.1.0b3
+uv tool install geyser-open==0.1.0b3
+pipx install geyser-open==0.1.0b3
 brew tap geyserlabs/tap
 brew install geyser
 ```

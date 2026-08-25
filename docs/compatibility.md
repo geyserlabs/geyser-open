@@ -15,6 +15,6 @@ matrix and expiring qualification receipts are authoritative; this source table 
 
 | Surface | Implemented | Published | Qualified | Production enabled | Observed deployed |
 |---|---:|---:|---:|---:|---:|
-| SDK/CLI 0.1.0b2 source | yes | no | macOS ARM64 and Ubuntu AMD64 release gates passed | no | no |
+| SDK/CLI 0.1.0b3 source | yes | no | macOS ARM64 and Ubuntu AMD64 release gates passed | no | no |
 | Developer API 2026-08-24 | yes | not public | Coordinator source gates passed | no | no |
 | Homebrew/manual assets | source workflow pending W14 | no | no | no | no |

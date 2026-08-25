@@ -20,3 +20,11 @@ def test_standalone_release_artifacts_use_an_upload_visible_directory() -> None:
     assert "--output-dir release-standalone" in workflow
     assert "path: release-standalone/*" in workflow
     assert ".release-standalone" not in workflow
+
+
+def test_sigstore_uses_its_isolated_python_environment() -> None:
+    workflow = Path(".github/workflows/release.yml").read_text()
+
+    signing_step = workflow.split("- name: Keyless-sign every retained artifact", 1)[1]
+    signing_step = signing_step.split("- uses: actions/upload-artifact@", 1)[0]
+    assert 'UV_PYTHON: ""' in signing_step

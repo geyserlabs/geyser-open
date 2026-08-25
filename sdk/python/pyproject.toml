@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "geyser-sdk"
-version = "0.1.0b2"
+version = "0.1.0b3"
 description = "Typed Python SDK and deterministic emulator for the public Geyser developer API"
 readme = "README.md"
 license = "MIT"
