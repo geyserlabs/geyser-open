@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -12,6 +13,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "release_assets.py"
+SCAN_SPEC = importlib.util.spec_from_file_location("scan_secrets", ROOT / "scripts/scan_secrets.py")
+assert SCAN_SPEC is not None and SCAN_SPEC.loader is not None
+SCAN = importlib.util.module_from_spec(SCAN_SPEC)
+SCAN_SPEC.loader.exec_module(SCAN)
 
 
 def run(*arguments: str) -> subprocess.CompletedProcess[str]:
@@ -66,3 +71,10 @@ def test_manifest_checksum_verification_detects_tampering(tmp_path: Path) -> Non
     rejected = run("verify", "--asset-dir", str(tmp_path), "--tag", "v0.1.0b1")
     assert rejected.returncode != 0
     assert "release assets missing" in rejected.stderr
+
+
+def test_secret_scan_falls_back_to_non_generated_snapshot_source() -> None:
+    paths = {path.as_posix() for path in SCAN.source_paths(None)}
+    assert "README.md" in paths
+    assert "scripts/scan_secrets.py" in paths
+    assert not any(set(path.split("/")) & SCAN.SNAPSHOT_EXCLUDES for path in paths)
