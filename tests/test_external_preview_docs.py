@@ -31,3 +31,13 @@ def test_documented_agent_bundle_scaffold_uses_a_real_cli_kind() -> None:
     page = (ROOT / "docs" / "bundles.md").read_text(encoding="utf-8")
     assert "geyser init agent-bundle careful-assistant" in page
     assert "geyser init bundle careful-assistant" not in page
+
+
+def test_compatibility_matrix_reports_live_api_without_claiming_ga() -> None:
+    page = (ROOT / "docs" / "compatibility.md").read_text(encoding="utf-8")
+
+    assert "https://agents.geyserlabs.ai/api/v1/openapi.json" in page
+    assert "Developer Preview routes yes; GA no" in page
+    assert "positive independent-developer sandbox gate pending" in page
+    assert "844f8123-f853-4c59-bdbc-a364da4d2517" in page
+    assert "not public" not in page
