@@ -1,0 +1,17 @@
+# Geyser Developer Preview
+
+> Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.
+
+- [Start](https://docs.geyserlabs.ai/preview/)
+- [Five-minute emulator quickstart](https://docs.geyserlabs.ai/preview/quickstart/)
+- [Python SDK](https://docs.geyserlabs.ai/preview/sdk/)
+- [CLI reference](https://docs.geyserlabs.ai/preview/cli/)
+- [Durable runs](https://docs.geyserlabs.ai/preview/durable-runs/)
+- [OpenAPI and schemas](https://docs.geyserlabs.ai/preview/reference/)
+- [Compatibility status](https://docs.geyserlabs.ai/preview/compatibility/)
+- [Security](https://docs.geyserlabs.ai/preview/security/)
+- [Canonical source](https://github.com/geyserlabs/geyser-open)
+
+Geyser Open is the reference runtime. Capability support is evidence-derived for an exact runtime,
+provider, model profile, placement, and privacy posture. A source implementation, public package,
+qualification receipt, production enablement, and observed deployment are separate facts.
