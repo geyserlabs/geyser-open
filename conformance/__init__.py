@@ -1,1 +1,1 @@
-"""Public frozen conformance contracts and qualification receipts."""
+"""Public conformance, qualification, and external-preview primitives."""

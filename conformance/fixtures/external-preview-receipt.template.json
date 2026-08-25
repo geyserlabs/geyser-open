@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "geyser_external_developer_preview",
+  "participant": {
+    "identity_digest": "sha256:<64 lowercase hex characters>",
+    "was_implementer": false,
+    "private_help_used": false
+  },
+  "environment": {
+    "machine_identity_digest": "sha256:<64 lowercase hex characters>",
+    "os": "ubuntu-24.04",
+    "architecture": "amd64",
+    "python_version": "3.12",
+    "clean_machine": true,
+    "customer_id": 1,
+    "sandbox_ref_digest": "sha256:<64 lowercase hex characters>"
+  },
+  "release": {
+    "version": "0.1.0b1",
+    "source_commit": "<40 lowercase Git commit characters>",
+    "sdk_artifact_digest": "sha256:<64 lowercase hex characters>",
+    "cli_artifact_digest": "sha256:<64 lowercase hex characters>",
+    "docs_url": "https://docs.geyserlabs.ai/0.1.0b1/",
+    "sdk_package_url": "https://pypi.org/project/geyser-sdk/0.1.0b1/",
+    "cli_package_url": "https://pypi.org/project/geyser-open/0.1.0b1/",
+    "github_release_url": "https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0b1"
+  },
+  "steps": [
+    {"step_id": "discover-developer-page", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "clean-install-canonical-channels", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "run-emulator-quickstart", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "scaffold-tool-or-skill", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "add-frozen-success-and-denial", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "authenticate-customer-1-sandbox", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "stage-canary-signed-bytes", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "inspect-durable-run-and-trace", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "handle-approval-and-denial", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"},
+    {"step_id": "cleanup-and-report-friction", "passed": true, "evidence_ref": "<content-safe reference>", "evidence_digest": "sha256:<64 lowercase hex characters>"}
+  ],
+  "defects": [],
+  "started_at": 0,
+  "completed_at": 0,
+  "cleanup": {
+    "credential_revoked": true,
+    "sandbox_artifacts_removed": true,
+    "local_artifacts_removed": true,
+    "canary_removed": true,
+    "browser_session_closed": true
+  },
+  "grants_authority": false,
+  "security_warranty": false
+}

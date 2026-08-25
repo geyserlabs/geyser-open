@@ -77,6 +77,7 @@ nav:
       - OpenAPI and schemas: reference.md
   - Trust and releases:
       - Release verification: releases.md
+      - Independent developer preview gate: external-preview.md
       - Security: security.md
       - Changelog: changelog.md
 
