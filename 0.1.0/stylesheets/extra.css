@@ -1,0 +1,17 @@
+:root {
+  --md-primary-fg-color: #17352b;
+  --md-primary-fg-color--light: #486b57;
+  --md-primary-fg-color--dark: #10271f;
+  --md-accent-fg-color: #bb6b51;
+}
+
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #fdfbf6;
+  --md-default-fg-color: #24372d;
+  --md-code-bg-color: #f1ede4;
+}
+
+.md-header, .md-tabs { background-color: #17352b; }
+.md-typeset h1, .md-typeset h2 { font-weight: 650; letter-spacing: -0.035em; }
+.md-typeset code { border-radius: 0.2rem; }
+.md-typeset .admonition, .md-typeset details { border-color: #789985; }
