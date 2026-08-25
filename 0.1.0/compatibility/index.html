@@ -1295,6 +1295,15 @@ matrix and expiring qualification receipts are authoritative; this source table 
 </tr>
 </tbody>
 </table>
+<p>The <code>0.1.0</code> qualification receipt is protected source
+<code>e567d9d6051b73d0fd4531a75245b65730c0790a</code> and successful signed
+<a href="https://github.com/geyserlabs/geyser-open/actions/runs/32866021028">release workflow 32866021028</a>.
+The workflow reproducibly built both Python distributions and both supported standalone targets,
+published the two projects through PyPI Trusted Publishing, produced SBOMs and provenance, and
+verified all retained artifacts during keyless signing. Follow-up qualification passed clean
+public-index install/uninstall and downloaded standalone execution on Apple-Silicon macOS and
+native Intel Ubuntu AMD64. All 16 retained Sigstore bundles verified against the exact protected
+workflow/tag identity.</p>
 <p>The <code>0.1.0b4</code> qualification receipt is the successful protected-tag
 <a href="https://github.com/geyserlabs/geyser-open/actions/runs/32854732268">release workflow</a> for source
 commit <code>b105031a2de27633a183d82729b375168b138fcf</code>, followed by clean installs from PyPI and
@@ -1312,8 +1321,11 @@ authentication. The product owner waived the independent non-implementer exercis
 release gate on 2026-08-25. The <a href="../external-preview/">optional independent validation</a> remains
 public, and no independent receipt is claimed.</p>
 <p>The Homebrew qualification receipt is public-tap commit
-<code>977a2ac9e5cb764dda97e0614b09de76dbbfaa31</code> and its successful
-<a href="https://github.com/geyserlabs/homebrew-tap/actions/runs/32857989721">merged-main workflow</a>.</p>
+<code>437ff79041c6d763a2991e47d16794cf9e4f94e8</code> and its successful
+<a href="https://github.com/geyserlabs/homebrew-tap/actions/runs/32867031090">merged-main workflow</a>.
+The stable documentation receipt is source <code>e567d9d6051b73d0fd4531a75245b65730c0790a</code>,
+<a href="https://github.com/geyserlabs/geyser-open/actions/runs/32867264866">publication workflow 32867264866</a>,
+and final Pages commit <code>10a87613977fbe224afb1400a549e9f0050ceecf</code>.</p>
 
 
 
