@@ -136,6 +136,10 @@ def main() -> int:
     if not target:
         raise SystemExit(f"unsupported standalone target: {system_machine[0]} {system_machine[1]}")
     epoch = source_epoch()
+    # A fresh Python environment can populate deterministic import bytecode on
+    # its first PyInstaller analysis, changing only base_library.zip ordering.
+    # Discard one warm-up executable, then compare two independent clean builds.
+    build_executable("warmup", epoch)
     archives: list[Path] = []
     for pass_name in ("first", "second"):
         executable = build_executable(pass_name, epoch)
