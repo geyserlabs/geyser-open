@@ -8,3 +8,7 @@ Start with the [five-minute emulator quickstart](quickstart.md), then read
 [authentication and projects](authentication.md), [SDK clients](sdk.md), and the
 [CLI reference](cli.md). Exact implemented, published, qualified, production-enabled, and
 observed-deployed status is recorded separately in the [compatibility matrix](compatibility.md).
+
+Release consumers should also read [release verification and supply-chain
+trust](releases.md), including the immutable-artifact, yank, compromise, and
+revocation policy.

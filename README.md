@@ -31,6 +31,8 @@ python examples/emulator_quickstart.py
 Developer Preview currently targets Python 3.11–3.13, macOS Apple Silicon, and
 Ubuntu 24.04 AMD64. See [docs/compatibility.md](docs/compatibility.md),
 [SECURITY.md](SECURITY.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
+Release verification, SBOM, provenance, and revocation guidance is in
+[docs/releases.md](docs/releases.md).
 
 ## Authority model
 

@@ -1,0 +1,251 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+      - name: Verify immutable release source
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          test -z "$(git status --porcelain)"
+          uv sync --all-packages --all-extras --all-groups --locked
+          uv run python scripts/release_assets.py validate-source --tag "$RELEASE_TAG"
+      - name: Run canonical release gate
+        run: make check
+
+  python-distributions:
+    needs: validate
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+      - name: Build twice and require identical Python artifacts
+        run: |
+          uv sync --all-packages --all-extras --dev --locked
+          export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
+          mkdir -p .release-python/first .release-python/second .release-python/final
+          uv build --package geyser-sdk --out-dir .release-python/first
+          uv build --package geyser-open --out-dir .release-python/first
+          uv build --package geyser-sdk --out-dir .release-python/second
+          uv build --package geyser-open --out-dir .release-python/second
+          (cd .release-python/first && sha256sum * | sort) > .release-python/first.sha256
+          (cd .release-python/second && sha256sum * | sort) > .release-python/second.sha256
+          diff -u .release-python/first.sha256 .release-python/second.sha256
+          cp .release-python/first/* .release-python/final/
+          .venv/bin/python scripts/verify_distributions.py .release-python/final
+          .venv/bin/python scripts/install_smoke.py .release-python/final
+          .venv/bin/python scripts/uninstall_smoke.py .release-python/final
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-python-distributions
+          path: .release-python/final/*
+          if-no-files-found: error
+          retention-days: 90
+
+  standalone-cli:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-14
+            target: darwin-arm64
+          - runner: ubuntu-24.04
+            target: linux-amd64
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+      - name: Build, verify, and reproduce standalone CLI
+        run: |
+          uv sync --all-packages --all-extras --all-groups --locked
+          uv run python scripts/build_standalone.py --output-dir .release-standalone
+          test -f ".release-standalone/geyser-open-$(uv run python scripts/release_assets.py validate-source)-${{ matrix.target }}.tar.gz"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-standalone-${{ matrix.target }}
+          path: .release-standalone/*
+          if-no-files-found: error
+          retention-days: 90
+
+  assemble-and-attest:
+    needs: [python-distributions, standalone-cli]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+      - name: Add frozen contracts and dependency inventory
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          source_epoch="$(git show -s --format=%ct HEAD)"
+          uv run python scripts/release_assets.py contracts \
+            --output-dir release-assets --source-epoch "$source_epoch"
+          uv run python scripts/release_assets.py inventory \
+            --output release-assets/dependency-inventory.json \
+            --source-commit "$SOURCE_COMMIT"
+      - name: Produce SPDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: release-assets
+          format: spdx-json
+          output-file: release-assets/geyser-open.spdx.json
+          artifact-name: geyser-open-spdx
+          syft-version: v1.51.0
+          upload-artifact: false
+          upload-release-assets: false
+      - name: Produce CycloneDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: release-assets
+          format: cyclonedx-json
+          output-file: release-assets/geyser-open.cyclonedx.json
+          artifact-name: geyser-open-cyclonedx
+          syft-version: v1.51.0
+          upload-artifact: false
+          upload-release-assets: false
+      - name: Retain manifest and checksums
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          SOURCE_COMMIT: ${{ github.sha }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          uv run python scripts/release_assets.py manifest \
+            --asset-dir release-assets \
+            --source-commit "$SOURCE_COMMIT" \
+            --tag "$RELEASE_TAG" \
+            --run-url "$RUN_URL"
+          uv run python scripts/release_assets.py verify \
+            --asset-dir release-assets --tag "$RELEASE_TAG"
+      - name: Create SLSA provenance
+        id: provenance
+        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4 # v4.2.2
+        with:
+          subject-checksums: release-assets/SHA256SUMS
+      - name: Attest SPDX SBOM
+        id: spdx-attestation
+        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4 # v4.2.2
+        with:
+          subject-checksums: release-assets/SHA256SUMS
+          sbom-path: release-assets/geyser-open.spdx.json
+      - name: Attest CycloneDX SBOM
+        id: cyclonedx-attestation
+        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4 # v4.2.2
+        with:
+          subject-checksums: release-assets/SHA256SUMS
+          sbom-path: release-assets/geyser-open.cyclonedx.json
+      - name: Retain attestation bundles
+        env:
+          PROVENANCE: ${{ steps.provenance.outputs.bundle-path }}
+          SPDX: ${{ steps.spdx-attestation.outputs.bundle-path }}
+          CYCLONEDX: ${{ steps.cyclonedx-attestation.outputs.bundle-path }}
+        run: |
+          cp "$PROVENANCE" release-assets/geyser-open-provenance.intoto.jsonl
+          cp "$SPDX" release-assets/geyser-open-spdx.intoto.jsonl
+          cp "$CYCLONEDX" release-assets/geyser-open-cyclonedx.intoto.jsonl
+      - name: Keyless-sign every retained artifact
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        with:
+          inputs: release-assets/*
+          verify: true
+          verify-cert-identity: https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
+          upload-signing-artifacts: false
+          release-signing-artifacts: false
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: complete-release
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 90
+
+  publish-pypi:
+    needs: assemble-and-attest
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: complete-release
+          path: release-assets
+      - name: Select only Python distributions
+        run: |
+          mkdir pypi-dist
+          cp release-assets/geyser_sdk-*.whl release-assets/geyser_sdk-*.tar.gz pypi-dist/
+          cp release-assets/geyser_open-*.whl release-assets/geyser_open-*.tar.gz pypi-dist/
+      - name: Publish with PyPI Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@a892a5a61159132606e93a2fa6f4358831b04d26 # v1.14.2
+        with:
+          packages-dir: pypi-dist/
+          attestations: true
+          verbose: true
+
+  publish-github-release:
+    needs: [assemble-and-attest, publish-pypi]
+    runs-on: ubuntu-24.04
+    environment: github-release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: complete-release
+          path: release-assets
+      - name: Publish immutable manual artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" release-assets/* \
+            --draft --generate-notes --title "Geyser Open $RELEASE_TAG" --verify-tag
+          gh release edit "$RELEASE_TAG" --draft=false
