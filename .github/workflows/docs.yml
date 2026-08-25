@@ -46,3 +46,18 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           uv run mike deploy --push --update-aliases "$DOCS_VERSION" preview
           uv run mike set-default --push preview
+          git fetch origin gh-pages
+          pages_dir="$RUNNER_TEMP/geyser-open-gh-pages"
+          git worktree add --detach "$pages_dir" origin/gh-pages
+          uv run python scripts/finalize_docs_release.py \
+            --pages-dir "$pages_dir" \
+            --source-docs docs \
+            --version "$DOCS_VERSION"
+          git -C "$pages_dir" add \
+            CNAME robots.txt llms.txt sitemap.xml sitemap.xml.gz \
+            "$DOCS_VERSION/sitemap.xml" "$DOCS_VERSION/sitemap.xml.gz"
+          if ! git -C "$pages_dir" diff --cached --quiet; then
+            git -C "$pages_dir" commit -m "Finalize developer docs $DOCS_VERSION"
+            git -C "$pages_dir" push origin HEAD:gh-pages
+          fi
+          git worktree remove "$pages_dir"
