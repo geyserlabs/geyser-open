@@ -92,12 +92,12 @@ jobs:
       - name: Build, verify, and reproduce standalone CLI
         run: |
           uv sync --all-packages --all-extras --all-groups --locked
-          uv run python scripts/build_standalone.py --output-dir .release-standalone
-          test -f ".release-standalone/geyser-open-$(uv run python scripts/release_assets.py validate-source)-${{ matrix.target }}.tar.gz"
+          uv run python scripts/build_standalone.py --output-dir release-standalone
+          test -f "release-standalone/geyser-open-$(uv run python scripts/release_assets.py validate-source)-${{ matrix.target }}.tar.gz"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-standalone-${{ matrix.target }}
-          path: .release-standalone/*
+          path: release-standalone/*
           if-no-files-found: error
           retention-days: 90
 

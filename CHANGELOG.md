@@ -3,7 +3,11 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
-## 0.1.0b1 — Developer Preview
+## 0.1.0b2 — Developer Preview
+
+The `v0.1.0b1` release attempt stopped before publication when its hidden
+standalone-artifact directory was excluded from upload. No PyPI project or
+GitHub Release was created from that tag.
 
 - Independent typed sync/async `geyser-sdk` with problem-details errors, bounded safe retries,
   pagination, cancellation, reconnecting event watch, and exact capability evidence.

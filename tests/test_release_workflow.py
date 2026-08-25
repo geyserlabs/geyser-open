@@ -12,3 +12,11 @@ def test_pypi_projects_have_distinct_trusted_publisher_environments() -> None:
     assert "packages-dir: pypi-dist-open/" in workflow
     assert workflow.count("pypa/gh-action-pypi-publish@") == 2
     assert "needs: [assemble-and-attest, publish-pypi-sdk, publish-pypi-open]" in workflow
+
+
+def test_standalone_release_artifacts_use_an_upload_visible_directory() -> None:
+    workflow = Path(".github/workflows/release.yml").read_text()
+
+    assert "--output-dir release-standalone" in workflow
+    assert "path: release-standalone/*" in workflow
+    assert ".release-standalone" not in workflow

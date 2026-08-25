@@ -23,7 +23,7 @@ SNAPSHOT_EXCLUDES = {
     ".pytest_cache",
     ".release-build",
     ".release-python",
-    ".release-standalone",
+    "release-standalone",
     ".ruff_cache",
     ".venv",
     "__pycache__",

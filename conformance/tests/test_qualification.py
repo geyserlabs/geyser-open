@@ -19,7 +19,7 @@ def _receipt(layer: str, *, kind: str = "runtime_adapter") -> dict:
     subject = {
         "kind": kind,
         "name": "geyser.open" if kind == "runtime_adapter" else "geyser.cli",
-        "version": "0.1.0b1",
+        "version": "0.1.0b2",
         "digest": digest({"kind": kind}),
         "framework": "open" if kind == "runtime_adapter" else "",
         "backend": "pydantic-ai-harness" if kind == "runtime_adapter" else "",

@@ -12,7 +12,7 @@ build/
 .geyser/
 .release-build/
 .release-python/
-.release-standalone/
+release-standalone/
 release-assets/
 *.tar.gz
 *.whl
