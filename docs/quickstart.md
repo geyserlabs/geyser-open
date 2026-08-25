@@ -5,7 +5,7 @@ Requires Python 3.11–3.13. The local path uses no network and no credential.
 ```console
 python -m venv .venv
 . .venv/bin/activate
-python -m pip install geyser-sdk==0.1.0b3 geyser-open==0.1.0b3
+python -m pip install geyser-sdk==0.1.0b4 geyser-open==0.1.0b4
 geyser init tool careful-search
 geyser validate careful-search
 geyser test careful-search
