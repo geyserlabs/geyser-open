@@ -71,10 +71,13 @@ def openapi() -> dict[str, Any]:
             "application/json": {"schema": ref(name)}
         }}}
 
-    def operation(method: str, response_name: str, request_name: str = "") -> dict[str, Any]:
+    def operation(
+        method: str, response_name: str, request_name: str = "", *,
+        security: list[dict[str, list[str]]] | None = None,
+    ) -> dict[str, Any]:
         value: dict[str, Any] = {
             "operationId": method,
-            "security": [{"DeveloperBearer": []}],
+            "security": security if security is not None else [{"ProjectCredential": []}],
             "responses": response(response_name),
         }
         if request_name:
@@ -82,6 +85,12 @@ def openapi() -> dict[str, Any]:
                 "application/json": {"schema": ref(request_name)}
             }}
         return value
+
+    customer = [{"CustomerSession": []}]
+    approval = [{"CustomerSession": []}, {"ProjectCredential": []}]
+    oauth_response = {"200": {"description": "OAuth response", "content": {
+        "application/json": {"schema": {"type": "object"}}
+    }}}
 
     return {
         "openapi": "3.1.0",
@@ -100,12 +109,36 @@ def openapi() -> dict[str, Any]:
                 "get": operation("listRunEvents", "RunEventPage")
             },
             "/api/v1/runs/{run_id}/trace": {"get": operation("getRunTrace", "TraceResponse")},
-            "/api/v1/customer/approvals": {"get": operation("listApprovals", "ApprovalPage")},
+            "/api/v1/customer/runs": {
+                "get": operation("listCustomerRuns", "RunPage", security=customer)},
+            "/api/v1/customer/runs/{run_id}": {
+                "get": operation("getCustomerRun", "RunResponse", security=customer)},
+            "/api/v1/customer/runs/{run_id}/events": {
+                "get": operation("listCustomerRunEvents", "RunEventPage", security=customer)},
+            "/api/v1/customer/runs/{run_id}/trace": {
+                "get": operation("getCustomerRunTrace", "TraceResponse", security=customer)},
+            "/api/v1/customer/approvals": {
+                "get": operation("listApprovals", "ApprovalPage", security=approval)},
             "/api/v1/customer/approvals/{approval_id}": {
-                "get": operation("getApproval", "ApprovalResponse")
+                "get": operation("getApproval", "ApprovalResponse", security=approval)
+            },
+            "/api/v1/customer/runs/{run_id}/approvals/{approval_id}/decision": {
+                "post": operation(
+                    "decideApproval", "RunResponse", "ApprovalDecision",
+                    security=approval)
             },
             "/api/v1/customer/runs/{run_id}/cancel": {
-                "post": operation("cancelRun", "RunResponse", "CancelRequest")
+                "post": operation(
+                    "cancelRun", "RunResponse", "CancelRequest", security=customer)
+            },
+            "/api/v1/customer/runs/{run_id}/evaluations": {
+                "post": operation(
+                    "recordEvaluation", "RunResponse", "EvaluationCreate",
+                    security=customer)
+            },
+            "/api/v1/customer/runs/{run_id}/forks": {
+                "post": operation(
+                    "forkRun", "RunResponse", "ForkCreate", security=customer)
             },
             "/api/v1/packages": {
                 "get": operation("listPackages", "PackagePage"),
@@ -114,9 +147,42 @@ def openapi() -> dict[str, Any]:
             "/api/v1/packages/{package_id}/promotions": {
                 "post": operation("promotePackage", "PackageResponse", "PackagePromotion")
             },
+            "/api/v1/oauth/device/code": {"post": {
+                "operationId": "startDeviceAuthorization", "security": [],
+                "requestBody": {"required": True, "content": {"application/json": {
+                    "schema": {"type": "object", "required": ["client_id", "scope"],
+                               "properties": {"client_id": {"const": "geyser-public-cli"},
+                                              "scope": {"type": "string"}}}}}},
+                "responses": oauth_response,
+            }},
+            "/api/v1/oauth/authorize": {"get": {
+                "operationId": "authorizeDeveloperCLI", "security": [],
+                "responses": {"200": {"description": "Human consent page"}},
+            }},
+            "/api/v1/oauth/token": {"post": {
+                "operationId": "exchangeDeveloperGrant", "security": [],
+                "responses": oauth_response,
+            }},
         },
         "components": {
-            "securitySchemes": {"DeveloperBearer": {"type": "http", "scheme": "bearer"}},
+            "securitySchemes": {
+                "ProjectCredential": {"type": "http", "scheme": "bearer"},
+                "CustomerSession": {"type": "http", "scheme": "bearer"},
+                "DeveloperOAuth": {
+                    "type": "oauth2", "flows": {"authorizationCode": {
+                        "authorizationUrl": "/api/v1/oauth/authorize",
+                        "tokenUrl": "/api/v1/oauth/token",
+                        "scopes": {
+                            "development:read": "Read project development state",
+                            "runs:read": "Inspect project runs and traces",
+                            "packages:upload": "Upload exact extension bytes",
+                            "packages:stage": "Stage an uploaded extension",
+                            "packages:canary": "Promote an extension to canary",
+                            "packages:promote": "Promote an extension to production",
+                            "approvals:decide": "Decide approvals for project runs",
+                        },
+                    }}},
+                },
             "schemas": {name: model.model_json_schema() for name, model in MODELS.items()},
         },
     }

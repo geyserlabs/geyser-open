@@ -1781,7 +1781,29 @@
       }
     },
     "securitySchemes": {
-      "DeveloperBearer": {
+      "CustomerSession": {
+        "scheme": "bearer",
+        "type": "http"
+      },
+      "DeveloperOAuth": {
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "/api/v1/oauth/authorize",
+            "scopes": {
+              "approvals:decide": "Decide approvals for project runs",
+              "development:read": "Read project development state",
+              "packages:canary": "Promote an extension to canary",
+              "packages:promote": "Promote an extension to production",
+              "packages:stage": "Stage an uploaded extension",
+              "packages:upload": "Upload exact extension bytes",
+              "runs:read": "Inspect project runs and traces"
+            },
+            "tokenUrl": "/api/v1/oauth/token"
+          }
+        },
+        "type": "oauth2"
+      },
+      "ProjectCredential": {
         "scheme": "bearer",
         "type": "http"
       }
@@ -1810,7 +1832,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -1832,7 +1854,10 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "CustomerSession": []
+          },
+          {
+            "ProjectCredential": []
           }
         ]
       }
@@ -1854,7 +1879,89 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "CustomerSession": []
+          },
+          {
+            "ProjectCredential": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs": {
+      "get": {
+        "operationId": "listCustomerRuns",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}": {
+      "get": {
+        "operationId": "getCustomerRun",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/approvals/{approval_id}/decision": {
+      "post": {
+        "operationId": "decideApproval",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalDecision"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          },
+          {
+            "ProjectCredential": []
           }
         ]
       }
@@ -1886,9 +1993,186 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "CustomerSession": []
           }
         ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/evaluations": {
+      "post": {
+        "operationId": "recordEvaluation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/events": {
+      "get": {
+        "operationId": "listCustomerRunEvents",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunEventPage"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/forks": {
+      "post": {
+        "operationId": "forkRun",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForkCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/trace": {
+      "get": {
+        "operationId": "getCustomerRunTrace",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraceResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/oauth/authorize": {
+      "get": {
+        "operationId": "authorizeDeveloperCLI",
+        "responses": {
+          "200": {
+            "description": "Human consent page"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/oauth/device/code": {
+      "post": {
+        "operationId": "startDeviceAuthorization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "client_id": {
+                    "const": "geyser-public-cli"
+                  },
+                  "scope": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "client_id",
+                  "scope"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OAuth response"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/oauth/token": {
+      "post": {
+        "operationId": "exchangeDeveloperGrant",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OAuth response"
+          }
+        },
+        "security": []
       }
     },
     "/api/v1/packages": {
@@ -1908,7 +2192,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       },
@@ -1938,7 +2222,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -1970,7 +2254,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -1992,7 +2276,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -2014,7 +2298,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -2036,7 +2320,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -2058,7 +2342,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -2080,7 +2364,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       },
@@ -2110,7 +2394,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
@@ -2132,7 +2416,7 @@
         },
         "security": [
           {
-            "DeveloperBearer": []
+            "ProjectCredential": []
           }
         ]
       }
