@@ -1,0 +1,48 @@
+name: Publish developer documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published SDK/CLI version without the v prefix
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: developer-documentation
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    environment: documentation
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+      - name: Verify clean protected main and published version
+        env:
+          DOCS_VERSION: ${{ inputs.version }}
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          test -z "$(git status --porcelain)"
+          uv sync --all-packages --all-extras --all-groups --locked
+          test "$DOCS_VERSION" = "$(uv run python scripts/release_assets.py validate-source)"
+          make docs
+      - name: Publish immutable version and preview alias
+        env:
+          DOCS_VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          uv run mike deploy --push --update-aliases "$DOCS_VERSION" preview
+          uv run mike set-default --push preview

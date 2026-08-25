@@ -12,3 +12,18 @@ observed-deployed status is recorded separately in the [compatibility matrix](co
 Release consumers should also read [release verification and supply-chain
 trust](releases.md), including the immutable-artifact, yank, compromise, and
 revocation policy.
+
+## Public authorities
+
+- [GitHub](https://github.com/geyserlabs/geyser-open) — source, examples, conformance, and releases.
+- [PyPI SDK](https://pypi.org/project/geyser-sdk/) and
+  [PyPI CLI](https://pypi.org/project/geyser-open/) — Python distribution authority.
+- [Homebrew tap](https://github.com/geyserlabs/homebrew-tap) — standalone CLI authority.
+- [Compatibility status](compatibility.md) — implemented, published, qualified,
+  production-enabled, and observed-deployed facts.
+
+!!! warning "Developer Preview"
+
+    Version 0.1.0b1 supports Python 3.11–3.13. Standalone qualification is limited to
+    Apple-silicon macOS and Ubuntu 24.04 AMD64. A local emulator pass does not grant production
+    capability or authority.
