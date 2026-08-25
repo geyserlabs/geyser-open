@@ -1,15 +1,15 @@
-# Geyser Developer Preview
+# Geyser Developer Platform
 
 > Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.
 
-- [Start](https://docs.geyserlabs.ai/preview/)
-- [Five-minute emulator quickstart](https://docs.geyserlabs.ai/preview/quickstart/)
-- [Python SDK](https://docs.geyserlabs.ai/preview/sdk/)
-- [CLI reference](https://docs.geyserlabs.ai/preview/cli/)
-- [Durable runs](https://docs.geyserlabs.ai/preview/durable-runs/)
-- [OpenAPI and schemas](https://docs.geyserlabs.ai/preview/reference/)
-- [Compatibility status](https://docs.geyserlabs.ai/preview/compatibility/)
-- [Security](https://docs.geyserlabs.ai/preview/security/)
+- [Start](https://docs.geyserlabs.ai/stable/)
+- [Five-minute emulator quickstart](https://docs.geyserlabs.ai/stable/quickstart/)
+- [Python SDK](https://docs.geyserlabs.ai/stable/sdk/)
+- [CLI reference](https://docs.geyserlabs.ai/stable/cli/)
+- [Durable runs](https://docs.geyserlabs.ai/stable/durable-runs/)
+- [OpenAPI and schemas](https://docs.geyserlabs.ai/stable/reference/)
+- [Compatibility status](https://docs.geyserlabs.ai/stable/compatibility/)
+- [Security](https://docs.geyserlabs.ai/stable/security/)
 - [Canonical source](https://github.com/geyserlabs/geyser-open)
 
 Geyser Open is the reference runtime. Capability support is evidence-derived for an exact runtime,

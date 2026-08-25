@@ -31,3 +31,11 @@ def test_sigstore_uses_its_isolated_python_environment() -> None:
     signing_step = workflow.split("- name: Keyless-sign every retained artifact", 1)[1]
     signing_step = signing_step.split("- uses: actions/upload-artifact@", 1)[0]
     assert 'UV_PYTHON: ""' in signing_step
+
+
+def test_documentation_publishes_a_stable_default_alias() -> None:
+    workflow = Path(".github/workflows/docs.yml").read_text()
+
+    assert '"$DOCS_VERSION" stable' in workflow
+    assert "mike set-default --push stable" in workflow
+    assert '"$DOCS_VERSION" preview' not in workflow

@@ -1,6 +1,6 @@
 # Security policy
 
-Geyser Open is a Developer Preview. Report suspected vulnerabilities privately to
+Geyser Open is production software. Report suspected vulnerabilities privately to
 **security@geyserlabs.ai**. Do not open a public issue containing exploit details, credentials,
 customer identifiers, or tenant content. We acknowledge reports within two business days and
 coordinate validation, remediation, disclosure, and credit with the reporter.

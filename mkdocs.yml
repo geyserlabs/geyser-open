@@ -58,7 +58,7 @@ nav:
   - Overview: index.md
   - Start:
       - Five-minute emulator quickstart: quickstart.md
-      - Independent developer preview gate: external-preview.md
+      - Optional independent validation: external-preview.md
       - Authentication and projects: authentication.md
       - Recipes and examples: recipes.md
       - Troubleshooting: troubleshooting.md

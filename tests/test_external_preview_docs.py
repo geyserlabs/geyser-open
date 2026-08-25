@@ -5,14 +5,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_external_preview_gate_is_published_and_fail_closed() -> None:
+def test_optional_independent_validation_is_public_and_fail_closed() -> None:
     navigation = (ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     page = (ROOT / "docs" / "external-preview.md").read_text(encoding="utf-8")
 
-    assert "Independent developer preview gate: external-preview.md" in navigation
+    assert "Optional independent validation: external-preview.md" in navigation
     assert page.count("### ") == 10
     for requirement in (
-        "0.1.0b4",
+        "0.1.0",
         "customer 1",
         "without private hand-holding or operator credentials",
         "customer=all",
@@ -23,6 +23,7 @@ def test_external_preview_gate_is_published_and_fail_closed() -> None:
         "approvals decide",
         "logout",
         "opaque hashes",
+        "waived this path as a mandatory release gate",
     ):
         assert requirement in page
 
@@ -33,11 +34,11 @@ def test_documented_agent_bundle_scaffold_uses_a_real_cli_kind() -> None:
     assert "geyser init bundle careful-assistant" not in page
 
 
-def test_compatibility_matrix_reports_live_api_without_claiming_ga() -> None:
+def test_compatibility_matrix_reports_stable_production_api() -> None:
     page = (ROOT / "docs" / "compatibility.md").read_text(encoding="utf-8")
 
     assert "https://agents.geyserlabs.ai/api/v1/openapi.json" in page
-    assert "Developer Preview routes yes; GA no" in page
-    assert "positive independent-developer sandbox gate pending" in page
+    assert "Production and GA routes yes" in page
+    assert "owner-waived independent validation" in page
     assert "844f8123-f853-4c59-bdbc-a364da4d2517" in page
     assert "not public" not in page

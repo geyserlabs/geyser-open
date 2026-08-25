@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0 — Production
+
+`v0.1.0` promotes the qualified SDK, CLI, signed standalone assets, Homebrew formula, versioned
+documentation, and Developer API to production availability. All authority and fail-closed safety
+boundaries from the beta series remain in force. On 2026-08-25 the product owner waived the
+independent non-implementer exercise as a mandatory release gate; it remains available as an
+optional public validation path, and no independent receipt is claimed.
+
+- Stable Python 3.11–3.13 SDK/CLI packages and canonical public install channels.
+- Reproducible, signed, attested macOS ARM64 and Ubuntu AMD64 standalone assets.
+- Stable documentation alias, compatibility matrix, changelog, security, and rollback guidance.
+- Production Developer API backed by the already-qualified universal durable runtime fleet.
+
 ## 0.1.0b4 — Developer Preview
 
 `v0.1.0b4` was published from protected `main` commit
@@ -31,5 +44,5 @@ tag.
 - Reproducible builds, checksums, Sigstore bundles, GitHub SLSA provenance, SPDX and CycloneDX
   SBOMs, and canonical PyPI/GitHub/Homebrew channels.
 
-This is a preview contract. Implemented, published, qualified, production-enabled, and observed
-deployed status remain separate in the [compatibility matrix](compatibility.md).
+Implemented, published, qualified, production-enabled, and observed-deployed status remain
+separate in the [compatibility matrix](compatibility.md).
