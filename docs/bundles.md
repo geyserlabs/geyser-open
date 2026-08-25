@@ -10,7 +10,7 @@ rejection of traversal, absolute paths, links, device files, nested archives, cr
 sessions, and hidden reasoning. A person reviews the normalized selection before signing or staging.
 
 ```console
-geyser init bundle careful-assistant
+geyser init agent-bundle careful-assistant
 geyser validate careful-assistant
 geyser package careful-assistant
 ```
