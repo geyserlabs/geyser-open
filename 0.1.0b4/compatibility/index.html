@@ -1264,10 +1264,10 @@ matrix and expiring qualification receipts are authoritative; this source table 
 <tr>
 <td>Developer API 2026-08-24</td>
 <td style="text-align: right;">yes</td>
-<td style="text-align: right;">not public</td>
-<td style="text-align: right;">Coordinator source gates passed</td>
-<td style="text-align: right;">no</td>
-<td style="text-align: right;">no</td>
+<td style="text-align: right;"><a href="https://agents.geyserlabs.ai/api/v1/openapi.json">public HTTPS OpenAPI</a></td>
+<td style="text-align: right;">Protected contract/source gates and live unauthenticated-denial probe passed; positive independent-developer sandbox gate pending</td>
+<td style="text-align: right;">Developer Preview routes yes; GA no</td>
+<td style="text-align: right;">Global and customer-1 managed Cell at Coordinator source <code>ee341285efa1a067555c83be2130926f755f41e9</code> / image <code>sha256:e275d5e58f6c256ecd7bf3acac600b04c10e8e25f7468888b605dbd04e84b297</code></td>
 </tr>
 <tr>
 <td>Manual signed CLI assets 0.1.0b4</td>
@@ -1293,6 +1293,13 @@ commit <code>b105031a2de27633a183d82729b375168b138fcf</code>, followed by clean 
 execution of the downloaded standalone archives on Apple-Silicon macOS and native Intel
 Ubuntu. All 16 retained Sigstore bundles verified against the exact protected workflow/tag
 identity. Publication does not by itself enable a production API or deploy a developer runtime.</p>
+<p>The Developer API deployment receipt is Cloud Build
+<code>844f8123-f853-4c59-bdbc-a364da4d2517</code>, which produced the immutable Coordinator image above
+from the recorded clean merged source. The live OpenAPI document reports title
+<code>Geyser Developer API</code>, version <code>2026-08-24</code>, and the unauthenticated capabilities route denies
+access with HTTP 401. Those observations establish publication, deployment, and fail-closed
+authentication; they do not substitute for the independent non-implementer gate described in
+<a href="../external-preview/">Independent developer preview gate</a>.</p>
 <p>The Homebrew qualification receipt is public-tap commit
 <code>977a2ac9e5cb764dda97e0614b09de76dbbfaa31</code> and its successful
 <a href="https://github.com/geyserlabs/homebrew-tap/actions/runs/32857989721">merged-main workflow</a>.</p>
