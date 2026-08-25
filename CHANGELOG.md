@@ -3,11 +3,14 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
-## 0.1.0b2 — Developer Preview
+## 0.1.0b3 — Developer Preview
 
 The `v0.1.0b1` release attempt stopped before publication when its hidden
 standalone-artifact directory was excluded from upload. No PyPI project or
-GitHub Release was created from that tag.
+GitHub Release was created from that tag. The `v0.1.0b2` attempt reached the
+keyless-signing stage but stopped before publication when the job's configured
+Python selector overrode the Sigstore action's isolated environment. No PyPI
+project or GitHub Release was created from that tag either.
 
 - Independent typed sync/async `geyser-sdk` with problem-details errors, bounded safe retries,
   pagination, cancellation, reconnecting event watch, and exact capability evidence.
