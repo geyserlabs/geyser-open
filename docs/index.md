@@ -24,6 +24,6 @@ revocation policy.
 
 !!! warning "Developer Preview"
 
-    Version 0.1.0b3 supports Python 3.11–3.13. Standalone qualification is limited to
+    Version 0.1.0b4 supports Python 3.11–3.13. Standalone qualification is limited to
     Apple-silicon macOS and Ubuntu 24.04 AMD64. A local emulator pass does not grant production
     capability or authority.

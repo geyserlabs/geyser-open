@@ -30,10 +30,10 @@ def run(*arguments: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_source_versions_and_tag_are_consistent() -> None:
-    assert run("validate-source", "--tag", "v0.1.0b3").returncode == 0
+    assert run("validate-source", "--tag", "v0.1.0b4").returncode == 0
     rejected = run("validate-source", "--tag", "v0.1.0")
     assert rejected.returncode != 0
-    assert "must be 'v0.1.0b3'" in rejected.stderr
+    assert "must be 'v0.1.0b4'" in rejected.stderr
 
 
 def test_dependency_inventory_is_sorted_and_pinned(tmp_path: Path) -> None:
@@ -53,7 +53,7 @@ def test_contract_archive_is_reproducible(tmp_path: Path) -> None:
     for output in outputs:
         result = run("contracts", "--output-dir", str(output), "--source-epoch", "1700000000")
         assert result.returncode == 0, result.stderr
-    for name in ("geyser-contracts-0.1.0b3.tar.gz", "geyser-openapi-0.1.0b3.json"):
+    for name in ("geyser-contracts-0.1.0b4.tar.gz", "geyser-openapi-0.1.0b4.json"):
         values = [
             hashlib.sha256((directory / name).read_bytes()).hexdigest()
             for directory in outputs
@@ -68,7 +68,7 @@ def test_manifest_checksum_verification_detects_tampering(tmp_path: Path) -> Non
     result = run("contracts", "--output-dir", str(tmp_path), "--source-epoch", "1700000000")
     assert result.returncode == 0
     # Missing platform and distribution assets must be named precisely.
-    rejected = run("verify", "--asset-dir", str(tmp_path), "--tag", "v0.1.0b3")
+    rejected = run("verify", "--asset-dir", str(tmp_path), "--tag", "v0.1.0b4")
     assert rejected.returncode != 0
     assert "release assets missing" in rejected.stderr
 
