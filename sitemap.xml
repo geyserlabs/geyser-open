@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/authentication/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/authentication/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/bundles/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/bundles/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/cells-privacy/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/cells-privacy/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/changelog/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/changelog/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/cli/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/cli/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/compatibility/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/compatibility/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/durable-runs/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/durable-runs/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/extensions/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/extensions/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/external-preview/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/external-preview/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/outcomes/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/outcomes/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/quickstart/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/quickstart/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/recipes/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/recipes/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/reference/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/reference/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/releases/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/releases/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/sdk/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/sdk/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/security/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/security/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/specialists/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/specialists/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
-         <loc>https://docs.geyserlabs.ai/0.1.0b4/troubleshooting/</loc>
+         <loc>https://docs.geyserlabs.ai/0.1.0/troubleshooting/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
 </urlset>
