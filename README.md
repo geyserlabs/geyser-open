@@ -46,8 +46,9 @@ credential class into another.
 Production release `0.1.0` is published on
 [PyPI](https://pypi.org/project/geyser-sdk/0.1.0/) and
 [GitHub Releases](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0)
-from the exact protected `v0.1.0` tag. Clean public-index installs and the signed standalone
-artifacts are qualified on Apple-Silicon
+from protected source commit `e567d9d6051b73d0fd4531a75245b65730c0790a` through
+[release workflow 32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028).
+Clean public-index installs and the signed standalone artifacts are qualified on Apple-Silicon
 macOS and native AMD64 Ubuntu. The `geyser-open` Homebrew formula is published
 and qualified through the public `geyserlabs/tap`. See the
 [compatibility matrix](docs/compatibility.md).

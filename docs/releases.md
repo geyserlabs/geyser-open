@@ -47,8 +47,9 @@ python -m sigstore verify identity \
 
 Use the exact tag from the release being verified in `--cert-identity`; a prefix or branch
 identity is intentionally insufficient. For `v0.1.0`, the protected tag, release manifest, and
-GitHub attestations bind the exact source commit and workflow run. The earlier `v0.1.0b4`
-Developer Preview remains immutably bound to source
+GitHub attestations bind source commit `e567d9d6051b73d0fd4531a75245b65730c0790a` and
+[workflow run 32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028).
+The earlier `v0.1.0b4` Developer Preview remains immutably bound to source
 `b105031a2de27633a183d82729b375168b138fcf` and workflow
 `32854732268`.
 

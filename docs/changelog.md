@@ -8,6 +8,10 @@ boundaries from the beta series remain in force. On 2026-08-25 the product owner
 independent non-implementer exercise as a mandatory release gate; it remains available as an
 optional public validation path, and no independent receipt is claimed.
 
+The protected tag resolves to source `e567d9d6051b73d0fd4531a75245b65730c0790a`; signed
+publication receipt [32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028)
+published both PyPI projects and the immutable GitHub Release.
+
 - Stable Python 3.11–3.13 SDK/CLI packages and canonical public install channels.
 - Reproducible, signed, attested macOS ARM64 and Ubuntu AMD64 standalone assets.
 - Stable documentation alias, compatibility matrix, changelog, security, and rollback guidance.

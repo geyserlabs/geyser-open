@@ -21,6 +21,16 @@ matrix and expiring qualification receipts are authoritative; this source table 
 | Homebrew formula 0.1.0 | yes | `geyserlabs/homebrew-tap` | Apple-Silicon public tap install, test, and audit passed; native Ubuntu AMD64 formula generation and integrity gates passed | yes | canonical public tap |
 | SDK/CLI 0.1.0b4 | yes | PyPI and GitHub Release | prior beta qualification receipt retained | no | superseded by 0.1.0 |
 
+The `0.1.0` qualification receipt is protected source
+`e567d9d6051b73d0fd4531a75245b65730c0790a` and successful signed
+[release workflow 32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028).
+The workflow reproducibly built both Python distributions and both supported standalone targets,
+published the two projects through PyPI Trusted Publishing, produced SBOMs and provenance, and
+verified all retained artifacts during keyless signing. Follow-up qualification passed clean
+public-index install/uninstall and downloaded standalone execution on Apple-Silicon macOS and
+native Intel Ubuntu AMD64. All 16 retained Sigstore bundles verified against the exact protected
+workflow/tag identity.
+
 The `0.1.0b4` qualification receipt is the successful protected-tag
 [release workflow](https://github.com/geyserlabs/geyser-open/actions/runs/32854732268) for source
 commit `b105031a2de27633a183d82729b375168b138fcf`, followed by clean installs from PyPI and
@@ -40,5 +50,8 @@ release gate on 2026-08-25. The [optional independent validation](external-previ
 public, and no independent receipt is claimed.
 
 The Homebrew qualification receipt is public-tap commit
-`977a2ac9e5cb764dda97e0614b09de76dbbfaa31` and its successful
-[merged-main workflow](https://github.com/geyserlabs/homebrew-tap/actions/runs/32857989721).
+`437ff79041c6d763a2991e47d16794cf9e4f94e8` and its successful
+[merged-main workflow](https://github.com/geyserlabs/homebrew-tap/actions/runs/32867031090).
+The stable documentation receipt is source `e567d9d6051b73d0fd4531a75245b65730c0790a`,
+[publication workflow 32867264866](https://github.com/geyserlabs/geyser-open/actions/runs/32867264866),
+and final Pages commit `10a87613977fbe224afb1400a549e9f0050ceecf`.
