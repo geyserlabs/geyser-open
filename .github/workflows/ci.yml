@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           enable-cache: true
-      - run: uv sync --all-packages --all-extras --dev --locked
+      - run: uv sync --all-packages --all-extras --all-groups --locked
       - run: make schemas lint typecheck test package docs docs-snippets security
       - run: make install-smoke uninstall-smoke
 
