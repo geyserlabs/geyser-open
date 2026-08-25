@@ -66,7 +66,7 @@ def response_for(request: httpx.Request) -> httpx.Response:
     path = request.url.path
     common = {"api_version": "2026-08-24"}
     if path.endswith("/capabilities"):
-        return httpx.Response(200, json={**common, "capability_profile": {
+        profile = {
             "agent_name": "Ada",
             "framework": "open",
             "backend": "open-harness",
@@ -75,8 +75,16 @@ def response_for(request: httpx.Request) -> httpx.Response:
             "runtime_profile_digest": SHA,
             "model_profile_digest": SHA,
             "qualification_evidence_digest": SHA,
+            "qualification_state": "qualified",
             "capabilities": {"durable_run": "native"},
-        }})
+        }
+        return httpx.Response(200, json={
+            **common,
+            "capability_profile": profile,
+            "capability_matrix": [profile],
+            "generated_from_evidence": True,
+            "matrix_digest": SHA,
+        })
     if "/approvals/" in path and request.method == "GET":
         return httpx.Response(200, json={**common, "approval": {
             "approval_id": "approval-1", "state": "requested"
@@ -156,7 +164,10 @@ def test_sync_semantic_surface_and_headers() -> None:
         )
         assert create.task.id == client.get_task("task-1").task.id
         assert [item.id for item in client.iter_tasks()] == ["task-1"]
-        assert client.capabilities(agent_name="Ada").capability_profile.framework == "open"
+        capabilities = client.capabilities(agent_name="Ada")
+        assert capabilities.capability_profile.framework == "open"
+        assert capabilities.generated_from_evidence is True
+        assert len(capabilities.capability_matrix) == 1
         assert [item.id for item in client.iter_runs()] == ["run-1"]
         assert client.get_run("run-1", customer=True).run.state == "completed"
         assert [event.event_type for event in client.watch_events("run-1")] == ["run.completed"]
