@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://docs.geyserlabs.ai/0.1.0b4/outcomes/">
+        <link rel="canonical" href="https://docs.geyserlabs.ai/0.1.0b4/external-preview/">
       
       
-        <link rel="prev" href="../cli/">
+        <link rel="prev" href="../quickstart/">
       
       
-        <link rel="next" href="../durable-runs/">
+        <link rel="next" href="../authentication/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Structured outcomes - Geyser Developers</title>
+        <title>Independent developer preview gate - Geyser Developers</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#structured-outcomes" class="md-skip">
+        <a href="#independent-developer-preview-gate" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Structured outcomes
+              Independent developer preview gate
             
           </span>
         </div>
@@ -278,8 +278,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -302,11 +304,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -327,7 +329,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -370,10 +372,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Independent developer preview gate
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -389,6 +418,175 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#safety-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ten-step-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ten-step gate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The ten-step gate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-discover-the-public-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Discover the public surface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-install-exact-public-sdk-and-cli-bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Install exact public SDK and CLI bytes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-the-deterministic-emulator-quickstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Run the deterministic emulator quickstart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-scaffold-an-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Scaffold an extension
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-freeze-one-success-and-one-denial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Freeze one success and one denial
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-authenticate-only-to-the-assigned-sandbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Authenticate only to the assigned sandbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-sign-stage-and-canary-the-exact-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Sign, stage, and canary the exact package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-inspect-one-durable-run-and-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Inspect one durable run and trace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-handle-an-approval-and-a-denied-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Handle an approval and a denied action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-remove-local-authority-and-report-the-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Remove local authority and report the result
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-safe-qualification-receipt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-safe qualification receipt
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -489,10 +687,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -511,11 +707,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -536,7 +732,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -607,19 +803,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../outcomes/" class="md-nav__link">
         
   
   
@@ -635,7 +822,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1212,6 +1398,163 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#safety-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ten-step-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ten-step gate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The ten-step gate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-discover-the-public-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Discover the public surface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-install-exact-public-sdk-and-cli-bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Install exact public SDK and CLI bytes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-the-deterministic-emulator-quickstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Run the deterministic emulator quickstart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-scaffold-an-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Scaffold an extension
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-freeze-one-success-and-one-denial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Freeze one success and one denial
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-authenticate-only-to-the-assigned-sandbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Authenticate only to the assigned sandbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-sign-stage-and-canary-the-exact-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Sign, stage, and canary the exact package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-inspect-one-durable-run-and-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Inspect one durable run and trace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-handle-an-approval-and-a-denied-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Handle an approval and a denied action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-remove-local-authority-and-report-the-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Remove local authority and report the result
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-safe-qualification-receipt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-safe qualification receipt
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1230,17 +1573,128 @@
   
 
 
-<h1 id="structured-outcomes">Structured outcomes<a class="headerlink" href="#structured-outcomes" title="Permanent link">&para;</a></h1>
-<p>An outcome schema turns a successful-looking response into a testable contract. Use Draft 2020-12
-JSON Schema, reject external <code>$ref</code> values, and freeze both success and denial fixtures in source.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">geyser validate-outcome outcome.schema.json result.json</span>
+<h1 id="independent-developer-preview-gate">Independent developer preview gate<a class="headerlink" href="#independent-developer-preview-gate" title="Permanent link">&para;</a></h1>
+<p><strong>Status:</strong> awaiting the first independent qualification receipt. Geyser Open remains a
+Developer Preview and is not generally available.</p>
+<p>This is the public acceptance path for a developer who did not implement Geyser Open. Complete
+it from these public instructions, without private hand-holding or operator credentials. Report
+every confusing, broken, or unsafe step: a product or documentation defect is a failed gate until
+it has a regression test and a published correction.</p>
+<h2 id="safety-boundary">Safety boundary<a class="headerlink" href="#safety-boundary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use a clean supported machine: Apple-Silicon macOS or Ubuntu 24.04 AMD64, with Python 3.11–3.13.</li>
+<li>Pin SDK and CLI <code>0.1.0b4</code>. Confirm artifact identity using the
+  <a href="../releases/">release-verification guide</a>.</li>
+<li>Local steps are credential-free. Remote steps require an invitation to an isolated preview
+  project explicitly assigned to Geyser's production-test tenant, customer 1.</li>
+<li>Never accept an Agent key, operator credential, provider credential, or another customer's
+  identifier. Never put tokens, prompts, trace content, approval content, or user data in a gate
+  report.</li>
+<li>If no approved sandbox is assigned, complete steps 1–5 and stop. Do not substitute a production
+  customer, <code>customer=all</code>, or private operator access.</li>
+</ul>
+<h2 id="the-ten-step-gate">The ten-step gate<a class="headerlink" href="#the-ten-step-gate" title="Permanent link">&para;</a></h2>
+<h3 id="1-discover-the-public-surface">1. Discover the public surface<a class="headerlink" href="#1-discover-the-public-surface" title="Permanent link">&para;</a></h3>
+<p>Start at <a href="https://geyserlabs.ai/developers">geyserlabs.ai/developers</a>. Reach this page, the public
+<a href="https://github.com/geyserlabs/geyser-open">source repository</a>, PyPI projects, GitHub Release, and
+Homebrew tap using only links on that page. Record broken or ambiguous links.</p>
+<h3 id="2-install-exact-public-sdk-and-cli-bytes">2. Install exact public SDK and CLI bytes<a class="headerlink" href="#2-install-exact-public-sdk-and-cli-bytes" title="Permanent link">&para;</a></h3>
+<p>Create a clean virtual environment and install from the public index:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">python -m venv .venv</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">. .venv/bin/activate</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">python -m pip install geyser-sdk==0.1.0b4 geyser-open==0.1.0b4</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">geyser --json version</span>
 </code></pre></div>
-<p>At runtime, Geyser records the schema digest with the run. A valid response completes with its typed
-value. An invalid response may enter a bounded repair loop if policy allows. Exhausted repair ends in
-an explicit terminal failure; it never silently converts malformed output into success.</p>
-<p>Input declarations are strict because an unknown field could request new authority. Output models
-preserve additive server fields so an older client can observe a newer API without discarding
-evidence.</p>
+<p>The CLI must report <code>0.1.0b4</code>. Optionally install the same CLI through the public Homebrew tap and
+confirm that it reports the same version. Do not use a local wheel, editable checkout, or private
+package index for this step.</p>
+<h3 id="3-run-the-deterministic-emulator-quickstart">3. Run the deterministic emulator quickstart<a class="headerlink" href="#3-run-the-deterministic-emulator-quickstart" title="Permanent link">&para;</a></h3>
+<p>The example is frozen at the release tag and makes no network request:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">git clone --depth 1 --branch v0.1.0b4 https://github.com/geyserlabs/geyser-open.git</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">cd geyser-open</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">python examples/emulator_quickstart.py</span>
+</code></pre></div>
+<p>Confirm that the output contains admission, ordered durable events, an exact-bound approval, a
+consequential effect receipt, a checkpoint, and terminal completion.</p>
+<h3 id="4-scaffold-an-extension">4. Scaffold an extension<a class="headerlink" href="#4-scaffold-an-extension" title="Permanent link">&para;</a></h3>
+<p>From a new empty directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">geyser init tool careful-search</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">geyser validate careful-search</span>
+</code></pre></div>
+<p>Inspect <code>geyser-package.json</code>, <code>tool.json</code>, and <code>evals/cases.json</code>. The scaffold must request no
+permissions and must not contain a credential.</p>
+<h3 id="5-freeze-one-success-and-one-denial">5. Freeze one success and one denial<a class="headerlink" href="#5-freeze-one-success-and-one-denial" title="Permanent link">&para;</a></h3>
+<p>Keep one <code>expected: "success"</code> case and one critical
+<code>expected: "deny_without_explicit_authority"</code> case in <code>evals/cases.json</code>, then run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">geyser test careful-search</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">geyser dev careful-search</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="go">geyser package careful-search</span>
+</code></pre></div>
+<p>Both cases must pass. <code>dev</code> must report <code>network_used: false</code>. Record the SHA-256 digest printed
+for <code>careful-search/.geyser/dist/careful-search-0.1.0.geyser.zip</code>.</p>
+<h3 id="6-authenticate-only-to-the-assigned-sandbox">6. Authenticate only to the assigned sandbox<a class="headerlink" href="#6-authenticate-only-to-the-assigned-sandbox" title="Permanent link">&para;</a></h3>
+<p>After receiving an isolated preview-project invitation, confirm the browser origin, customer 1,
+project, scopes, expiry, and short device code before approving:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="go">geyser --profile external-preview login</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">geyser --profile external-preview doctor</span>
+</code></pre></div>
+<p>The credential must be stored in the OS keychain. Do not enable file credentials for this gate.</p>
+<h3 id="7-sign-stage-and-canary-the-exact-package">7. Sign, stage, and canary the exact package<a class="headerlink" href="#7-sign-stage-and-canary-the-exact-package" title="Permanent link">&para;</a></h3>
+<p>Install the public Sigstore CLI, sign the package, then use the assigned project's bounded package
+scopes. Review each CLI preview rather than adding <code>--yes</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="go">python -m pip install sigstore==4.5.0</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="go">geyser sign careful-search/.geyser/dist/careful-search-0.1.0.geyser.zip</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="go">geyser --profile external-preview publish \</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">  careful-search/.geyser/dist/careful-search-0.1.0.geyser.zip \</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="go">  --stage \</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="go">  --signature-bundle careful-search/.geyser/dist/careful-search-0.1.0.geyser.zip.sigstore.json</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="go">geyser --profile external-preview promote PACKAGE_ID --digest SHA256_DIGEST --canary</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="go">geyser --profile external-preview status</span>
+</code></pre></div>
+<p>Replace <code>PACKAGE_ID</code> and <code>SHA256_DIGEST</code> only with the exact values returned by staging. A digest
+change, scope mismatch, or attempt to target production must fail closed.</p>
+<h3 id="8-inspect-one-durable-run-and-trace">8. Inspect one durable run and trace<a class="headerlink" href="#8-inspect-one-durable-run-and-trace" title="Permanent link">&para;</a></h3>
+<p>Use only the run identifier issued by the sandbox fixture:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">geyser --profile external-preview runs get RUN_ID</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">geyser --profile external-preview runs watch RUN_ID</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="go">geyser --profile external-preview runs trace RUN_ID</span>
+</code></pre></div>
+<p>Confirm monotonically ordered events, checkpoint and package digests, usage, effects, approvals,
+and terminal state. The trace must not expose hidden reasoning, credentials, or another tenant.</p>
+<h3 id="9-handle-an-approval-and-a-denied-action">9. Handle an approval and a denied action<a class="headerlink" href="#9-handle-an-approval-and-a-denied-action" title="Permanent link">&para;</a></h3>
+<p>Inspect the fixture's pending approval and compare its exact binding before deciding:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="go">geyser --profile external-preview approvals get APPROVAL_ID</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">geyser --profile external-preview approvals decide RUN_ID APPROVAL_ID approve \</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">  --expected-sequence EXPECTED_SEQUENCE \</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="go">  --binding-digest BINDING_DIGEST \</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="go">  --reason-code external_preview_verified</span>
+</code></pre></div>
+<p>Then run the sandbox's documented forbidden-action fixture. It must be denied before provider or
+tool use. Do not weaken scopes or policy to turn the denial into a success. Any argument drift,
+stale sequence, expired approval, or wrong binding must also be rejected.</p>
+<h3 id="10-remove-local-authority-and-report-the-result">10. Remove local authority and report the result<a class="headerlink" href="#10-remove-local-authority-and-report-the-result" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="go">geyser --profile external-preview logout</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">geyser --profile external-preview doctor</span>
+</code></pre></div>
+<p>Confirm that <code>doctor</code> reports unauthenticated, delete the local virtual environment, clone,
+scaffold, archive, and signature bundle, and ask the sandbox owner to confirm expiry or revocation
+of the preview project and removal of its staged/canary fixture.</p>
+<h2 id="content-safe-qualification-receipt">Content-safe qualification receipt<a class="headerlink" href="#content-safe-qualification-receipt" title="Permanent link">&para;</a></h2>
+<p>A passing receipt records only:</p>
+<ul>
+<li>date, tester role, OS/architecture, Python version, install channel, SDK/CLI version;</li>
+<li>public release tag and source commit, artifact/package SHA-256 digest, and whether signature and
+  provenance verification passed;</li>
+<li>opaque hashes of project, package, run, and approval identifiers—not the identifiers themselves;</li>
+<li>pass/fail for each numbered step, cleanup confirmation, and links to public regression fixes; and</li>
+<li>an explicit statement that the tester received no private instructions or operator credentials.</li>
+</ul>
+<p>Do not include tokens, device codes, customer content, prompts, event or trace content, approval
+arguments, provider data, or screenshots containing them. Report content-free product defects in
+<a href="https://github.com/geyserlabs/geyser-open/issues">GitHub Issues</a>. Report any possible credential,
+privacy, or cross-tenant exposure privately through the <a href="../security/">security policy</a>.</p>
+<p>Passing this page once does not permanently certify later bytes. The receipt applies only to the
+exact public release, platform, sandbox policy, and immutable artifacts it records.</p>
 
 
 
@@ -1276,7 +1730,7 @@ evidence.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../cli/" class="md-footer__link md-footer__link--prev" aria-label="Previous: CLI reference">
+          <a href="../quickstart/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Five-minute emulator quickstart">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1286,20 +1740,20 @@ evidence.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                CLI reference
+                Five-minute emulator quickstart
               </div>
             </div>
           </a>
         
         
           
-          <a href="../durable-runs/" class="md-footer__link md-footer__link--next" aria-label="Next: Runs, events, and checkpoints">
+          <a href="../authentication/" class="md-footer__link md-footer__link--next" aria-label="Next: Authentication and projects">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Runs, events, and checkpoints
+                Authentication and projects
               </div>
             </div>
             <div class="md-footer__button md-icon">
