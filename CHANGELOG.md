@@ -3,6 +3,20 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
+## 0.1.0 — Production
+
+`v0.1.0` promotes the qualified public SDK, CLI, signed standalone assets, Homebrew distribution,
+versioned documentation, and date-versioned Developer API to production availability. The release
+keeps the same fail-closed authority, effect, approval, custody, and capability boundaries proven
+during the beta series. The product owner explicitly waived the independent non-implementer path
+as a mandatory release gate on 2026-08-25; the path remains public as optional post-release
+validation, and no independent receipt is claimed.
+
+- Stable `geyser-sdk` and `geyser-open` Python distributions for Python 3.11–3.13.
+- Signed, attested, reproducible Apple-Silicon macOS and Ubuntu AMD64 standalone CLI assets.
+- Stable Homebrew, docs, OpenAPI, schemas, emulator, conformance, security, and rollback surfaces.
+- Production Developer API and durable runtime control plane with evidence-derived constraints.
+
 ## 0.1.0b4 — Developer Preview
 
 `v0.1.0b4` was published from protected `main` commit

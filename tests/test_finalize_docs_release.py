@@ -18,7 +18,7 @@ SPEC.loader.exec_module(MODULE)
 def test_finalize_publishes_root_metadata_and_versioned_sitemap(tmp_path: Path) -> None:
     source = tmp_path / "source"
     pages = tmp_path / "pages"
-    version = pages / "0.1.0b4"
+    version = pages / "0.1.0"
     source.mkdir()
     version.mkdir(parents=True)
     (source / "CNAME").write_text("docs.geyserlabs.ai\n", encoding="utf-8")
@@ -33,15 +33,15 @@ def test_finalize_publishes_root_metadata_and_versioned_sitemap(tmp_path: Path) 
         encoding="utf-8",
     )
 
-    outputs = MODULE.finalize(pages, source, "0.1.0b4")
+    outputs = MODULE.finalize(pages, source, "0.1.0")
 
     assert len(outputs) == 7
     assert (pages / "CNAME").read_text() == "docs.geyserlabs.ai\n"
     assert (pages / "robots.txt").read_text() == "User-agent: *\n"
     assert (pages / "llms.txt").read_text() == "# Geyser\n"
     sitemap = (pages / "sitemap.xml").read_text()
-    assert "https://docs.geyserlabs.ai/0.1.0b4/" in sitemap
-    assert "https://docs.geyserlabs.ai/0.1.0b4/sdk/" in sitemap
+    assert "https://docs.geyserlabs.ai/0.1.0/" in sitemap
+    assert "https://docs.geyserlabs.ai/0.1.0/sdk/" in sitemap
     assert sitemap == (version / "sitemap.xml").read_text()
     with gzip.open(pages / "sitemap.xml.gz", "rt", encoding="utf-8") as archive:
         assert archive.read() == sitemap

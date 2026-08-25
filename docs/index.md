@@ -1,4 +1,4 @@
-# Geyser Developer Preview
+# Geyser Developer Platform
 
 Geyser is a framework-neutral control plane for durable agentic work. The public SDK talks to a
 versioned API; it is not an Agent runtime and does not include or grant a model, brain, provider,
@@ -22,8 +22,8 @@ revocation policy.
 - [Compatibility status](compatibility.md) — implemented, published, qualified,
   production-enabled, and observed-deployed facts.
 
-!!! warning "Developer Preview"
+!!! info "Production release"
 
-    Version 0.1.0b4 supports Python 3.11–3.13. Standalone qualification is limited to
+    Version 0.1.0 supports Python 3.11–3.13. Standalone qualification is limited to
     Apple-silicon macOS and Ubuntu 24.04 AMD64. A local emulator pass does not grant production
     capability or authority.

@@ -1,4 +1,4 @@
-# Geyser Open — Developer Preview
+# Geyser Open
 
 Geyser Open is the public, framework-neutral developer surface for building and
 operating durable agentic work on Geyser. This monorepo contains:
@@ -28,7 +28,7 @@ Then try the deterministic emulator:
 python examples/emulator_quickstart.py
 ```
 
-Developer Preview currently targets Python 3.11–3.13, macOS Apple Silicon, and
+The production release targets Python 3.11–3.13, macOS Apple Silicon, and
 Ubuntu 24.04 AMD64. See [docs/compatibility.md](docs/compatibility.md),
 [SECURITY.md](SECURITY.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 Release verification, SBOM, provenance, and revocation guidance is in
@@ -43,12 +43,12 @@ credential class into another.
 
 ## Status
 
-Developer Preview `0.1.0b4` is published on
-[PyPI](https://pypi.org/project/geyser-sdk/0.1.0b4/) and
-[GitHub Releases](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0b4)
-from source commit `b105031a2de27633a183d82729b375168b138fcf`. Clean public-index
-installs and the signed standalone artifacts are qualified on Apple-Silicon
+Production release `0.1.0` is published on
+[PyPI](https://pypi.org/project/geyser-sdk/0.1.0/) and
+[GitHub Releases](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0)
+from the exact protected `v0.1.0` tag. Clean public-index installs and the signed standalone
+artifacts are qualified on Apple-Silicon
 macOS and native AMD64 Ubuntu. The `geyser-open` Homebrew formula is published
-and qualified through the public `geyserlabs/tap`; production enablement remains
-a separate status gate. See the [compatibility matrix](docs/compatibility.md).
+and qualified through the public `geyserlabs/tap`. See the
+[compatibility matrix](docs/compatibility.md).
 Public Geyser SDK, CLI, emulator, schemas, conformance, and developer documentation

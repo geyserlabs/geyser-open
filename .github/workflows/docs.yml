@@ -38,14 +38,14 @@ jobs:
           uv sync --all-packages --all-extras --all-groups --locked
           test "$DOCS_VERSION" = "$(uv run python scripts/release_assets.py validate-source)"
           make docs
-      - name: Publish immutable version and preview alias
+      - name: Publish immutable version and stable alias
         env:
           DOCS_VERSION: ${{ inputs.version }}
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          uv run mike deploy --push --update-aliases "$DOCS_VERSION" preview
-          uv run mike set-default --push preview
+          uv run mike deploy --push --update-aliases "$DOCS_VERSION" stable
+          uv run mike set-default --push stable
           git fetch origin gh-pages
           pages_dir="$RUNNER_TEMP/geyser-open-gh-pages"
           git worktree add --detach "$pages_dir" origin/gh-pages

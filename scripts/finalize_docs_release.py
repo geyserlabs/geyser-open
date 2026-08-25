@@ -42,7 +42,7 @@ def _version_sitemap(path: Path, version: str) -> bytes:
 
 def finalize(pages_dir: Path, source_docs: Path, version: str) -> list[Path]:
     if not VERSION.fullmatch(version):
-        raise ValueError("version must be an exact release such as 0.1.0b4")
+        raise ValueError("version must be an exact release such as 0.1.0")
     pages_dir = pages_dir.resolve()
     source_docs = source_docs.resolve()
     version_dir = pages_dir / version

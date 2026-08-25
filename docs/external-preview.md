@@ -1,17 +1,18 @@
-# Independent developer preview gate
+# Optional independent developer validation
 
-**Status:** awaiting the first independent qualification receipt. Geyser Open remains a
-Developer Preview and is not generally available.
+**Status:** optional post-release validation path. Geyser Open `0.1.0` is generally available.
+The product owner waived this path as a mandatory release gate on 2026-08-25; no independent
+receipt is represented as having passed.
 
-This is the public acceptance path for a developer who did not implement Geyser Open. Complete
+This is a public feedback path for a developer who did not implement Geyser Open. Complete
 it from these public instructions, without private hand-holding or operator credentials. Report
-every confusing, broken, or unsafe step: a product or documentation defect is a failed gate until
-it has a regression test and a published correction.
+every confusing, broken, or unsafe step so it can receive a regression test and published
+correction. Completion is useful release evidence, but is not required to install or use Geyser.
 
 ## Safety boundary
 
 - Use a clean supported machine: Apple-Silicon macOS or Ubuntu 24.04 AMD64, with Python 3.11–3.13.
-- Pin SDK and CLI `0.1.0b4`. Confirm artifact identity using the
+- Pin SDK and CLI `0.1.0`. Confirm artifact identity using the
   [release-verification guide](releases.md).
 - Local steps are credential-free. Remote steps require an invitation to an isolated preview
   project explicitly assigned to Geyser's production-test tenant, customer 1.
@@ -21,7 +22,7 @@ it has a regression test and a published correction.
 - If no approved sandbox is assigned, complete steps 1–5 and stop. Do not substitute a production
   customer, `customer=all`, or private operator access.
 
-## The ten-step gate
+## The ten-step validation path
 
 ### 1. Discover the public surface
 
@@ -36,11 +37,11 @@ Create a clean virtual environment and install from the public index:
 ```console
 python -m venv .venv
 . .venv/bin/activate
-python -m pip install geyser-sdk==0.1.0b4 geyser-open==0.1.0b4
+python -m pip install geyser-sdk==0.1.0 geyser-open==0.1.0
 geyser --json version
 ```
 
-The CLI must report `0.1.0b4`. Optionally install the same CLI through the public Homebrew tap and
+The CLI must report `0.1.0`. Optionally install the same CLI through the public Homebrew tap and
 confirm that it reports the same version. Do not use a local wheel, editable checkout, or private
 package index for this step.
 
@@ -49,7 +50,7 @@ package index for this step.
 The example is frozen at the release tag and makes no network request:
 
 ```console
-git clone --depth 1 --branch v0.1.0b4 https://github.com/geyserlabs/geyser-open.git
+git clone --depth 1 --branch v0.1.0 https://github.com/geyserlabs/geyser-open.git
 cd geyser-open
 python examples/emulator_quickstart.py
 ```
@@ -170,5 +171,5 @@ arguments, provider data, or screenshots containing them. Report content-free pr
 [GitHub Issues](https://github.com/geyserlabs/geyser-open/issues). Report any possible credential,
 privacy, or cross-tenant exposure privately through the [security policy](security.md).
 
-Passing this page once does not permanently certify later bytes. The receipt applies only to the
+Passing this page once does not permanently certify later bytes. A receipt applies only to the
 exact public release, platform, sandbox policy, and immutable artifacts it records.

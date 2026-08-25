@@ -22,7 +22,7 @@ from .structured_outcomes import (
     validate_outcome,
 )
 
-__version__ = "0.1.0b4"
+__version__ = "0.1.0"
 
 __all__ = [
     "AsyncGeyserClient",
