@@ -125,7 +125,7 @@ class AsyncGeyserClient:
     ) -> ModelT:
         headers = _headers(self._token, idempotency_key)
         if if_match is not None:
-            headers["If-Match"] = str(if_match)
+            headers["If-Match"] = f'"run-v{if_match}"'
         can_retry = _retry_allowed(method, idempotency_key)
         attempts = self._max_retries + 1 if can_retry else 1
         response: httpx.Response | None = None
@@ -214,7 +214,7 @@ class AsyncGeyserClient:
             "GET",
             f"{prefix}/runs/{run_id}/events",
             RunEventPage,
-            params={"after_sequence": after_sequence, "limit": limit},
+            params={"cursor": after_sequence, "limit": limit},
         )
 
     async def watch_events(
@@ -380,7 +380,7 @@ class GeyserClient:
     ) -> ModelT:
         headers = _headers(self._token, idempotency_key)
         if if_match is not None:
-            headers["If-Match"] = str(if_match)
+            headers["If-Match"] = f'"run-v{if_match}"'
         attempts = self._max_retries + 1 if _retry_allowed(method, idempotency_key) else 1
         for attempt in range(attempts):
             try:
@@ -463,7 +463,7 @@ class GeyserClient:
             "GET",
             f"{prefix}/runs/{run_id}/events",
             RunEventPage,
-            params={"after_sequence": after_sequence, "limit": limit},
+            params={"cursor": after_sequence, "limit": limit},
         )
 
     def watch_events(

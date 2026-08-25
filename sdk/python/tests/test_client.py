@@ -194,7 +194,12 @@ def test_sync_semantic_surface_and_headers() -> None:
         ))
     assert all(request.headers["authorization"] == "Bearer dev-token" for request in requests)
     assert any(request.headers.get("idempotency-key") == "create-1" for request in requests)
-    assert any(request.headers.get("if-match") == "2" for request in requests)
+    assert any(request.headers.get("if-match") == '"run-v2"' for request in requests)
+    assert any(
+        request.url.path.endswith("/events")
+        and request.url.params.get("cursor") == "0"
+        for request in requests
+    )
 
 
 @pytest.mark.asyncio
