@@ -2,6 +2,14 @@
 
 ## 0.1.0b4 — Developer Preview
 
+`v0.1.0b4` was published from protected `main` commit
+`b105031a2de27633a183d82729b375168b138fcf` to the independent `geyser-sdk` and
+`geyser-open` PyPI projects and to GitHub Releases. The release workflow built both Python
+distributions and the macOS ARM64/Linux AMD64 standalone archives reproducibly, generated
+checksums, SBOMs, SLSA provenance, PyPI attestations, and 16 keyless Sigstore bundles, then passed
+clean public-install and downloaded-artifact qualification on Apple-Silicon macOS and native Intel
+Ubuntu. Homebrew and production enablement remain separate gates.
+
 The `v0.1.0b1` workflow stopped before publication because its hidden
 standalone-artifact directory was excluded from upload. No package or release
 was published from that tag. The `v0.1.0b2` workflow reached keyless signing

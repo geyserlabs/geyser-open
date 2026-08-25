@@ -43,7 +43,11 @@ credential class into another.
 
 ## Status
 
-This repository is public, but its initial packages are not yet a published
-release. Installation URLs and checksums become authoritative only after the
-signed Developer Preview release gate.
+Developer Preview `0.1.0b4` is published on
+[PyPI](https://pypi.org/project/geyser-sdk/0.1.0b4/) and
+[GitHub Releases](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0b4)
+from source commit `b105031a2de27633a183d82729b375168b138fcf`. Clean public-index
+installs and the signed standalone artifacts are qualified on Apple-Silicon
+macOS and native AMD64 Ubuntu. Homebrew publication and production enablement
+remain separate status gates; see the [compatibility matrix](docs/compatibility.md).
 Public Geyser SDK, CLI, emulator, schemas, conformance, and developer documentation

@@ -15,6 +15,14 @@ matrix and expiring qualification receipts are authoritative; this source table 
 
 | Surface | Implemented | Published | Qualified | Production enabled | Observed deployed |
 |---|---:|---:|---:|---:|---:|
-| SDK/CLI 0.1.0b4 source | yes | no | macOS ARM64 and Ubuntu AMD64 release gates passed | no | no |
+| SDK/CLI 0.1.0b4 | yes | PyPI and GitHub Release | Python 3.11–3.13; clean macOS ARM64 and native Ubuntu AMD64 public installs passed | no | no |
 | Developer API 2026-08-24 | yes | not public | Coordinator source gates passed | no | no |
-| Homebrew/manual assets | source workflow pending W14 | no | no | no | no |
+| Manual signed CLI assets 0.1.0b4 | yes | GitHub Release | macOS ARM64 and native Ubuntu AMD64 checksum, provenance, signature, and execution gates passed | no | no |
+| Homebrew formula | yes | pending | source gate passed; public tap install pending | no | no |
+
+The `0.1.0b4` qualification receipt is the successful protected-tag
+[release workflow](https://github.com/geyserlabs/geyser-open/actions/runs/32854732268) for source
+commit `b105031a2de27633a183d82729b375168b138fcf`, followed by clean installs from PyPI and
+execution of the downloaded standalone archives on Apple-Silicon macOS and native Intel
+Ubuntu. All 16 retained Sigstore bundles verified against the exact protected workflow/tag
+identity. Publication does not by itself enable a production API or deploy a developer runtime.

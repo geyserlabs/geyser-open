@@ -40,10 +40,16 @@ sha256sum --check SHA256SUMS --ignore-missing
 gh attestation verify geyser-open-*.tar.gz --repo geyserlabs/geyser-open
 python -m sigstore verify identity \
   --bundle geyser-open-*.tar.gz.sigstore.json \
-  --cert-identity-regexp 'https://github.com/geyserlabs/geyser-open/.github/workflows/release.yml@refs/tags/v' \
+  --cert-identity 'https://github.com/geyserlabs/geyser-open/.github/workflows/release.yml@refs/tags/v0.1.0b4' \
   --cert-oidc-issuer https://token.actions.githubusercontent.com \
   geyser-open-*.tar.gz
 ```
+
+Use the exact tag from the release being verified in `--cert-identity`; a prefix or branch
+identity is intentionally insufficient. For `v0.1.0b4`, the tag and release manifest both resolve
+to source commit `b105031a2de27633a183d82729b375168b138fcf`, and the protected
+[release workflow](https://github.com/geyserlabs/geyser-open/actions/runs/32854732268) is the
+publication receipt.
 
 The release record contains the exact source commit and workflow URL. SPDX and
 CycloneDX SBOMs, a lockfile-derived dependency inventory, SLSA provenance, and
