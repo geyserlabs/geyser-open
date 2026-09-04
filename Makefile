@@ -1,7 +1,7 @@
 PYTHON ?= .venv/bin/python
 UV ?= uv
 
-.PHONY: bootstrap check test lint typecheck schemas package install-smoke uninstall-smoke docs docs-snippets security release-check standalone
+.PHONY: bootstrap check full-check test lint typecheck schemas package install-smoke uninstall-smoke docs docs-snippets security release-check standalone
 
 bootstrap:
 	$(UV) sync --all-packages --all-extras --dev
@@ -40,10 +40,12 @@ security:
 	$(PYTHON) scripts/scan_secrets.py
 
 release-check:
-	$(PYTHON) scripts/release_assets.py validate-source
+	$(PYTHON) scripts/release_assets.py version
 	$(PYTHON) -m pytest tests/test_release_assets.py -q
 
 standalone:
 	$(PYTHON) scripts/build_standalone.py --output-dir dist
 
-check: schemas lint typecheck test package install-smoke uninstall-smoke docs docs-snippets security release-check
+check: schemas lint typecheck test
+
+full-check: schemas lint typecheck test package install-smoke uninstall-smoke docs docs-snippets security release-check

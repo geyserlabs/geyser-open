@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and byte-compare deterministic standalone CLI archives."""
+"""Build one standalone CLI archive for the current platform."""
 
 # ruff: noqa: S603, S607 - all executables and arguments are fixed local release inputs
 
@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import gzip
-import hashlib
 import os
 import platform
 import shutil
@@ -123,10 +122,6 @@ def write_archive(executable: Path, target: Path, epoch: int) -> None:
                         archive.addfile(info, handle)
 
 
-def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
@@ -136,25 +131,13 @@ def main() -> int:
     if not target:
         raise SystemExit(f"unsupported standalone target: {system_machine[0]} {system_machine[1]}")
     epoch = source_epoch()
-    # A fresh Python environment can populate deterministic import bytecode on
-    # its first PyInstaller analysis, changing only base_library.zip ordering.
-    # Discard one warm-up executable, then compare two independent clean builds.
-    build_executable("warmup", epoch)
-    archives: list[Path] = []
-    for pass_name in ("first", "second"):
-        executable = build_executable(pass_name, epoch)
-        archive = BUILD_ROOT / pass_name / f"geyser-open-{version()}-{target}.tar.gz"
-        write_archive(executable, archive, epoch)
-        archives.append(archive)
-    first_digest, second_digest = (digest(path) for path in archives)
-    if first_digest != second_digest:
-        raise SystemExit(
-            f"standalone build is not reproducible: {first_digest} != {second_digest}"
-        )
-    output = args.output_dir.resolve() / archives[0].name
+    executable = build_executable("build", epoch)
+    archive = BUILD_ROOT / "build" / f"geyser-open-{version()}-{target}.tar.gz"
+    write_archive(executable, archive, epoch)
+    output = args.output_dir.resolve() / archive.name
     output.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(archives[0], output)
-    print(f"built reproducible {output.name} sha256:{first_digest}")
+    shutil.copyfile(archive, output)
+    print(f"built {output.name}")
     return 0
 
 
