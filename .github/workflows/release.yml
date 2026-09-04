@@ -38,7 +38,7 @@ jobs:
           uv build --package geyser-sdk --out-dir release-python
           uv build --package geyser-open --out-dir release-python
           .venv/bin/python scripts/verify_distributions.py release-python
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-python
           path: release-python/*
@@ -67,7 +67,7 @@ jobs:
         run: |
           uv sync --all-packages --all-extras --all-groups --locked
           uv run python scripts/build_standalone.py --output-dir release-standalone
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-standalone-${{ matrix.target }}
           path: release-standalone/*
@@ -94,7 +94,7 @@ jobs:
             --output-dir release-assets \
             --source-epoch "$(git show -s --format=%ct HEAD)"
           (cd release-assets && shasum -a 256 * > SHA256SUMS)
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: complete-release
           path: release-assets/*
