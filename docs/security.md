@@ -8,12 +8,11 @@ docs/release channels.
 
 Controls include independent package names, pinned build inputs, no install hooks, keychain-first
 storage, scoped/expiring/revocable tokens, exact audience/customer/project/Cell binding,
-idempotency plus CAS, archive traversal/link/size rejection, Sigstore identity verification,
-OIDC trusted publishing, SBOM/provenance/checksums, protected clean-main tags, and executable docs
-tests.
+idempotency plus CAS, archive traversal/link/size rejection, OIDC trusted publishing, package
+checksums, and receiver-side validation.
 
-On compromise, revoke affected tokens and package/runtime capabilities, stop promotion, preserve
-evidence, publish an advisory, rotate the signing identity or workflow trust boundary, yank unsafe
+On compromise, revoke affected tokens and package/runtime capabilities, stop promotion, publish an
+advisory, rotate the signing identity or workflow trust boundary, yank unsafe
 Python releases without reusing versions, replace Homebrew formula hashes, and issue a new signed
 release. Rollback selects a previously retained immutable artifact; it never rebuilds old source
 under the same version.
