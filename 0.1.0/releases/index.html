@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.">
+        <meta name="description" content="Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.">
       
       
       
@@ -22,7 +22,7 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/geyser.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -44,12 +44,6 @@
       
     
     
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
@@ -80,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#releases-and-supply-chain-trust" class="md-skip">
+        <a href="#install-and-verify-a-release" class="md-skip">
           Skip to content
         </a>
       
@@ -102,8 +96,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Geyser Developers" class="md-header__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -226,8 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Geyser Developers" class="md-nav__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     Geyser Developers
@@ -282,8 +274,6 @@
   
     
     
-      
-        
       
         
       
@@ -353,34 +343,6 @@
     
   
     Five-minute emulator quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Optional independent validation
   
 
     
@@ -1046,6 +1008,8 @@
       
         
       
+        
+      
     
     
     
@@ -1158,10 +1122,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-the-same-release-through-every-channel" class="md-nav__link">
+  <a href="#python-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install the same release through every channel
+        Python packages
       
     </span>
   </a>
@@ -1169,10 +1133,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verify-a-manual-download" class="md-nav__link">
+  <a href="#homebrew-and-standalone-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify a manual download
+        Homebrew and standalone CLI
       
     </span>
   </a>
@@ -1180,10 +1144,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rollback-yank-and-revocation" class="md-nav__link">
+  <a href="#upgrading" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rollback, yank, and revocation
+        Upgrading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#report-a-release-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Report a release problem
       
     </span>
   </a>
@@ -1255,9 +1230,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional validation exercise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geyser website
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai/guides" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1289,10 +1346,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-the-same-release-through-every-channel" class="md-nav__link">
+  <a href="#python-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install the same release through every channel
+        Python packages
       
     </span>
   </a>
@@ -1300,10 +1357,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verify-a-manual-download" class="md-nav__link">
+  <a href="#homebrew-and-standalone-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify a manual download
+        Homebrew and standalone CLI
       
     </span>
   </a>
@@ -1311,10 +1368,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rollback-yank-and-revocation" class="md-nav__link">
+  <a href="#upgrading" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rollback, yank, and revocation
+        Upgrading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#report-a-release-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Report a release problem
       
     </span>
   </a>
@@ -1341,83 +1409,41 @@
   
 
 
-<h1 id="releases-and-supply-chain-trust">Releases and supply-chain trust<a class="headerlink" href="#releases-and-supply-chain-trust" title="Permanent link">&para;</a></h1>
-<p>Geyser Open has three deliberately separate public authorities:</p>
-<ul>
-<li>PyPI is authoritative for the platform-independent <code>geyser-sdk</code> and
-  <code>geyser-open</code> Python distributions.</li>
-<li>GitHub Releases is authoritative for manual downloads, frozen schemas,
-  OpenAPI, SBOMs, checksums, signatures, and provenance.</li>
-<li><code>geyserlabs/homebrew-tap</code> is authoritative for the polished standalone CLI.</li>
-</ul>
-<p>Every release is triggered only by a version tag that resolves to the exact
-protected <code>main</code> commit. The workflow rejects a mismatched package version, a
-dirty checkout, or a tag on any other commit. Python distributions and both
-supported standalone archives are built twice and must be byte-identical. The
-only qualified standalone targets are Apple-Silicon macOS and AMD64 Linux.</p>
-<h2 id="install-the-same-release-through-every-channel">Install the same release through every channel<a class="headerlink" href="#install-the-same-release-through-every-channel" title="Permanent link">&para;</a></h2>
-<p>Pin the production version when validating a deployment:</p>
+<h1 id="install-and-verify-a-release">Install and verify a release<a class="headerlink" href="#install-and-verify-a-release" title="Permanent link">&para;</a></h1>
+<p>Geyser Open publishes the Python SDK, Python CLI, and standalone CLI builds through public channels.
+The current stable release is <strong>0.1.0</strong>.</p>
+<h2 id="python-packages">Python packages<a class="headerlink" href="#python-packages" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">python -m pip install geyser-sdk==0.1.0 geyser-open==0.1.0</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">uv tool install geyser-open==0.1.0</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">pipx install geyser-open==0.1.0</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">brew tap geyserlabs/tap</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">brew install geyser</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">geyser --json version</span>
 </code></pre></div>
-<p>For a manual install, download the archive for <code>darwin-arm64</code> or <code>linux-amd64</code>
-from the GitHub Release, verify it as below, extract <code>geyser</code>, and place it on
-<code>PATH</code>. Each channel must report the same value from <code>geyser --json version</code>.</p>
-<h2 id="verify-a-manual-download">Verify a manual download<a class="headerlink" href="#verify-a-manual-download" title="Permanent link">&para;</a></h2>
-<p>Download the artifact, its <code>.sigstore.json</code> bundle, and <code>SHA256SUMS</code> from the
-same GitHub Release. Then run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">sha256sum --check SHA256SUMS --ignore-missing</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">gh attestation verify geyser-open-*.tar.gz --repo geyserlabs/geyser-open</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">python -m sigstore verify identity \</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">  --bundle geyser-open-*.tar.gz.sigstore.json \</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">  --cert-identity 'https://github.com/geyserlabs/geyser-open/.github/workflows/release.yml@refs/tags/v0.1.0' \</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">  --cert-oidc-issuer https://token.actions.githubusercontent.com \</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">  geyser-open-*.tar.gz</span>
+<p>Package pages:</p>
+<ul>
+<li><a href="https://pypi.org/project/geyser-sdk/0.1.0/">geyser-sdk on PyPI</a></li>
+<li><a href="https://pypi.org/project/geyser-open/0.1.0/">geyser-open on PyPI</a></li>
+</ul>
+<p>PyPI lists each distribution's hashes and publishing details. Pin the version in your application
+and use your normal lockfile workflow to keep installations reproducible.</p>
+<h2 id="homebrew-and-standalone-cli">Homebrew and standalone CLI<a class="headerlink" href="#homebrew-and-standalone-cli" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">brew tap geyserlabs/tap</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">brew install geyser</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">geyser --json version</span>
 </code></pre></div>
-<p>Use the exact tag from the release being verified in <code>--cert-identity</code>; a prefix or branch
-identity is intentionally insufficient. For <code>v0.1.0</code>, the protected tag, release manifest, and
-GitHub attestations bind source commit <code>e567d9d6051b73d0fd4531a75245b65730c0790a</code> and
-<a href="https://github.com/geyserlabs/geyser-open/actions/runs/32866021028">workflow run 32866021028</a>.
-The earlier <code>v0.1.0b4</code> Developer Preview remains immutably bound to source
-<code>b105031a2de27633a183d82729b375168b138fcf</code> and workflow
-<code>32854732268</code>.</p>
-<p>The release record contains the exact source commit and workflow URL. SPDX and
-CycloneDX SBOMs, a lockfile-derived dependency inventory, SLSA provenance, and
-signed SBOM attestations are retained with the artifacts. GitHub Actions are
-pinned to immutable commits; publication uses short-lived OIDC identities and
-does not use a stored PyPI token or signing key.</p>
-<p>PyPI publication is project-scoped. The <code>geyser-sdk</code> trusted publisher uses
-the <code>pypi</code> GitHub environment, while <code>geyser-open</code> uses
-<code>pypi-geyser-open</code>; both identities are bound to <code>.github/workflows/release.yml</code>.
-The release workflow uploads each project's distributions in its own job so a
-credential minted for one project is never reused for the other.</p>
-<h2 id="rollback-yank-and-revocation">Rollback, yank, and revocation<a class="headerlink" href="#rollback-yank-and-revocation" title="Permanent link">&para;</a></h2>
-<p>Released bytes are immutable. A defect is corrected in a new version; an
-existing tag or GitHub asset is never replaced. Maintainers may yank a PyPI
-release to prevent new unconstrained resolution while preserving reproducible
-installs. A yanked version remains documented with its digest and reason.</p>
-<p>For a compromised release, maintainers must immediately:</p>
-<ol>
-<li>make the GitHub Release unavailable and yank both PyPI projects with the
-   same reason;</li>
-<li>disable the PyPI trusted-publisher binding and GitHub release environment;</li>
-<li>remove or disable the affected Homebrew formula version;</li>
-<li>publish a signed security advisory identifying versions, hashes, source
-   commit, exposure, and remediation;</li>
-<li>audit workflow and repository changes, then restore trust only through a
-   reviewed workflow commit and a fresh release version.</li>
-</ol>
-<p>Signing is keyless: each release receives a short-lived Sigstore certificate
-bound to the protected workflow identity. “Key rotation” therefore means
-rotating or revoking the trusted OIDC identity—workflow path, repository,
-environment, or issuer—and updating PyPI and verification policy together.
-Historic Rekor entries and retained bundles remain verifiable. If the workflow
-identity itself is suspect, consumers must treat every artifact issued during
-the published incident window as revoked, regardless of a valid signature.</p>
-<p>Report suspected compromise privately through the process in <code>SECURITY.md</code>.</p>
+<p>The <a href="https://github.com/geyserlabs/homebrew-tap">Homebrew formula</a> records the selected release
+and archive hashes. Manual downloads are on the
+<a href="https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0">0.1.0 GitHub Release</a>, alongside
+checksums and signing information. Choose the archive for your platform and verify it against the
+release's published checksum before installation.</p>
+<h2 id="upgrading">Upgrading<a class="headerlink" href="#upgrading" title="Permanent link">&para;</a></h2>
+<p>Read the <a href="../changelog/">changelog</a>, check <a href="../compatibility/">compatibility</a>, and update your pinned
+version. Test the operations your application uses, especially structured results and decisions
+that depend on current run state.</p>
+<p>Published versions are immutable. If a release is withdrawn, follow the advisory and install its
+replacement or a supported previous version. A replacement uses a new version number.</p>
+<h2 id="report-a-release-problem">Report a release problem<a class="headerlink" href="#report-a-release-problem" title="Permanent link">&para;</a></h2>
+<p>Report installation problems in <a href="https://github.com/geyserlabs/geyser-open/issues">GitHub Issues</a>,
+including your OS, Python version, install channel, and the error text. Remove credentials and
+private content first. Send suspected vulnerabilities to
+<a href="mailto:security@geyserlabs.ai">security@geyserlabs.ai</a>.</p>
 
 
 
@@ -1501,6 +1527,14 @@ the published incident window as revoked, regardless of a valid signature.</p>
       
         
 <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.geyserlabs.ai" target="_blank" rel="noopener" title="Geyser website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V272h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM240 320h32c26.5 0 48 21.5 48 48v96H192v-96c0-26.5 21.5-48 48-48"/></svg>
+    </a>
   
     
     

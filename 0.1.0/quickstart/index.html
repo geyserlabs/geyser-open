@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.">
+        <meta name="description" content="Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.">
       
       
       
@@ -16,13 +16,13 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../external-preview/">
+        <link rel="next" href="../authentication/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/geyser.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -44,12 +44,6 @@
       
     
     
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
@@ -80,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#five-minute-emulator-quickstart" class="md-skip">
+        <a href="#build-your-first-tool" class="md-skip">
           Skip to content
         </a>
       
@@ -102,8 +96,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Geyser Developers" class="md-header__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -226,8 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Geyser Developers" class="md-nav__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     Geyser Developers
@@ -284,8 +276,6 @@
   
     
     
-      
-        
       
         
       
@@ -356,6 +346,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Five-minute emulator quickstart
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -373,34 +381,69 @@
 
       </a>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
         
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-  <span class="md-ellipsis">
+  
     
   
-    Optional independent validation
   
-
-    
-  </span>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the tools
+      
+    </span>
+  </a>
   
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-and-check-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create and check a tool
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#follow-a-complete-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow a complete run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-to-your-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect to your workspace
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1056,6 +1099,8 @@
       
         
       
+        
+      
     
     
     
@@ -1185,9 +1230,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional validation exercise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geyser website
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai/guides" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1212,6 +1339,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-and-check-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create and check a tool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#follow-a-complete-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow a complete run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-to-your-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect to your workspace
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1230,21 +1409,48 @@
   
 
 
-<h1 id="five-minute-emulator-quickstart">Five-minute emulator quickstart<a class="headerlink" href="#five-minute-emulator-quickstart" title="Permanent link">&para;</a></h1>
-<p>Requires Python 3.11–3.13. The local path uses no network and no credential.</p>
+<h1 id="build-your-first-tool">Build your first tool<a class="headerlink" href="#build-your-first-tool" title="Permanent link">&para;</a></h1>
+<p>In a few minutes, you'll create a tool package, validate it, and exercise it locally. No account
+or credentials are needed. Installing the packages uses the network; the emulator itself runs locally.</p>
+<h2 id="install-the-tools">Install the tools<a class="headerlink" href="#install-the-tools" title="Permanent link">&para;</a></h2>
+<p>Use Python 3.11–3.13. These commands create a separate environment for the example:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">python -m venv .venv</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">. .venv/bin/activate</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">python -m pip install geyser-sdk==0.1.0 geyser-open==0.1.0</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">geyser init tool careful-search</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">geyser validate careful-search</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">geyser test careful-search</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">geyser dev careful-search</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">geyser --json version</span>
 </code></pre></div>
-<p>Run <code>python examples/emulator_quickstart.py</code> from the source repository to observe admission,
-durable event ordering, an exact-bound approval, a consequential tool receipt, a checkpoint, and
-completion. A successful local test is not runtime qualification or production authority.</p>
-<p><a href="https://github.com/geyserlabs/geyser-open/blob/main/examples/emulator_quickstart.py">Read the example source</a>
-or continue with the <a href="../sdk/">sync and async SDK clients</a>.</p>
+<p>On Windows, activate the environment with <code>.venv\Scripts\Activate.ps1</code> in PowerShell.</p>
+<h2 id="create-and-check-a-tool">Create and check a tool<a class="headerlink" href="#create-and-check-a-tool" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">geyser init tool careful-search</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">geyser validate careful-search</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">geyser test careful-search</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">geyser dev careful-search</span>
+</code></pre></div>
+<p><code>init</code> creates the package files. <code>validate</code> checks their declarations. <code>test</code> checks the package's
+success and denial fixture declarations. <code>dev</code> demonstrates admission and completion in the local emulator.</p>
+<p>Open the new <code>careful-search</code> directory. The manifest describes the tool and its requested
+permissions; the fixtures describe the behavior its tests expect. Change the package, then run
+<code>validate</code> and <code>test</code> again. See <a href="../extensions/">extensions</a> for the other package types.</p>
+<h2 id="follow-a-complete-run">Follow a complete run<a class="headerlink" href="#follow-a-complete-run" title="Permanent link">&para;</a></h2>
+<p>The source repository includes an example with a local tool, a specific approval, a checkpoint,
+and completion. Clone the released version and run it with the environment you just installed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">git clone --depth 1 --branch v0.1.0 https://github.com/geyserlabs/geyser-open.git</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">cd geyser-open</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">python examples/emulator_quickstart.py</span>
+</code></pre></div>
+<p>The example stores the value <code>42</code> through a deterministic local function. Its final JSON projection
+shows the run state and event sequence. No model or external application is called.</p>
+<p><a href="https://github.com/geyserlabs/geyser-open/blob/v0.1.0/examples/emulator_quickstart.py">Read the complete example</a>
+to see how the task, approval, tool call, and checkpoint fit together.</p>
+<h2 id="connect-to-your-workspace">Connect to your workspace<a class="headerlink" href="#connect-to-your-workspace" title="Permanent link">&para;</a></h2>
+<p>When you have a Geyser account and project access, <a href="../authentication/">sign in</a> and inspect the
+runs you can access:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">geyser login</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">geyser runs list</span>
+</code></pre></div>
+<p>Local testing gives you a working package to develop. Your workspace's permissions and configured
+runtime determine what it can do remotely. Next, <a href="../sdk/">use the SDK</a> or try a
+<a href="../recipes/">practical recipe</a>.</p>
 
 
 
@@ -1297,13 +1503,13 @@ or continue with the <a href="../sdk/">sync and async SDK clients</a>.</p>
         
         
           
-          <a href="../external-preview/" class="md-footer__link md-footer__link--next" aria-label="Next: Optional independent validation">
+          <a href="../authentication/" class="md-footer__link md-footer__link--next" aria-label="Next: Authentication and projects">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Optional independent validation
+                Authentication and projects
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1328,6 +1534,14 @@ or continue with the <a href="../sdk/">sync and async SDK clients</a>.</p>
       
         
 <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.geyserlabs.ai" target="_blank" rel="noopener" title="Geyser website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V272h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM240 320h32c26.5 0 48 21.5 48 48v96H192v-96c0-26.5 21.5-48 48-48"/></svg>
+    </a>
   
     
     

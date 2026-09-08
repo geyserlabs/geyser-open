@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.">
+        <meta name="description" content="Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.">
       
       
       
@@ -22,7 +22,7 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/geyser.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -44,12 +44,6 @@
       
     
     
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
@@ -80,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#extensions-specialists-and-agent-bundles" class="md-skip">
+        <a href="#give-an-agent-a-new-capability" class="md-skip">
           Skip to content
         </a>
       
@@ -102,8 +96,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Geyser Developers" class="md-header__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -226,8 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Geyser Developers" class="md-nav__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     Geyser Developers
@@ -282,8 +274,6 @@
   
     
     
-      
-        
       
         
       
@@ -353,34 +343,6 @@
     
   
     Five-minute emulator quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Optional independent validation
   
 
     
@@ -805,6 +767,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills, tools, connectors, and evaluators
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -821,6 +801,69 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#choose-a-package-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose a package type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-tool-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create a tool package
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe-the-action-clearly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Describe the action clearly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-and-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package and connect
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1056,6 +1099,8 @@
       
         
       
+        
+      
     
     
     
@@ -1185,9 +1230,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional validation exercise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geyser website
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai/guides" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1212,6 +1339,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#choose-a-package-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose a package type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-tool-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create a tool package
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe-the-action-clearly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Describe the action clearly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-and-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package and connect
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1230,15 +1409,79 @@
   
 
 
-<h1 id="extensions-specialists-and-agent-bundles">Extensions, specialists, and Agent Bundles<a class="headerlink" href="#extensions-specialists-and-agent-bundles" title="Permanent link">&para;</a></h1>
-<p><code>geyser init</code> creates skills, connectors, tools, evaluators, model profiles, or Agent Bundle
-selection manifests. Each declares the narrowest requested permissions and frozen success/denial
-cases. Declarations request capabilities; they do not grant them.</p>
-<p>Specialists are durable child runs with bounded concurrency, depth, budget, and authority. Their
-typed results return through the parent run. Importing an OpenClaw or Letta artifact treats it as
-untrusted data: archives are size-bounded, traversal and links are rejected, code is not executed
-during inspection, credentials/provider sessions/hidden reasoning are excluded, and an owner
-reviews the selection before activation.</p>
+<h1 id="give-an-agent-a-new-capability">Give an Agent a new capability<a class="headerlink" href="#give-an-agent-a-new-capability" title="Permanent link">&para;</a></h1>
+<p>An extension packages something your team can reuse: instructions, a tool, an app connection,
+an evaluator, or a model profile. Start with the smallest piece that solves your problem.</p>
+<h2 id="choose-a-package-type">Choose a package type<a class="headerlink" href="#choose-a-package-type" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use it for</th>
+<th>Main file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>skill</code></td>
+<td>Instructions for a repeatable task</td>
+<td><code>SKILL.md</code></td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td>A named operation with an input schema</td>
+<td><code>tool.json</code></td>
+</tr>
+<tr>
+<td><code>connector</code></td>
+<td>An application connection and its permitted events</td>
+<td><code>connector.json</code></td>
+</tr>
+<tr>
+<td><code>evaluator</code></td>
+<td>A way to assess a result</td>
+<td><code>evaluator.json</code></td>
+</tr>
+<tr>
+<td><code>model-profile</code></td>
+<td>A model's processing route and capabilities</td>
+<td><code>model-profile.json</code></td>
+</tr>
+<tr>
+<td><code>agent-bundle</code></td>
+<td>A selection of components for an Agent</td>
+<td><code>agent-bundle-selection.json</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="create-a-tool-package">Create a tool package<a class="headerlink" href="#create-a-tool-package" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">geyser init tool careful-search</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">geyser validate careful-search</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">geyser test careful-search</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">geyser dev careful-search</span>
+</code></pre></div>
+<p>The generated directory contains:</p>
+<ul>
+<li><code>geyser-package.json</code>: name, kind, version, and requested permissions.</li>
+<li><code>tool.json</code>: description, input schema, effect class, and approval posture.</li>
+<li><code>evals/cases.json</code>: declared success and denial fixtures.</li>
+<li><code>README.md</code>: a place to explain the package to its next developer.</li>
+</ul>
+<p>In 0.1.0, <code>test</code> checks the fixture declarations and <code>dev</code> demonstrates a local admission and
+completion. Use your own tool tests to exercise its implementation. For an example that actually
+calls a registered local function, follow the <a href="../quickstart/#follow-a-complete-run">emulator quickstart</a>.</p>
+<h2 id="describe-the-action-clearly">Describe the action clearly<a class="headerlink" href="#describe-the-action-clearly" title="Permanent link">&para;</a></h2>
+<p>Give the tool a name and description that explain what it does. Define its accepted inputs with a
+schema. Declare whether it reads information or changes another system, and request only the
+permissions it needs. A package requests access; the workspace decides what it receives.</p>
+<p>Write examples for both a useful result and an action the tool should decline. For a result your
+application needs to parse, add a <a href="../outcomes/">structured outcome</a>.</p>
+<h2 id="package-and-connect">Package and connect<a class="headerlink" href="#package-and-connect" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">geyser package careful-search</span>
+</code></pre></div>
+<p>This creates a local archive and reports its digest. Signing and remote staging come next; see the
+<a href="../cli/#publish-an-extension">CLI reference</a> and <a href="../authentication/">authentication</a> for the required
+project access. For a collection of capabilities, use an <a href="../bundles/">Agent Bundle</a>.</p>
 
 
 
@@ -1322,6 +1565,14 @@ reviews the selection before activation.</p>
       
         
 <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.geyserlabs.ai" target="_blank" rel="noopener" title="Geyser website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V272h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM240 320h32c26.5 0 48 21.5 48 48v96H192v-96c0-26.5 21.5-48 48-48"/></svg>
+    </a>
   
     
     

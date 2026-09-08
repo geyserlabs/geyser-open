@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.">
+        <meta name="description" content="Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.">
       
       
       
@@ -22,7 +22,7 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/geyser.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -44,12 +44,6 @@
       
     
     
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
@@ -80,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#threat-model-and-supply-chain-response" class="md-skip">
+        <a href="#security-for-developers" class="md-skip">
           Skip to content
         </a>
       
@@ -102,8 +96,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Geyser Developers" class="md-header__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -226,8 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Geyser Developers" class="md-nav__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     Geyser Developers
@@ -282,8 +274,6 @@
   
     
     
-      
-        
       
         
       
@@ -353,34 +343,6 @@
     
   
     Five-minute emulator quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Optional independent validation
   
 
     
@@ -1046,6 +1008,8 @@
       
         
       
+        
+      
     
     
     
@@ -1135,6 +1099,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1151,6 +1133,69 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#credentials-and-project-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials and project access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actions-and-approvals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions and approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packages-and-imports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packages and imports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-something-is-compromised" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If something is compromised
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1185,9 +1230,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional validation exercise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geyser website
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai/guides" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1212,6 +1339,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#credentials-and-project-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials and project access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actions-and-approvals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions and approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packages-and-imports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packages and imports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-something-is-compromised" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If something is compromised
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1230,22 +1409,33 @@
   
 
 
-<h1 id="threat-model-and-supply-chain-response">Threat model and supply-chain response<a class="headerlink" href="#threat-model-and-supply-chain-response" title="Permanent link">&para;</a></h1>
-<p>Protected assets include tenant isolation, credential secrecy, exact package bytes, approval
-bindings, run ordering, and documentation integrity. Threats include dependency confusion,
-package substitution, malicious archives/imports, unsafe post-install hooks, OAuth phishing,
-cross-tenant identifiers, replay, confused deputy behavior, stale approvals, and compromised
-docs/release channels.</p>
-<p>Controls include independent package names, pinned build inputs, no install hooks, keychain-first
-storage, scoped/expiring/revocable tokens, exact audience/customer/project/Cell binding,
-idempotency plus CAS, archive traversal/link/size rejection, Sigstore identity verification,
-OIDC trusted publishing, SBOM/provenance/checksums, protected clean-main tags, and executable docs
-tests.</p>
-<p>On compromise, revoke affected tokens and package/runtime capabilities, stop promotion, preserve
-evidence, publish an advisory, rotate the signing identity or workflow trust boundary, yank unsafe
-Python releases without reusing versions, replace Homebrew formula hashes, and issue a new signed
-release. Rollback selects a previously retained immutable artifact; it never rebuilds old source
-under the same version.</p>
+<h1 id="security-for-developers">Security for developers<a class="headerlink" href="#security-for-developers" title="Permanent link">&para;</a></h1>
+<p>Report a suspected vulnerability privately to
+<a href="mailto:security@geyserlabs.ai">security@geyserlabs.ai</a>. We acknowledge reports within two business
+days and coordinate investigation, fixes, disclosure, and credit with the reporter.</p>
+<p>Keep credentials, customer identifiers, private run content, and exploit details out of public
+issues. See the <a href="https://github.com/geyserlabs/geyser-open/blob/main/SECURITY.md">security policy</a>
+for supported versions and reporting details.</p>
+<h2 id="credentials-and-project-access">Credentials and project access<a class="headerlink" href="#credentials-and-project-access" title="Permanent link">&para;</a></h2>
+<p>The CLI stores credentials in the OS keychain by default. Tokens are scoped, expiring, and
+revocable, with an audience, customer, project, and Cell assignment. Use a separate bounded service
+credential for CI. Read <a href="../authentication/">authentication</a> before adding a remote integration.</p>
+<h2 id="actions-and-approvals">Actions and approvals<a class="headerlink" href="#actions-and-approvals" title="Permanent link">&para;</a></h2>
+<p>An approval binds a decision to the run, tool, arguments, and current state. An argument change or
+stale binding requires a new decision. Stable idempotency keys let the server recognize a repeated
+request; they must not be reused for a different intended action.</p>
+<p>See <a href="../durable-runs/">durable execution</a> for effects, unknown outcomes, and recovery.</p>
+<h2 id="packages-and-imports">Packages and imports<a class="headerlink" href="#packages-and-imports" title="Permanent link">&para;</a></h2>
+<p>Validate package contents before signing or staging. Archive inspection rejects unsafe paths,
+links, and oversized contents. Imported Agent Bundles exclude credentials, provider sessions,
+and hidden reasoning. A person reviews the selected components before activation.</p>
+<p>The workspace remains responsible for granting capabilities. Installing a package does not give
+it access to customer tools or data. Read <a href="../bundles/">Agent Bundles</a> and
+<a href="../releases/">release verification</a>.</p>
+<h2 id="if-something-is-compromised">If something is compromised<a class="headerlink" href="#if-something-is-compromised" title="Permanent link">&para;</a></h2>
+<p>Revoke affected credentials, stop using the affected package or runtime, and follow the security
+advisory. Geyser can revoke capabilities and withdraw unsafe releases. Replacement packages use
+new versions; published bytes are not silently replaced.</p>
 
 
 
@@ -1329,6 +1519,14 @@ under the same version.</p>
       
         
 <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.geyserlabs.ai" target="_blank" rel="noopener" title="Geyser website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V272h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM240 320h32c26.5 0 48 21.5 48 48v96H192v-96c0-26.5 21.5-48 48-48"/></svg>
+    </a>
   
     
     

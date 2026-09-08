@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.">
+        <meta name="description" content="Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.">
       
       
       
@@ -22,7 +22,7 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/geyser.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -44,12 +44,6 @@
       
     
     
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
@@ -102,8 +96,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Geyser Developers" class="md-header__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -226,8 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Geyser Developers" class="md-nav__button md-logo" aria-label="Geyser Developers" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/geyser.svg" alt="logo">
 
     </a>
     Geyser Developers
@@ -282,8 +274,6 @@
   
     
     
-      
-        
       
         
       
@@ -353,34 +343,6 @@
     
   
     Five-minute emulator quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-preview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Optional independent validation
   
 
     
@@ -563,6 +525,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python SDK
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -579,6 +559,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-your-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read your runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#follow-a-run-through-reconnects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow a run through reconnects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-the-async-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use the async client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-the-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose the operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-and-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection and error behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1056,6 +1110,8 @@
       
         
       
+        
+      
     
     
     
@@ -1185,9 +1241,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional validation exercise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geyser website
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.geyserlabs.ai/guides" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1212,6 +1350,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-your-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read your runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#follow-a-run-through-reconnects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow a run through reconnects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-the-async-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use the async client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-the-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose the operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-and-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection and error behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1231,21 +1432,110 @@
 
 
 <h1 id="python-sdk">Python SDK<a class="headerlink" href="#python-sdk" title="Permanent link">&para;</a></h1>
-<p><code>GeyserClient</code> and <code>AsyncGeyserClient</code> provide typed task, run, event, approval, effect, trace,
-evaluation, fork, artifact, package, and capability operations. Both reuse their HTTP connection,
-require an explicit timeout, and accept either an explicit token or a callable token provider.</p>
-<p>Only reads and mutations carrying an idempotency key are retried. Conditional decisions send
-<code>If-Match</code>; stale sequences and approval bindings become typed <code>ProblemError</code> values. List
-operations provide pages and iterators. <code>watch_events</code> resumes after the last durable sequence,
-so a reconnect does not invent or skip committed events.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">geyser_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeyserClient</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">with</span> <span class="n">GeyserClient</span><span class="p">(</span><span class="s2">"https://agents.geyserlabs.ai"</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">iter_runs</span><span class="p">():</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">run</span><span class="o">.</span><span class="n">runtime_profile_digest</span><span class="p">)</span>
+<p>Use <code>GeyserClient</code> in a synchronous application and <code>AsyncGeyserClient</code> in an asynchronous one.
+Both expose typed operations for tasks, runs, events, approvals, effects, artifacts, and packages.</p>
+<h2 id="read-your-runs">Read your runs<a class="headerlink" href="#read-your-runs" title="Permanent link">&para;</a></h2>
+<p>Supply a scoped developer token through your application's secret source. This example reads it
+from <code>GEYSER_TOKEN</code> and prints only run IDs and states:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">geyser_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeyserClient</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">with</span> <span class="n">GeyserClient</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s2">"https://agents.geyserlabs.ai"</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GEYSER_TOKEN"</span><span class="p">],</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">iter_runs</span><span class="p">():</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">run</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 </code></pre></div>
-<p>The server may add fields within API v1. Output models preserve additive fields, while input
-models reject unknown fields to prevent accidental authority or behavior changes.</p>
+<p><code>iter_runs</code> follows pagination for you. Use <code>list_runs</code> if you want to manage page cursors yourself.
+<a href="../authentication/">Authentication</a> explains how credentials are scoped to your project.</p>
+<h2 id="follow-a-run-through-reconnects">Follow a run through reconnects<a class="headerlink" href="#follow-a-run-through-reconnects" title="Permanent link">&para;</a></h2>
+<p>Keep the last event sequence your application has processed. Pass it back when you reconnect:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">geyser_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeyserClient</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">run_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GEYSER_RUN_ID"</span><span class="p">]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">last_sequence</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GEYSER_AFTER_SEQUENCE"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">))</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">with</span> <span class="n">GeyserClient</span><span class="p">(</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="s2">"https://agents.geyserlabs.ai"</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GEYSER_TOKEN"</span><span class="p">],</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">watch_events</span><span class="p">(</span><span class="n">run_id</span><span class="p">,</span> <span class="n">after_sequence</span><span class="o">=</span><span class="n">last_sequence</span><span class="p">):</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="c1"># Persist this sequence after your application processes the event.</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="n">last_sequence</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">sequence</span>
+</code></pre></div>
+<p><code>watch_events</code> follows committed events and finishes when the run is terminal and its events have
+been read. Persist your cursor alongside the work your application does with each event. See
+<a href="../durable-runs/">durable execution</a> for retries, checkpoints, and effects.</p>
+<h2 id="use-the-async-client">Use the async client<a class="headerlink" href="#use-the-async-client" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">geyser_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncGeyserClient</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncGeyserClient</span><span class="p">(</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="s2">"https://agents.geyserlabs.ai"</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GEYSER_TOKEN"</span><span class="p">],</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="k">async</span> <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">iter_runs</span><span class="p">():</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>            <span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">run</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="choose-the-operation">Choose the operation<a class="headerlink" href="#choose-the-operation" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Your application needs to…</th>
+<th>SDK entry point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Submit authorized work</td>
+<td><code>create_task(task, idempotency_key=...)</code></td>
+</tr>
+<tr>
+<td>Read a task and its state</td>
+<td><code>get_task(task_id)</code></td>
+</tr>
+<tr>
+<td>List runs</td>
+<td><code>list_runs(...)</code> or <code>iter_runs(...)</code></td>
+</tr>
+<tr>
+<td>Read a run</td>
+<td><code>get_run(run_id)</code></td>
+</tr>
+<tr>
+<td>Fetch an event page</td>
+<td><code>events(run_id, after_sequence=...)</code></td>
+</tr>
+<tr>
+<td>Follow progress</td>
+<td><code>watch_events(run_id, after_sequence=...)</code></td>
+</tr>
+<tr>
+<td>Check an Agent's capabilities</td>
+<td><code>capabilities(agent_name=...)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../reference/">API and schema reference</a> for request fields and response shapes.</p>
+<h2 id="connection-and-error-behavior">Connection and error behavior<a class="headerlink" href="#connection-and-error-behavior" title="Permanent link">&para;</a></h2>
+<p>Clients reuse their HTTP connection and close it when the context manager exits. The default timeout
+is 30 seconds; set <code>timeout</code> to match your application. Tokens can be strings or callables that
+retrieve the current credential.</p>
+<p>Reads and mutations with an idempotency key can retry. Conditional decisions send <code>If-Match</code>.
+A stale sequence or approval binding produces a typed <code>ProblemError</code>; read the latest state before
+making a new decision. See <a href="../troubleshooting/">troubleshooting</a>.</p>
+<p>API v1 may add response fields. Output models preserve those fields, while input models reject
+unknown fields so a typo cannot silently change the meaning of a request.</p>
 
 
 
@@ -1329,6 +1619,14 @@ models reject unknown fields to prevent accidental authority or behavior changes
       
         
 <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.geyserlabs.ai" target="_blank" rel="noopener" title="Geyser website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272h16v176c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64V272h16c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1zM240 320h32c26.5 0 48 21.5 48 48v96H192v-96c0-26.5 21.5-48 48-48"/></svg>
+    </a>
   
     
     
