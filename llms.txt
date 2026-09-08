@@ -1,6 +1,6 @@
 # Geyser Developer Platform
 
-> Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.
+> Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.
 
 - [Start](https://docs.geyserlabs.ai/stable/)
 - [Five-minute emulator quickstart](https://docs.geyserlabs.ai/stable/quickstart/)
@@ -12,6 +12,11 @@
 - [Security](https://docs.geyserlabs.ai/stable/security/)
 - [Canonical source](https://github.com/geyserlabs/geyser-open)
 
-Geyser Open is the reference runtime. Capability support is evidence-derived for an exact runtime,
-provider, model profile, placement, and privacy posture. A source implementation, public package,
-qualification receipt, production enablement, and observed deployment are separate facts.
+Geyser Open includes the MIT-licensed SDK, CLI, local emulator, schemas, and examples.
+SDK and CLI 0.1.0 support Python 3.11–3.13. The SDK connects to Geyser's API;
+the configured workspace supplies Agent runtimes, models, tools, and access.
+
+- [Geyser website](https://www.geyserlabs.ai)
+- [Customer guides](https://www.geyserlabs.ai/guides)
+- [Practical recipes](https://docs.geyserlabs.ai/stable/recipes/)
+- [Extensions](https://docs.geyserlabs.ai/stable/extensions/)
