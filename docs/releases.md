@@ -1,20 +1,49 @@
-# Geyser Open releases
+# Install and verify a release
 
-A release publishes the SDK/CLI packages and the supported standalone binaries. The user's release
-request is the authorization; no separate evidence or attestation approval is required.
+Geyser Open publishes the Python SDK, Python CLI, and standalone CLI builds through public channels.
+The current stable release is **0.1.0**.
 
-## Release
+## Python packages
 
-1. Set the requested version and run `make check`.
-2. Tag or dispatch the release workflow for that revision.
-3. Build each published package/binary once.
-4. Publish to PyPI/GitHub and update the Homebrew formula.
-5. Run `geyser --json version` from one installed channel.
-6. Yank/roll back the new version if the smoke fails.
+```console
+python -m pip install geyser-sdk==0.1.0 geyser-open==0.1.0
+geyser --json version
+```
 
-Keep PyPI trusted publishing, package hashes, and any signature the installer actually verifies.
-Do not require duplicate deterministic builds, SBOMs, SLSA/provenance bundles, per-file
-attestations, a six-platform matrix, install/uninstall on every OS, or a retained release record.
+Package pages:
 
-Published versions remain immutable. A compromised release may be yanked and replaced by a new
-version; do not overwrite an existing tag or package.
+- [geyser-sdk on PyPI](https://pypi.org/project/geyser-sdk/0.1.0/)
+- [geyser-open on PyPI](https://pypi.org/project/geyser-open/0.1.0/)
+
+PyPI lists each distribution's hashes and publishing details. Pin the version in your application
+and use your normal lockfile workflow to keep installations reproducible.
+
+## Homebrew and standalone CLI
+
+```console
+brew tap geyserlabs/tap
+brew install geyser
+geyser --json version
+```
+
+The [Homebrew formula](https://github.com/geyserlabs/homebrew-tap) records the selected release
+and archive hashes. Manual downloads are on the
+[0.1.0 GitHub Release](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0), alongside
+checksums and signing information. Choose the archive for your platform and verify it against the
+release's published checksum before installation.
+
+## Upgrading
+
+Read the [changelog](changelog.md), check [compatibility](compatibility.md), and update your pinned
+version. Test the operations your application uses, especially structured results and decisions
+that depend on current run state.
+
+Published versions are immutable. If a release is withdrawn, follow the advisory and install its
+replacement or a supported previous version. A replacement uses a new version number.
+
+## Report a release problem
+
+Report installation problems in [GitHub Issues](https://github.com/geyserlabs/geyser-open/issues),
+including your OS, Python version, install channel, and the error text. Remove credentials and
+private content first. Send suspected vulnerabilities to
+[security@geyserlabs.ai](mailto:security@geyserlabs.ai).

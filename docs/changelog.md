@@ -1,52 +1,26 @@
 # Changelog
 
-## 0.1.0 — Production
+## 0.1.0 — Stable release
 
-`v0.1.0` promotes the qualified SDK, CLI, signed standalone assets, Homebrew formula, versioned
-documentation, and Developer API to production availability. All authority and fail-closed safety
-boundaries from the beta series remain in force. On 2026-08-25 the product owner waived the
-independent non-implementer exercise as a mandatory release gate; it remains available as an
-optional public validation path, and no independent receipt is claimed.
+The first stable release brings the Python SDK, CLI, standalone binaries, versioned documentation,
+and Developer API together through the public install channels.
 
-The protected tag resolves to source `e567d9d6051b73d0fd4531a75245b65730c0790a`; signed
-publication receipt [32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028)
-published both PyPI projects and the immutable GitHub Release.
+- Python 3.11–3.13 support, with synchronous and asynchronous clients.
+- Local scaffolding, package validation, fixture checks, and emulator development.
+- Task and run APIs, ordered events, checkpoints, approvals, effects, and typed results.
+- OAuth sign-in, scoped project access, and package staging workflows.
+- Standalone CLI builds for Apple silicon macOS and Ubuntu 24.04 AMD64.
+- PyPI, GitHub Release, and Homebrew distribution channels.
 
-- Stable Python 3.11–3.13 SDK/CLI packages and canonical public install channels.
-- Reproducible, signed, attested macOS ARM64 and Ubuntu AMD64 standalone assets.
-- Stable documentation alias, compatibility matrix, changelog, security, and rollback guidance.
-- Production Developer API backed by the already-qualified universal durable runtime fleet.
+[Release and downloads](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0) ·
+[Install guide](releases.md) · [Compatibility](compatibility.md)
 
-## 0.1.0b4 — Developer Preview
+## 0.1.0b4 — Developer preview
 
-`v0.1.0b4` was published from protected `main` commit
-`b105031a2de27633a183d82729b375168b138fcf` to the independent `geyser-sdk` and
-`geyser-open` PyPI projects and to GitHub Releases. The release workflow built both Python
-distributions and the macOS ARM64/Linux AMD64 standalone archives reproducibly, generated
-checksums, SBOMs, SLSA provenance, PyPI attestations, and 16 keyless Sigstore bundles, then passed
-clean public-install and downloaded-artifact qualification on Apple-Silicon macOS and native Intel
-Ubuntu. The `geyser-open` formula was then published and qualified through the public
-`geyserlabs/tap`. Production enablement remains a separate gate.
+The published preview introduced the public SDK and CLI, API contract `2026-08-24`, OpenAPI 3.1,
+JSON Schemas, emulator, examples, and conformance fixtures. It included macOS ARM64 and Linux
+AMD64 standalone archives.
 
-The `v0.1.0b1` workflow stopped before publication because its hidden
-standalone-artifact directory was excluded from upload. No package or release
-was published from that tag. The `v0.1.0b2` workflow reached keyless signing
-but stopped before publication when the job's Python selector overrode the
-Sigstore action's isolated environment. No package or release was published
-from that tag either.
+The stable 0.1.0 release supersedes this preview. Earlier beta tags b1–b3 did not publish packages.
 
-The `v0.1.0b3` workflow completed signing and attestations but stopped before
-publication because an orphaned PyPA action revision referenced a container
-image that no longer existed. No package or release was published from that
-tag.
-
-- Public, platform-independent Python SDK with synchronous and asynchronous clients.
-- Public CLI for local scaffolding, validation, emulator testing, package lifecycle, durable-run
-  inspection, approvals, capability discovery, and OAuth login.
-- Frozen API `2026-08-24`, JSON Schemas, OpenAPI 3.1, emulator, examples, and conformance fixtures.
-- Standalone Apple-silicon macOS and Ubuntu 24.04 AMD64 CLI artifacts.
-- Reproducible builds, checksums, Sigstore bundles, GitHub SLSA provenance, SPDX and CycloneDX
-  SBOMs, and canonical PyPI/GitHub/Homebrew channels.
-
-Implemented, published, qualified, production-enabled, and observed-deployed status remain
-separate in the [compatibility matrix](compatibility.md).
+[Preview release](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0b4)

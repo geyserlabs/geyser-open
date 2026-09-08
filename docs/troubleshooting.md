@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Run `geyser doctor --json` to check the Python/CLI version, API reachability, API version, profile,
+Run `geyser --json doctor` to check the Python/CLI version, API reachability, API version, profile,
 and whether a credential exists. It never prints the token.
 
 - `sequence_conflict`: refresh the run/approval and review the new state before resubmitting.

@@ -1,29 +1,44 @@
-# Geyser Developer Platform
+# Build something your team can use
 
-Geyser is a framework-neutral control plane for durable agentic work. The public SDK talks to a
-versioned API; it is not an Agent runtime and does not include or grant a model, brain, provider,
-browser, tool, credential, policy, or deployment authority.
+Geyser brings people and AI agents together with computers, connected apps, and shared projects.
+The developer tools let you extend what those agents can do and build applications around their work.
 
-Start with the [five-minute emulator quickstart](quickstart.md), then read
-[authentication and projects](authentication.md), [SDK clients](sdk.md), and the
-[CLI reference](cli.md). Exact implemented, published, qualified, production-enabled, and
-observed-deployed status is recorded separately in the [compatibility matrix](compatibility.md).
+Start locally. Create a tool, test its behavior, and follow a run from request to result. When you're
+ready, connect to your Geyser workspace with the same SDK and CLI.
 
-Release consumers should also read [release verification and supply-chain
-trust](releases.md), including the immutable-artifact, yank, compromise, and
-revocation policy.
+## Choose your first step
 
-## Public authorities
+| What you want to do | Start here |
+|---|---|
+| Try Geyser's development workflow without an account | [Five-minute quickstart](quickstart.md) |
+| Give an Agent a new tool or connection | [Build an extension](extensions.md) |
+| Read runs and follow progress from your application | [Python SDK](sdk.md) |
+| Sign in and work with your own workspace | [Authentication](authentication.md) |
+| Validate a result or recover after an interruption | [Practical recipes](recipes.md) |
 
-- [GitHub](https://github.com/geyserlabs/geyser-open) — source, examples, conformance, and releases.
-- [PyPI SDK](https://pypi.org/project/geyser-sdk/) and
-  [PyPI CLI](https://pypi.org/project/geyser-open/) — Python distribution authority.
-- [Homebrew tap](https://github.com/geyserlabs/homebrew-tap) — standalone CLI authority.
-- [Compatibility status](compatibility.md) — implemented, published, qualified,
-  production-enabled, and observed-deployed facts.
+## What is open
 
-!!! info "Production release"
+The Python SDK, CLI, local emulator, schemas, and examples are MIT-licensed in
+[Geyser Open](https://github.com/geyserlabs/geyser-open). Use them with your existing application
+or agent framework. The SDK connects to Geyser's API; your workspace supplies the Agent runtime,
+models, tools, and access.
 
-    Version 0.1.0 supports Python 3.11–3.13. Standalone qualification is limited to
-    Apple-silicon macOS and Ubuntu 24.04 AMD64. A local emulator pass does not grant production
-    capability or authority.
+## What you can build on
+
+A **task** describes the work. A **run** tracks its execution. Ordered **events** let your application
+follow progress and reconnect after an interruption. **Checkpoints** preserve a known point in the
+work. **Approvals** bind a person's decision to a specific action, and **effects** record what that
+action did.
+
+Read [how durable execution works](durable-runs.md), or go straight to a
+[working local example](quickstart.md#follow-a-complete-run).
+
+## Current release
+
+SDK and CLI **0.1.0** support Python **3.11–3.13**. Standalone CLI builds are available for Apple
+silicon macOS and Ubuntu 24.04 AMD64. See [compatibility](compatibility.md) for API versions and
+[releases](releases.md) for install and verification links.
+
+Looking for the product instead? Visit [Geyser](https://www.geyserlabs.ai),
+[open your workspace](https://agents.geyserlabs.ai), or follow the
+[customer guides](https://www.geyserlabs.ai/guides).

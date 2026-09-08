@@ -1,5 +1,5 @@
 site_name: Geyser Developers
-site_description: Public SDK, CLI, emulator, contracts, and guides for durable framework-neutral agentic systems.
+site_description: Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.
 site_url: https://docs.geyserlabs.ai/
 repo_url: https://github.com/geyserlabs/geyser-open
 repo_name: geyserlabs/geyser-open
@@ -9,6 +9,9 @@ copyright: Copyright &copy; 2026 Geyser Labs
 theme:
   name: material
   language: en
+  logo: assets/geyser.svg
+  favicon: assets/geyser.svg
+  font: false
   features:
     - content.code.copy
     - content.code.annotate
@@ -49,6 +52,9 @@ extra:
     provider: mike
     alias: true
   social:
+    - icon: fontawesome/solid/house
+      link: https://www.geyserlabs.ai
+      name: Geyser website
     - icon: fontawesome/brands/github
       link: https://github.com/geyserlabs/geyser-open
       name: Geyser Open on GitHub
@@ -58,7 +64,6 @@ nav:
   - Overview: index.md
   - Start:
       - Five-minute emulator quickstart: quickstart.md
-      - Optional independent validation: external-preview.md
       - Authentication and projects: authentication.md
       - Recipes and examples: recipes.md
       - Troubleshooting: troubleshooting.md
@@ -80,6 +85,9 @@ nav:
       - Release verification: releases.md
       - Security: security.md
       - Changelog: changelog.md
+      - Optional validation exercise: external-preview.md
+  - Geyser website: https://www.geyserlabs.ai
+  - Customer guides: https://www.geyserlabs.ai/guides
 
 validation:
   omitted_files: warn

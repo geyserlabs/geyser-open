@@ -1,18 +1,39 @@
-# Threat model and supply-chain response
+# Security for developers
 
-Protected assets include tenant isolation, credential secrecy, exact package bytes, approval
-bindings, run ordering, and documentation integrity. Threats include dependency confusion,
-package substitution, malicious archives/imports, unsafe post-install hooks, OAuth phishing,
-cross-tenant identifiers, replay, confused deputy behavior, stale approvals, and compromised
-docs/release channels.
+Report a suspected vulnerability privately to
+[security@geyserlabs.ai](mailto:security@geyserlabs.ai). We acknowledge reports within two business
+days and coordinate investigation, fixes, disclosure, and credit with the reporter.
 
-Controls include independent package names, pinned build inputs, no install hooks, keychain-first
-storage, scoped/expiring/revocable tokens, exact audience/customer/project/Cell binding,
-idempotency plus CAS, archive traversal/link/size rejection, OIDC trusted publishing, package
-checksums, and receiver-side validation.
+Keep credentials, customer identifiers, private run content, and exploit details out of public
+issues. See the [security policy](https://github.com/geyserlabs/geyser-open/blob/main/SECURITY.md)
+for supported versions and reporting details.
 
-On compromise, revoke affected tokens and package/runtime capabilities, stop promotion, publish an
-advisory, rotate the signing identity or workflow trust boundary, yank unsafe
-Python releases without reusing versions, replace Homebrew formula hashes, and issue a new signed
-release. Rollback selects a previously retained immutable artifact; it never rebuilds old source
-under the same version.
+## Credentials and project access
+
+The CLI stores credentials in the OS keychain by default. Tokens are scoped, expiring, and
+revocable, with an audience, customer, project, and Cell assignment. Use a separate bounded service
+credential for CI. Read [authentication](authentication.md) before adding a remote integration.
+
+## Actions and approvals
+
+An approval binds a decision to the run, tool, arguments, and current state. An argument change or
+stale binding requires a new decision. Stable idempotency keys let the server recognize a repeated
+request; they must not be reused for a different intended action.
+
+See [durable execution](durable-runs.md) for effects, unknown outcomes, and recovery.
+
+## Packages and imports
+
+Validate package contents before signing or staging. Archive inspection rejects unsafe paths,
+links, and oversized contents. Imported Agent Bundles exclude credentials, provider sessions,
+and hidden reasoning. A person reviews the selected components before activation.
+
+The workspace remains responsible for granting capabilities. Installing a package does not give
+it access to customer tools or data. Read [Agent Bundles](bundles.md) and
+[release verification](releases.md).
+
+## If something is compromised
+
+Revoke affected credentials, stop using the affected package or runtime, and follow the security
+advisory. Geyser can revoke capabilities and withdraw unsafe releases. Replacement packages use
+new versions; published bytes are not silently replaced.
