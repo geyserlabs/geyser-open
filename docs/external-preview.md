@@ -1,13 +1,8 @@
-# Optional independent developer validation
+# Try the developer workflow and share feedback
 
-**Status:** optional post-release validation path. Geyser Open `0.1.0` is generally available.
-The product owner waived this path as a mandatory release gate on 2026-08-25; no independent
-receipt is represented as having passed.
-
-This is a public feedback path for a developer who did not implement Geyser Open. Complete
-it from these public instructions, without private hand-holding or operator credentials. Report
-every confusing, broken, or unsafe step so it can receive a regression test and published
-correction. Completion is useful release evidence, but is not required to install or use Geyser.
+This optional exercise is for developers who want to test the public tools and help improve them.
+Start with the local steps. The remote portion needs a sandbox project assigned for this exercise;
+contact the Geyser team to arrange one. No completed independent validation is claimed here.
 
 ## Safety boundary
 
@@ -70,7 +65,7 @@ geyser validate careful-search
 Inspect `geyser-package.json`, `tool.json`, and `evals/cases.json`. The scaffold must request no
 permissions and must not contain a credential.
 
-### 5. Freeze one success and one denial
+### 5. Check success and denial fixtures
 
 Keep one `expected: "success"` case and one critical
 `expected: "deny_without_explicit_authority"` case in `evals/cases.json`, then run:
@@ -81,7 +76,7 @@ geyser dev careful-search
 geyser package careful-search
 ```
 
-Both cases must pass. `dev` must report `network_used: false`. Record the SHA-256 digest printed
+Both fixture declarations must pass. `dev` must report `network_used: false`. Record the SHA-256 digest printed
 for `careful-search/.geyser/dist/careful-search-0.1.0.geyser.zip`.
 
 ### 6. Authenticate only to the assigned sandbox
@@ -155,9 +150,9 @@ Confirm that `doctor` reports unauthenticated, delete the local virtual environm
 scaffold, archive, and signature bundle, and ask the sandbox owner to confirm expiry or revocation
 of the preview project and removal of its staged/canary fixture.
 
-## Content-safe qualification receipt
+## Share useful feedback
 
-A passing receipt records only:
+A useful report includes:
 
 - date, tester role, OS/architecture, Python version, install channel, SDK/CLI version;
 - public release tag and source commit, artifact/package SHA-256 digest, and whether signature and
@@ -171,5 +166,4 @@ arguments, provider data, or screenshots containing them. Report content-free pr
 [GitHub Issues](https://github.com/geyserlabs/geyser-open/issues). Report any possible credential,
 privacy, or cross-tenant exposure privately through the [security policy](security.md).
 
-Passing this page once does not permanently certify later bytes. A receipt applies only to the
-exact public release, platform, sandbox policy, and immutable artifacts it records.
+Report results for the version and platform you tested.
