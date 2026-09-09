@@ -25,6 +25,7 @@ from typing import Any
 
 MAX_BYTES = 1024 * 1024
 IGNORED = {".git", ".geyser", ".venv", "__pycache__"}
+PYTHON_REQUIRED = "install Python 3.11 or newer to execute extensions with the standalone CLI"
 
 
 class SandboxError(RuntimeError):
@@ -129,8 +130,49 @@ def _snapshot(root: Path, target: Path) -> None:
         raise SandboxError("package changed during snapshot") from exc
 
 
+def _python_runtime(source_root: Path | None = None) -> tuple[str, str]:
+    if not getattr(sys, "frozen", False):
+        return str(Path(sys.executable).resolve()), str(Path(sys.base_prefix).resolve())
+    # The frozen CLI is not a Python command-line interpreter. Probe only an
+    # installed interpreter, never a package/current-directory PATH candidate.
+    excluded = {Path.cwd().resolve()}
+    if source_root is not None:
+        excluded.add(source_root.resolve())
+    seen = set()
+    for entry in os.get_exec_path():
+        directory = Path(entry)
+        if not directory.is_absolute():
+            continue
+        for name in ("python3", "python3.13", "python3.12", "python3.11"):
+            executable = (directory / name).resolve()
+            if executable in seen or any(executable.is_relative_to(root) for root in excluded):
+                continue
+            seen.add(executable)
+            if not executable.is_file() or not os.access(executable, os.X_OK):
+                continue
+            try:
+                with tempfile.TemporaryDirectory(prefix="geyser-python-probe-") as probe:
+                    result = subprocess.run(  # noqa: S603 - fixed code in installed Python
+                        [str(executable), "-I", "-S", "-c",
+                         "import json,sys; print(json.dumps([list(sys.version_info[:2]),"
+                         "sys.executable,sys.base_prefix]))"],
+                        cwd=probe, capture_output=True, timeout=3, check=False,
+                        env={"LANG": "C.UTF-8"},
+                    )
+                version, actual, prefix = json.loads(result.stdout)
+                actual, prefix = Path(actual).resolve(), Path(prefix).resolve()
+                if (result.returncode == 0 and version[0] == 3 and version[1] >= 11
+                        and actual.is_file() and prefix.is_dir()
+                        and not any(actual.is_relative_to(root) or prefix.is_relative_to(root)
+                                    for root in excluded)):
+                    return str(actual), str(prefix)
+            except (OSError, ValueError, TypeError, IndexError, subprocess.TimeoutExpired):
+                continue
+    raise SandboxUnavailable(PYTHON_REQUIRED)
+
+
 @lru_cache(maxsize=1)
-def available() -> bool:
+def available(interpreter: tuple[str, str] | None = None) -> bool:
     executable_available = bool(
         (sys.platform == "darwin" and shutil.which("sandbox-exec"))
         or (
@@ -148,7 +190,8 @@ def available() -> bool:
             root = Path(temporary).resolve()
             (root / "handler.py").write_text("def run(value): return value\n")
             result = subprocess.run(  # noqa: S603 - fixed interpreter inside the OS sandbox
-                _command(root, root, "handler.py", "run", 2, 512 * MAX_BYTES),
+                _command(root, root, "handler.py", "run", 2, 512 * MAX_BYTES,
+                         interpreter=interpreter),
                 input=b"{}",
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -158,7 +201,7 @@ def available() -> bool:
                 check=False,
             )
             return result.returncode == 0
-    except (OSError, subprocess.TimeoutExpired):
+    except (OSError, subprocess.TimeoutExpired, SandboxUnavailable):
         return False
 
 
@@ -182,10 +225,10 @@ def _mac_memory_reader() -> Any:
 
 
 def _command(
-    root: Path, writable: Path, handler: str, symbol: str, seconds: float, memory: int
+    root: Path, writable: Path, handler: str, symbol: str, seconds: float, memory: int,
+    *, interpreter: tuple[str, str] | None = None,
 ) -> list[str]:
-    executable = str(Path(sys.executable).resolve())
-    runtime = str(Path(sys.base_prefix).resolve())
+    executable, runtime = interpreter or _python_runtime(root)
     if sys.platform == "darwin":
         # Framework Python's bin/python is a launcher that starts Python.app.
         # Execute the real interpreter so the policy permits exactly one binary.
@@ -268,7 +311,9 @@ def run_handler(
     cancel_event: threading.Event | None = None,
 ) -> Any:
     """Execute ``relative_file.py:function`` with JSON stdin/stdout and no I/O grants."""
-    if not available():
+    root = root.expanduser().resolve()
+    interpreter = _python_runtime(root)
+    if not available(interpreter):
         raise SandboxUnavailable("a supported OS sandbox is required to execute extensions")
     if not 0 < timeout <= 30 or not 64 * MAX_BYTES <= memory_bytes <= 1024 * MAX_BYTES:
         raise ValueError("sandbox bounds must be 0-30 seconds and 64-1024 MiB")
@@ -281,7 +326,6 @@ def run_handler(
     payload = json.dumps(value, allow_nan=False).encode()
     if len(payload) > MAX_BYTES:
         raise ValueError("handler input exceeds 1 MiB")
-    root = root.expanduser().resolve()
     memory_reader = _mac_memory_reader() if sys.platform == "darwin" else None
     with tempfile.TemporaryDirectory(prefix="geyser-sandbox-") as temporary:
         snapshot, writable = (
@@ -293,7 +337,8 @@ def run_handler(
         _snapshot(root, snapshot)
         if not (snapshot / relative).is_file():
             raise ValueError("handler file is missing")
-        command = _command(snapshot, writable, parts[0], parts[1], timeout, memory_bytes)
+        command = _command(snapshot, writable, parts[0], parts[1], timeout, memory_bytes,
+                           interpreter=interpreter)
         with tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors:
             process = subprocess.Popen(  # noqa: S603 - isolated interpreter; no shell or inherited authority
                 command,

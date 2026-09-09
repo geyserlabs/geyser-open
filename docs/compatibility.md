@@ -7,7 +7,7 @@
 | Surface | 0.2.0 behavior | Prerequisite |
 |---|---|---|
 | Sync/async SDK | Owned input upload, tasks, results, events, traces, decisions and package lifecycle | Python 3.11–3.13; matching public API |
-| Local JSON extensions | Real handler tests and execution | macOS sandbox-exec, or Linux bubblewrap with permitted user namespaces |
+| Local JSON extensions | Real handler tests and execution | Python 3.11+ (also for the standalone CLI), macOS sandbox-exec, or Linux bubblewrap with permitted user namespaces |
 | Remote Agent tasks | Qualified Open runtime only | Cell and Agent advertise protocol 1 and `agent_tasks: true` |
 | Remote JSON extensions | Signed, tested pure handlers | Agent advertises `extension_tasks: true`; exact package is active |
 | Skills/model profiles/Agent Bundles | Verified per-task instructions and context; exact current model/policy assertions | `bundle_tasks: true`; active project packages |

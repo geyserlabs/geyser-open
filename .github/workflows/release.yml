@@ -63,6 +63,17 @@ jobs:
         with:
           python-version: "3.11"
           enable-cache: true
+      - name: Install Linux extension sandbox
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y apparmor bubblewrap
+          if test -s /etc/apparmor.d/bwrap-userns-restrict; then
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          else
+            sudo install -m 0644 .github/ci/bwrap.apparmor /etc/apparmor.d/geyser-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/geyser-ci-bwrap
+          fi
       - name: Build standalone CLI once
         run: |
           uv sync --all-packages --all-extras --all-groups --locked

@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import json
 import os
 import platform
 import shutil
 import subprocess
 import sys
 import tarfile
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,9 +47,7 @@ def version() -> str:
 
 
 def build_executable(pass_name: str, epoch: int) -> Path:
-    # PyInstaller records portions of its work path in collected bytecode.
-    # Reuse one exact path for both independent builds, then snapshot the
-    # executable, so the byte comparison detects inputs rather than paths.
+    # Build the selected source once, then exercise and archive those bytes.
     build_dir = BUILD_ROOT / "workspace"
     if build_dir.exists():
         shutil.rmtree(build_dir)
@@ -96,11 +96,46 @@ def build_executable(pass_name: str, epoch: int) -> Path:
     if platform.system() == "Darwin":
         subprocess.run(["codesign", "--force", "--sign", "-", os.fspath(executable)], check=True)
         subprocess.run(["codesign", "--verify", "--verbose=2", os.fspath(executable)], check=True)
+    smoke_executable(executable, environment)
     snapshot = BUILD_ROOT / pass_name / "geyser"
     snapshot.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(executable, snapshot)
     snapshot.chmod(0o755)
     return snapshot
+
+
+def smoke_executable(executable: Path, environment: dict[str, str]) -> None:
+    """Exercise the produced CLI, including actual bounded handler execution."""
+    with tempfile.TemporaryDirectory(prefix="geyser-standalone-smoke-") as directory:
+        root = Path(directory).resolve()
+        environment = {**environment, "PATH": str(Path(sys.executable).resolve().parent)
+                       + os.pathsep + environment.get("PATH", "")}
+
+        def invoke(*args: str, succeeds: bool = True) -> subprocess.CompletedProcess[str]:
+            result = subprocess.run(
+                [str(executable), "--json", *args], cwd=root, env=environment,
+                capture_output=True, text=True, timeout=30, check=False,
+            )
+            if (result.returncode == 0) != succeeds:
+                raise RuntimeError("standalone functional smoke failed at " + args[0])
+            return result
+
+        invoke("init", "tool", "word-count", "--output", str(root))
+        package = root / "word-count"
+        tested = json.loads(invoke("test", str(package)).stdout)
+        if tested["passed"] != 2 or tested["failed"]:
+            raise RuntimeError("standalone handler cases did not pass")
+        if json.loads(invoke("dev", str(package)).stdout)["result"] != {"word_count": 2}:
+            raise RuntimeError("standalone handler returned an unexpected result")
+        outside = root / "outside-package"
+        outside.write_text("synthetic private value")
+        (package / "handler.py").write_text(
+            f"def run(value): return {{'word_count': len(open({str(outside)!r}).read())}}\n"
+        )
+        denied = invoke("dev", str(package), succeeds=False)
+        if "extension failed inside the sandbox" not in denied.stdout:
+            raise RuntimeError("standalone file boundary was not exercised")
+        print("PASS standalone init/test/dev and package file boundary")
 
 
 def write_archive(executable: Path, target: Path, epoch: int) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import socket
 import sys
 from pathlib import Path
@@ -29,6 +30,44 @@ def test_json_handler_and_ambient_environment(
         "words": 2,
         "secret": None,
     }
+
+
+def test_frozen_cli_uses_installed_python_and_preserves_file_boundary(
+    package: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    python_directory = str(Path(sys.executable).resolve().parent)
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "executable", str(package / "geyser"))
+    monkeypatch.setenv("PATH", python_directory + os.pathsep + "/usr/bin:/bin")
+    monkeypatch.setenv("DYLD_LIBRARY_PATH", str(package / "untrusted-library-directory"))
+    (package / "handler.py").write_text('def run(value): return {"count": len(value)}\n')
+    assert run_handler(package, "handler.py:run", [1, 2]) == {"count": 2}
+    outside = package.parent / "outside-frozen"
+    outside.write_text("synthetic-private-value")
+    (package / "handler.py").write_text(
+        f'def run(value): return {{"count": len(open({str(outside)!r}).read())}}\n'
+    )
+    with pytest.raises(SandboxError):
+        run_handler(package, "handler.py:run", [])
+
+
+def test_frozen_cli_does_not_probe_package_or_relative_path_candidates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from geyser_sdk.sandbox import _python_runtime
+
+    package = tmp_path / "package"
+    package.mkdir()
+    marker = tmp_path / "must-not-be-created"
+    candidate = package / "python3"
+    candidate.write_text(f"#!/bin/sh\ntouch {str(marker)!r}\n")
+    candidate.chmod(0o755)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setenv("PATH", str(package) + os.pathsep + "package" + os.pathsep + ".")
+    with pytest.raises(SandboxUnavailable, match=r"install Python 3\.11"):
+        _python_runtime(package)
+    assert not marker.exists()
 
 
 @pytest.mark.parametrize("operation", ["read", "write", "network", "subprocess", "import"])
@@ -85,6 +124,6 @@ def test_missing_sandbox_and_path_escape_fail_closed(
     (package / "handler.py").symlink_to(package.parent / "outside.py")
     with pytest.raises(SandboxError):
         run_handler(package, "handler.py:run", {})
-    monkeypatch.setattr("geyser_sdk.sandbox.available", lambda: False)
+    monkeypatch.setattr("geyser_sdk.sandbox.available", lambda *_args: False)
     with pytest.raises(SandboxUnavailable):
         run_handler(package, "handler.py:run", {})
