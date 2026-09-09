@@ -16,6 +16,7 @@ SPEC.loader.exec_module(recovery)
 @pytest.mark.parametrize("wrong_source", [False, True])
 def test_recovery_requires_exact_tag_build(monkeypatch, wrong_source):
     monkeypatch.setenv("RELEASE_TAG", "v0.2.0")
+    monkeypatch.setenv("GITHUB_REF", "refs/tags/v0.2.0-publish-20260909")
     monkeypatch.setenv("REUSE_RUN_ID", "123")
     monkeypatch.setattr(recovery.subprocess, "check_output", lambda *a, **kw: "a" * 40)
     jobs = ["python-distributions", "assemble",
@@ -45,3 +46,13 @@ def test_recovery_rejects_non_version_tags(monkeypatch, tag):
     monkeypatch.setenv("RELEASE_TAG", tag)
     with pytest.raises(ValueError, match="exact version"):
         recovery.release_version()
+
+
+@pytest.mark.parametrize("ref", [
+    "refs/heads/main", "refs/pull/44/merge", "refs/tags/v0.3.0-publish-20260909",
+])
+def test_recovery_rejects_unrelated_workflow_refs(monkeypatch, ref):
+    monkeypatch.setenv("RELEASE_TAG", "v0.2.0")
+    monkeypatch.setenv("GITHUB_REF", ref)
+    with pytest.raises(ValueError, match="immutable publication tag"):
+        recovery.verify_source()
