@@ -1,6 +1,6 @@
 # Run a new execution from an earlier input
 
-The 0.2.0 source preview adds `client.replay` and `geyser runs replay` for a qualified Open Agent advertising the requested `replay_modes` entry. A replay creates a new project-owned task using the original task's immutable input. It has its own run, budget, results and approvals. It does not resume a saved model checkpoint or recover an uncertain external write.
+The SDK/CLI 0.2.0 adds `client.replay` and `geyser runs replay` for a qualified Open Agent advertising the requested `replay_modes` entry. A replay creates a new project-owned task using the original task's immutable input. It has its own run, budget, results and approvals. It does not resume a saved model checkpoint or recover an uncertain external write.
 
 | Mode | Actual execution boundary |
 |---|---|

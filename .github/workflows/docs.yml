@@ -23,6 +23,18 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+      - name: Verify published version and exact release source
+        env:
+          DOCS_VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$DOCS_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "$GITHUB_REF" = "refs/tags/v$DOCS_VERSION"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse "refs/tags/v${DOCS_VERSION}^{commit}")" = "$GITHUB_SHA"
+          test "$(python scripts/release_assets.py version)" = "$DOCS_VERSION"
+          gh release view "v$DOCS_VERSION" --json tagName,isDraft,isPrerelease |
+            python -c 'import json,os,sys; r=json.load(sys.stdin); assert r["tagName"] == "v"+os.environ["DOCS_VERSION"] and not r["isDraft"] and not r["isPrerelease"]'
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           python-version: "3.11"

@@ -1,6 +1,6 @@
 # Apply a bundle to one Agent task
 
-The 0.2.0 source preview supports signed instruction packages on a qualified Open Agent advertising `bundle_tasks: true`. Select a package explicitly when creating a task. Installation alone does not change the Agent's shared persona or start work.
+The SDK/CLI 0.2.0 supports signed instruction packages on a qualified Open Agent advertising `bundle_tasks: true`. Select a package explicitly when creating a task. Installation alone does not change the Agent's shared persona or start work.
 
 ```console
 geyser init agent-bundle careful-assistant

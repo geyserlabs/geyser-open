@@ -41,6 +41,36 @@ jobs:
           fi
       - name: Exercise handlers and validate instructions
         run: |
+          .venv/bin/python - <<'PYTHON'
+          import json, os, subprocess, sys, tempfile
+          from pathlib import Path
+          from geyser_sdk.sandbox import _command, _mac_memory_reader, available
+          report = {"sandbox_available": available(), "platform": sys.platform}
+          if sys.platform == "darwin":
+              try:
+                  _mac_memory_reader()(os.getpid())
+                  report["memory_inspection"] = "available"
+              except Exception:
+                  report["memory_inspection"] = "unavailable"
+          if not report["sandbox_available"]:
+              with tempfile.TemporaryDirectory() as directory:
+                  root = Path(directory).resolve()
+                  (root / "handler.py").write_text("def run(value): return value\n")
+                  try:
+                      result = subprocess.run(_command(root, root, "handler.py", "run", 2, 536870912),
+                          input=b"{}", capture_output=True, timeout=5, env={"LANG": "C.UTF-8"})
+                      report["probe_returncode"] = result.returncode
+                      report["probe_categories"] = [name for name, phrase in {
+                          "operation_denied": b"Operation not permitted",
+                          "permission_denied": b"Permission denied",
+                          "file_missing": b"No such file",
+                          "library_missing": b"Library not loaded",
+                          "python_startup": b"Fatal Python error",
+                      }.items() if phrase in result.stderr]
+                  except Exception as error:
+                      report["probe_error_type"] = type(error).__name__
+          print(json.dumps(report, sort_keys=True))
+          PYTHON
           uv run geyser test examples/packages/issue-normalizer
           uv run geyser test examples/packages/source-review-gate
           uv run geyser validate examples/packages/careful-review

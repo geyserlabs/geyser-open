@@ -2,7 +2,7 @@
 
 This is an optional product exercise, not certification. No completed independent developer validation or external adoption is claimed.
 
-Use the **0.2.0 source preview** and synthetic data. Follow the [quickstart](quickstart.md) using only public instructions. Run both reference applications, intentionally change one expected output, and confirm the test fails. Restore it and produce a package.
+Use the **SDK/CLI 0.2.0** and synthetic data. Follow the [quickstart](quickstart.md) using only public instructions. Run both reference applications, intentionally change one expected output, and confirm the test fails. Restore it and produce a package.
 
 For remote steps, use your own authorized test workspace with matching Cell and Agent software. Create a project in the console, save a service credential and its issued API URL, and submit one bounded task. Retrieve the typed result and inspect the run. Sign a package against the project’s trusted publisher, request installation, and wait for `active` before invoking it. Never substitute Fleet credentials or another customer’s resources.
 
