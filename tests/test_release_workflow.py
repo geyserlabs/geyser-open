@@ -5,7 +5,9 @@ def test_pypi_projects_match_the_existing_trusted_publisher() -> None:
     workflow = Path(".github/workflows/release.yml").read_text()
 
     assert "  publish-pypi-sdk:\n" in workflow
-    assert workflow.count("environment: pypi") == 2
+    assert workflow.count("environment: pypi\n") == 1
+    assert workflow.count("environment: pypi-geyser-open\n") == 1
+    assert workflow.count("if: steps.published.outputs.already_published != 'true'") == 2
     assert "packages-dir: pypi-dist-sdk/" in workflow
     assert "  publish-pypi-open:\n" in workflow
     assert "packages-dir: pypi-dist-open/" in workflow

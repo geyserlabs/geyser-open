@@ -19,8 +19,10 @@ Documentation: https://geyserlabs.ai/developers
 Security: https://github.com/geyserlabs/geyser-open/security/policy
 Publication recovery
 --------------------
-PyPI trusts release.yml in the existing pypi GitHub environment. Keep that
-environment on both publish jobs; it is part of the publisher identity.
+PyPI trusts release.yml in the existing pypi environment for geyser-sdk and
+pypi-geyser-open for geyser-open. Keep each exact environment on its project
+job; it is part of the publisher identity. A retry skips an existing upload
+only when both published file hashes match the original verified artifacts.
 
 If builds complete but publication stops, reuse the original run's
 complete-release artifact. Do not rebuild or move the package release tag.

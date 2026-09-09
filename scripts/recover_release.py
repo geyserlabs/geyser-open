@@ -10,6 +10,8 @@ import re
 import subprocess
 import sys
 import tarfile
+import urllib.error
+import urllib.request
 import zipfile
 from email.parser import BytesParser
 from pathlib import Path
@@ -103,10 +105,43 @@ def verify_assets(root: Path, version: str) -> None:
     print("Verified all checksums and wheel/sdist versions")
 
 
+def already_published(root: Path, name: str, version: str) -> bool:
+    if name not in {"geyser-sdk", "geyser-open"} or not re.fullmatch(
+            r"[0-9]+\.[0-9]+\.[0-9]+", version):
+        raise ValueError("expected one exact Geyser distribution version")
+    prefix = name.replace("-", "_")
+    names = {f"{prefix}-{version}.tar.gz", f"{prefix}-{version}-py3-none-any.whl"}
+    if {path.name for path in root.iterdir()} != names:
+        raise ValueError("publication directory has an unexpected file inventory")
+    expected = {filename: hashlib.sha256((root / filename).read_bytes()).hexdigest()
+                for filename in names}
+    try:
+        # The host and project names are fixed; no metadata URL is followed.
+        with urllib.request.urlopen(
+                f"https://pypi.org/pypi/{name}/{version}/json", timeout=20) as response:
+            value = json.load(response)
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return False
+        raise
+    rows = value["urls"]
+    actual = {row["filename"]: row["digests"]["sha256"] for row in rows}
+    if len(rows) != len(names) or actual != expected:
+        raise ValueError("published distributions differ from the verified artifacts")
+    if value["info"]["name"] != name or value["info"]["version"] != version:
+        raise ValueError("published distribution identity differs from the release")
+    return True
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "source":
         verify_source()
     elif sys.argv[1] == "assets":
         verify_assets(Path(sys.argv[2]), release_version())
+    elif sys.argv[1] == "published":
+        matched = already_published(Path(sys.argv[3]), sys.argv[2], release_version())
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
+            output.write(f"already_published={str(matched).lower()}\n")
+        print("Existing publication matches" if matched else "Version is not yet published")
     else:
-        raise SystemExit("expected source or assets")
+        raise SystemExit("expected source, assets or published")
