@@ -1,0 +1,10 @@
+# Compatibility for ephemeral Ubuntu 24.04 CI runners whose AppArmor package
+# predates bwrap-userns-restrict. Prefer the distribution's stronger profile
+# when it is available. Bubblewrap drops capabilities before the JSON child;
+# the child also installs the Geyser syscall filter before importing code.
+abi <abi/4.0>,
+include <tunables/global>
+
+profile geyser-ci-bwrap /usr/bin/bwrap flags=(unconfined) {
+  userns,
+}

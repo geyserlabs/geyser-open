@@ -30,6 +30,9 @@ jobs:
           # Use the distro's restricted bwrap profile; keep system restrictions enabled.
           if test -s /etc/apparmor.d/bwrap-userns-restrict; then
             sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          else
+            sudo install -m 0644 .github/ci/bwrap.apparmor /etc/apparmor.d/geyser-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/geyser-ci-bwrap
           fi
           .venv/bin/python - <<'PYTHON'
           import subprocess
