@@ -422,6 +422,7 @@ class GeyserClient:
             )
         attempts = self._max_retries + 1 if _retry_allowed(method, idempotency_key) else 1
         for attempt in range(attempts):
+            response = None
             try:
                 response = self._client.request(
                     method, path, json=json, params=params, headers=headers

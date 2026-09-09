@@ -4,13 +4,13 @@ Report suspected vulnerabilities privately to [security@geyserlabs.ai](mailto:se
 
 ## Enforced boundaries
 
-- Human grants require current membership, role and Agent assignment; expired, revoked or moved grants fail closed.
+- Human grants require current membership, role and Agent assignment. The Cell makes a signed, request-bound authorization check with Global at consent, exchange and use; it sends identifiers and scopes only. Missing connectivity denies human access. Membership/grant revisions bind issued credentials, so restoring an old role does not restore an old credential. Project service credentials do not depend on a human login.
 - Project credentials remain bound to one project, Agent, Cell and audience. Fleet sessions cannot read the customer developer API. Service credentials do not impersonate a person’s decision authority.
 - SDK/CLI HTTP destinations allow HTTPS or exact loopback development hosts. A stored credential cannot be silently redirected to another API origin or path.
 - Signed packages must match an administrator-configured certificate identity and issuer, their exact archive digest and the current publisher generation. Both Cell and Agent verify cryptography; metadata flags are not evidence.
 - Executable handlers start inside a supported OS sandbox before import. No ambient credentials, networking, host files or subprocesses are granted. Missing sandbox support disables execution.
 - Task claims and package acknowledgements bind exact current generations; late processes cannot reactivate revoked authority or overwrite another owner’s result.
-- Inputs, contracts and results are project-owned, bounded and validated. Public schemas reject references and regex features that could introduce unbounded remote resolution or validation work.
+- Inputs, contracts and results are project-owned, bounded and validated. Public schemas use the [bounded subset](extensions.md#supported-json-schema-subset), with limits over schema structure, data traversal, validation work, deadline and cancellation.
 
 ## Compromise response
 

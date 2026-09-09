@@ -62,3 +62,9 @@ If installation fails, inspect `status`, verify publisher settings and sandbox a
 ## Configuration previews
 
 `skill`, `model-profile`, and `agent-bundle` scaffolds support validation and packaging only. They are not installed or executed by the public JSON package consumer. Imported third-party runtimes, arbitrary connectors with credentials, and provider/model registration are not supported public extension features.
+
+## Supported JSON Schema subset
+
+Input/output and task outcome schemas use bounded validation. Supported constraints are `type`, `properties`, `required`, `additionalProperties`, `items`, `prefixItems`, `minItems`, `maxItems`, `minLength`, `maxLength`, `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `minProperties`, `maxProperties`, scalar `const`, and `enum` with at most 32 scalar values. Descriptive `title`, `description`, `$schema`, `default`, and `examples` are allowed. Unknown keywords fail validation; references, regex/format validation, combinators, `contains` and `uniqueItems` are unavailable.
+
+Schemas allow at most 512 nodes, depth 24, and 4,096 characters per schema string. JSON data allows at most 10,000 nodes and depth 24, within the 1 MiB input/output byte limit. Numeric magnitudes must be finite and at most 1e100. Validation has a 50,000-operation budget, a one-second ceiling, and checks the invocation's remaining deadline and cancellation. Handler execution uses that same remaining invocation deadline. These limits apply during package qualification and Agent execution; the Cell applies them again to results.

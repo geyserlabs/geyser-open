@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 from pathlib import Path
 from typing import Any, Literal
 
-from jsonschema import Draft202012Validator
 from pydantic import BaseModel, ConfigDict, Field
 
 from .sandbox import run_handler
+from .validation import validate_instance, validate_schema
 
 EXECUTABLE_KINDS = {"tool", "connector", "evaluator"}
 
@@ -24,27 +25,6 @@ class ExecutableDescriptor(BaseModel):
     effect_class: Literal["pure"]
     input_schema: dict[str, Any]
     output_schema: dict[str, Any]
-
-
-def validate_schema(schema: dict[str, Any]) -> None:
-    nodes = 0
-
-    def walk(value: Any, depth: int = 0) -> None:
-        nonlocal nodes
-        nodes += 1
-        if depth > 24 or nodes > 512:
-            raise ValueError("schema exceeds the supported complexity bound")
-        if isinstance(value, dict):
-            if {"$id", "$ref", "$dynamicRef", "pattern", "patternProperties"} & value.keys():
-                raise ValueError("executable schemas do not support references or regex validation")
-            for child in value.values():
-                walk(child, depth + 1)
-        elif isinstance(value, list):
-            for child in value:
-                walk(child, depth + 1)
-
-    walk(schema)
-    Draft202012Validator.check_schema(schema)
 
 
 def descriptor(root: Path, manifest: dict[str, Any]) -> ExecutableDescriptor:
@@ -67,18 +47,29 @@ def descriptor(root: Path, manifest: dict[str, Any]) -> ExecutableDescriptor:
 def run_extension(
     root: Path, value: Any, *, timeout: float = 5.0, cancel_event: threading.Event | None = None
 ) -> Any:
+    deadline = time.monotonic() + timeout
+    if cancel_event is not None and cancel_event.is_set():
+        raise ValueError("extension canceled")
     root = root.expanduser().resolve()
     manifest = json.loads((root / "geyser-package.json").read_text())
     definition = descriptor(root, manifest)
     try:
-        Draft202012Validator(definition.input_schema).validate(value)
+        validate_instance(
+            definition.input_schema, value, deadline=deadline, cancel_event=cancel_event
+        )
     except Exception as exc:
         raise ValueError("input_invalid") from exc
     result = run_handler(
-        root, definition.handler, value, timeout=timeout, cancel_event=cancel_event
+        root,
+        definition.handler,
+        value,
+        timeout=max(0.001, deadline - time.monotonic()),
+        cancel_event=cancel_event,
     )
     try:
-        Draft202012Validator(definition.output_schema).validate(result)
+        validate_instance(
+            definition.output_schema, result, deadline=deadline, cancel_event=cancel_event
+        )
     except Exception as exc:
         raise ValueError("output_invalid") from exc
     return result

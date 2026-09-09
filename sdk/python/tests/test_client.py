@@ -394,3 +394,35 @@ def test_client_rejects_insecure_remote_and_missing_idempotency() -> None:
             client.create_task(
                 TaskCreate(input_ref="artifact:x", input_digest=SHA), idempotency_key=""
             )
+
+
+@pytest.mark.parametrize("submit", [False, True])
+def test_sync_retry_recovers_first_transport_failure(
+    monkeypatch: pytest.MonkeyPatch, submit: bool
+) -> None:
+    calls = []
+    monkeypatch.setattr("geyser_sdk.client.time.sleep", lambda _: None)
+
+    def transport(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        if len(calls) == 1:
+            raise httpx.ReadError("synthetic first response lost", request=request)
+        return response_for(request)
+
+    with GeyserClient(
+        "http://localhost", "synthetic", transport=httpx.MockTransport(transport)
+    ) as client:
+        if submit:
+            assert (
+                client.create_task(
+                    TaskCreate(input_ref="artifact:input", input_digest=SHA),
+                    idempotency_key="synthetic-retry-submit",
+                ).task.id
+                == "task-1"
+            )
+        else:
+            assert client.get_task("task-1").task.id == "task-1"
+    assert len(calls) == 2
+    assert calls[0].url == calls[1].url
+    assert calls[0].headers == calls[1].headers
+    assert calls[0].content == calls[1].content

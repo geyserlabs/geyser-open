@@ -16,3 +16,7 @@
 | Fork remains paused | Public forks are inspection records; replay dispatch is not available |
 
 Use `geyser doctor`, `geyser capabilities`, `geyser tasks get ID`, `geyser runs get ID`, and `geyser status` to inspect the relevant layer. Include only synthetic data and safe error codes in support reports.
+
+## Linux reports no executable sandbox
+
+`bubblewrap` must be installed and the host must allow its user namespaces. On Ubuntu 24.04 and later, have the system administrator verify that the distribution's `bwrap-userns-restrict` AppArmor profile is installed and loaded. Ubuntu explains its [per-application user namespace policy](https://discourse.ubuntu.com/t/understanding-apparmor-user-namespace-restriction/58007). Geyser does not disable the host's security policy or fall back to unrestricted execution. After correcting the host configuration, restart the CLI or Agent so its cached sandbox probe is refreshed.
