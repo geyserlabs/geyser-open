@@ -60,3 +60,45 @@ def test_supported_nested_contract_and_scalar_enumeration() -> None:
         validate_instance(schema, [{"n": -1}])
     with pytest.raises(ValueError, match="scalar"):
         validate_schema({"enum": [{"nested": "object"}]})
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        {"properties": []},
+        {"items": "invalid"},
+        {"const": {}},
+        {"enum": list(range(33))},
+        {"maximum": 1e101},
+        {"maximum": 10**1000},
+        {"title": "x" * 4097},
+        {"properties": {f"n{i}": True for i in range(513)}},
+    ],
+)
+def test_malformed_or_oversized_schemas_are_rejected(schema: object) -> None:
+    with pytest.raises(ValueError):
+        validate_schema(schema)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        {1: "invalid"},
+        {"n": float("inf")},
+        10**1000,
+        {"unexpected": object()},
+        "x" * (1024 * 1024 + 1),
+    ],
+)
+def test_non_json_and_oversized_values_are_rejected(value: object) -> None:
+    with pytest.raises(ValueError):
+        validate_instance({}, value)
+
+
+def test_prefix_items_and_depth_bounds() -> None:
+    validate_instance({"type": "array", "prefixItems": [{"type": "integer"}], "items": False}, [1])
+    nested: object = 0
+    for _ in range(25):
+        nested = [nested]
+    with pytest.raises(ValueError, match="complexity"):
+        validate_instance({}, nested)
