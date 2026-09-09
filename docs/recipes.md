@@ -2,6 +2,16 @@
 
 These examples ship in the **0.2.0 source preview**. Their local paths execute real sandboxed handlers. Remote paths require an upgraded, ready workspace and an active signed package.
 
+## Apply an approved record change and recover without a duplicate write
+
+```console
+python examples/approved_record_update.py
+```
+
+This application example changes one synthetic ticket in a real temporary SQLite database. Its cases show rejection leaving the record untouched, approval advancing the version once, and a lost response being reconciled from the committed operation receipt. Repeating the same operation does not write again; a stale record version or changed request under the same operation ID fails.
+
+Approval binds the run, tool, exact arguments, and operation identity. In production, keep the corresponding receipt in your system of record and inspect the actual result before resolving uncertainty. This example uses `LocalEmulator` for control flow and runs callbacks in your application process. It does not install a write-capable extension or demonstrate a remote Agent approval. Remote decisions use the customer approval APIs described in [durable execution](durable-runs.md).
+
 ## Normalize issue intake
 
 ```console
