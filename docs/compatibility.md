@@ -2,9 +2,9 @@
 
 ## Release status
 
-**0.2.0 is the source preview described by these docs.** The published Python, standalone and Homebrew release remains 0.1.0 until a separate release is published. A source merge, a published package and a running Cell/Agent are distinct states. Do not assume the new execution path exists on a workspace running older software.
+**These docs target SDK/CLI 0.2.0.** Use the exact matching artifact from [releases](releases.md). An untagged source checkout may contain changes that are not published yet. A source merge, a published package and a running Cell/Agent are distinct states. Do not assume the new execution path exists on a workspace running older software.
 
-| Surface | 0.2.0 source behavior | Prerequisite |
+| Surface | 0.2.0 behavior | Prerequisite |
 |---|---|---|
 | Sync/async SDK | Owned input upload, tasks, results, events, traces, decisions and package lifecycle | Python 3.11–3.13; matching public API |
 | Local JSON extensions | Real handler tests and execution | macOS sandbox-exec, or Linux bubblewrap with permitted user namespaces |

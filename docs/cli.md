@@ -1,6 +1,6 @@
 # CLI reference
 
-The **0.2.0 source preview** provides these commands. Global options (`--api-url`, `--profile`, `--json`, `--allow-file-credentials`) precede the command.
+The **SDK/CLI 0.2.0** provides these commands. Global options (`--api-url`, `--profile`, `--json`, `--allow-file-credentials`) precede the command.
 
 | Command | Behavior |
 |---|---|

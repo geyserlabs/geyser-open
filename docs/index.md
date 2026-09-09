@@ -2,7 +2,7 @@
 
 Geyser is useful when your application needs an Agent to do bounded work, return a typed result, and leave a durable record of decisions and effects. Start with one workflow: normalize incoming issues, review supplied material, or evaluate an output before your application accepts it.
 
-**This documentation describes the 0.2.0 source preview.** Published SDK/CLI 0.1.0 does not contain these execution and security corrections. Remote execution requires a matching Customer Cell and Agent rollout; installing a new SDK cannot upgrade a workspace. Check [availability](compatibility.md) before connecting.
+**This documentation covers SDK/CLI 0.2.0.** SDK/CLI 0.1.0 does not contain these execution and reliability corrections. Remote execution requires a matching Customer Cell and Agent rollout; installing a new SDK cannot upgrade a workspace. Check [availability](compatibility.md) before connecting.
 
 ## Choose a useful first project
 

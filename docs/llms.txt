@@ -1,6 +1,6 @@
 # Geyser Developers
 
-> The main branch describes the 0.2.0 source preview. Published 0.1.0 and running services are separate release states.
+> These docs target SDK/CLI 0.2.0. Source checkouts, published artifacts and running services are separate release states; check the matching release and workspace readiness.
 
 - [Quickstart](https://github.com/geyserlabs/geyser-open/blob/main/docs/quickstart.md): Execute a real sandboxed JSON handler.
 - [Authentication](https://github.com/geyserlabs/geyser-open/blob/main/docs/authentication.md): Project setup and exact issued API URL.

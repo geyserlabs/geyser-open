@@ -1,6 +1,6 @@
 # Run your first handler
 
-This is the **0.2.0 source preview**. It executes real Python code in an OS sandbox. You do not need an account, a model, or credentials.
+This is the **SDK/CLI 0.2.0**. It executes real Python code in an OS sandbox. You do not need an account, a model, or credentials.
 
 ## Install from source
 

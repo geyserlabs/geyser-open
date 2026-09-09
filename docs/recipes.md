@@ -1,6 +1,6 @@
 # Reference applications
 
-These examples ship in the **0.2.0 source preview**. Their local paths execute real sandboxed handlers. Remote paths require an upgraded, ready workspace and an active signed package.
+These examples ship in the **SDK/CLI 0.2.0**. Their local paths execute real sandboxed handlers. Remote paths require an upgraded, ready workspace and an active signed package.
 
 ## Apply an approved record change and recover without a duplicate write
 

@@ -9,6 +9,7 @@ import pytest
 from geyser_cli.__main__ import main
 from geyser_cli.credentials import CredentialStore, StoredCredential
 from geyser_cli.extensions import inspect_archive, package_extension
+from geyser_sdk.sandbox import SandboxError, SandboxUnavailable
 
 
 def test_complete_local_workflow(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -29,6 +30,33 @@ def test_complete_local_workflow(tmp_path: Path, capsys: pytest.CaptureFixture[s
     assert package_extension(root)["digest"] == packaged["digest"]
     assert archive.read_bytes() == first
     assert inspect_archive(archive)["files"] >= 4
+
+
+@pytest.mark.parametrize(
+    ("error", "code"),
+    [
+        (SandboxUnavailable("synthetic-private-input"), "sandbox_unavailable"),
+        (SandboxError("synthetic-private-input"), "sandbox_failed"),
+        (SandboxError("extension exceeded its execution deadline"), "execution_deadline"),
+        (ValueError("input_invalid"), "input_invalid"),
+        (ValueError("synthetic-private-input"), "validation_failed"),
+    ],
+)
+def test_failed_cases_report_only_fixed_diagnostics(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+    error: Exception, code: str,
+) -> None:
+    assert main(["init", "tool", "diagnostic-test", "--output", str(tmp_path)]) == 0
+    capsys.readouterr()
+
+    def fail(*_args: object) -> None:
+        raise error
+
+    monkeypatch.setattr("geyser_cli.extensions.run_extension", fail)
+    assert main(["--json", "test", str(tmp_path / "diagnostic-test")]) == 2
+    output = capsys.readouterr().out
+    assert code in output
+    assert "synthetic-private-input" not in output
 
 
 def test_outcome_cli_and_errors(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

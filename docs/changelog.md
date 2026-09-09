@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 — source preview, not yet published
+## 0.2.0
 
 - Current membership, Agent assignment, session audience, project and Cell generation are rechecked for developer access.
 - CLI profiles bind credentials to the issued API URL. Exact loopback checks reject deceptive HTTP hosts.

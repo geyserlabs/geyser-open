@@ -1,6 +1,6 @@
 # Projects, login and service credentials
 
-The **0.2.0 source preview** needs a matching Cell and Agent rollout for remote work. Use the console’s **Developers** page to see execution readiness. An unavailable Agent is not made executable by creating a project.
+The **SDK/CLI 0.2.0** needs a matching Cell and Agent rollout for remote work. Use the console’s **Developers** page to see execution readiness. An unavailable Agent is not made executable by creating a project.
 
 ## Create a project
 

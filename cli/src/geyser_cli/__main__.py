@@ -221,7 +221,7 @@ def _handle_local(args: argparse.Namespace) -> Any:
     if args.command == "test":
         result = test_extension(args.path)
         if result["failed"]:
-            raise RuntimeError(f"frozen cases failed: {result['failed']}")
+            raise RuntimeError(f"frozen cases failed: {result['failures']}")
         return result
     if args.command == "package":
         return package_extension(args.path)

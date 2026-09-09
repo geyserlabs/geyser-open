@@ -1,6 +1,6 @@
 # Signed JSON extensions
 
-Executable extensions in the **0.2.0 source preview** are synchronous Python handlers that accept one JSON value and return one JSON value. `tool`, `connector`, and `evaluator` share this contract. Their effect class is `pure`: no network, host files, subprocesses, inherited credentials, or external side effects.
+Executable extensions in the **SDK/CLI 0.2.0** are synchronous Python handlers that accept one JSON value and return one JSON value. `tool`, `connector`, and `evaluator` share this contract. Their effect class is `pure`: no network, host files, subprocesses, inherited credentials, or external side effects.
 
 ## Package contract
 
