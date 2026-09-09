@@ -62,6 +62,8 @@ jobs:
                       report["probe_returncode"] = result.returncode
                       report["probe_categories"] = [name for name, phrase in {
                           "operation_denied": b"Operation not permitted",
+                          "sandbox_apply_denied": b"sandbox_apply",
+                          "exec_denied": b"execvp",
                           "permission_denied": b"Permission denied",
                           "file_missing": b"No such file",
                           "library_missing": b"Library not loaded",
