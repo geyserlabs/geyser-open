@@ -2,6 +2,8 @@
 
 The **SDK/CLI 0.2.0** provides these commands. Global options (`--api-url`, `--profile`, `--json`, `--allow-file-credentials`) precede the command.
 
+The standalone download needs no separate Python for remote API commands or local package validation/creation. Executing a Python extension with `test` or `dev` requires Python 3.11 or newer on your normal PATH, outside the package and current directory, plus the [supported OS sandbox](compatibility.md). `python_unavailable` means to install Python; `sandbox_unavailable` means the OS isolation prerequisite is unavailable. Both stop execution.
+
 | Command | Behavior |
 |---|---|
 | `login [--scope SCOPE]` | Device login; stores the issued origin in the OS keychain |

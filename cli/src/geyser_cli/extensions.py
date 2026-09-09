@@ -12,7 +12,7 @@ from typing import Any
 from geyser_sdk import bytes_digest
 from geyser_sdk.bundles import OVERLAY_KINDS, overlay_descriptor
 from geyser_sdk.extensions import EXECUTABLE_KINDS, descriptor, run_extension
-from geyser_sdk.sandbox import SandboxError, SandboxUnavailable
+from geyser_sdk.sandbox import PYTHON_REQUIRED, SandboxError, SandboxUnavailable
 from pydantic import BaseModel, ConfigDict, Field
 
 from .scaffolds import KINDS
@@ -115,7 +115,9 @@ def test_extension(root: Path) -> dict[str, Any]:
             # Package output and exception details can contain private input.
             # Only these implementation-owned categories reach test reports.
             if isinstance(exc, SandboxUnavailable):
-                code = "sandbox_unavailable"
+                code = (
+                    "python_unavailable" if str(exc) == PYTHON_REQUIRED else "sandbox_unavailable"
+                )
             elif isinstance(exc, SandboxError):
                 code = {
                     "extension exceeded its execution deadline": "execution_deadline",
