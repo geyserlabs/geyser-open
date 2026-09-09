@@ -28,9 +28,11 @@ Retention uses your customer run-retention policy (30 days by default). Active t
 
 ## Support and security
 
-Report reproducible bugs in [GitHub Issues](https://github.com/geyserlabs/geyser-open/issues). Include the SDK/CLI version, OS, API version, safe error code, expected behavior and a minimal synthetic example. Never include a token or private content. The preview has no general support-response or availability SLA. Security reporting follows the [security policy](security.md).
+Report reproducible bugs in [GitHub Issues](https://github.com/geyserlabs/geyser-open/issues). Include the SDK/CLI version, OS, API version, safe error code, expected behavior and a minimal synthetic example. Never include a token or private content. Geyser engineering owns integration support, targeting an initial response within two business days and triage within five. These are operational targets, not a contractual response-time or availability SLA. The [support policy](https://github.com/geyserlabs/geyser-open/blob/main/SUPPORT.md) covers maintenance and migration notice. Security reporting follows the [security policy](security.md).
 
 ## What we want to learn
+
+Use the [developer trial protocol](developer-trials.md) to collect observed results and compare them with a simpler alternative.
 
 Before expanding the program, test with developers outside Geyser using only the public guides. Measure time to the first local handler, first completed remote task, recovery from a lost connection, and a useful repeated workflow. Initial product targets are a first local result within ten minutes and a first remote result within thirty minutes after workspace access; these are experiment targets, not measured outcomes or guarantees.
 

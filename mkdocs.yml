@@ -87,6 +87,7 @@ nav:
       - Security: security.md
       - Changelog: changelog.md
       - Try a workflow: external-preview.md
+      - Independent developer trials: developer-trials.md
   - Geyser website: https://www.geyserlabs.ai
   - Customer guides: https://www.geyserlabs.ai/guides
 

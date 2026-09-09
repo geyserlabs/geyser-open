@@ -1,0 +1,34 @@
+name: Integration help
+description: Get help completing a useful workflow with Geyser.
+title: "Integration: "
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What are you trying to accomplish?
+      description: Describe the workflow and what useful success would look like.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions and platform
+      description: SDK, CLI, operating system, and workspace readiness/version.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Where did you get stuck?
+      description: Include the guide, step, expected result, and a small synthetic example. Remove credentials and private content.
+    validations:
+      required: true
+  - type: input
+    id: elapsed
+    attributes:
+      label: Approximate time spent before getting stuck
+  - type: textarea
+    id: alternative
+    attributes:
+      label: What would you use otherwise?
+      description: Tell us whether Geyser would save work compared with your existing approach.
