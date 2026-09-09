@@ -42,7 +42,7 @@ jobs:
       - name: Exercise handlers and validate instructions
         run: |
           .venv/bin/python - <<'PYTHON'
-          import json, os, subprocess, sys, tempfile
+          import json, os, re, subprocess, sys, tempfile
           from pathlib import Path
           from geyser_sdk.sandbox import _command, _mac_memory_reader, available
           report = {"sandbox_available": available(), "platform": sys.platform}
@@ -69,6 +69,13 @@ jobs:
                           "library_missing": b"Library not loaded",
                           "python_startup": b"Fatal Python error",
                       }.items() if phrase in result.stderr]
+                      report["probe_frames"] = [
+                          {"module": Path(path).name, "line": int(line)}
+                          for path, line in re.findall(r'File "([^"]+)", line ([0-9]+)',
+                              result.stderr.decode(errors="replace"))
+                      ]
+                      report["interpreter_kind"] = (
+                          "framework" if "Frameworks" in sys.base_prefix else "standalone")
                   except Exception as error:
                       report["probe_error_type"] = type(error).__name__
           print(json.dumps(report, sort_keys=True))
