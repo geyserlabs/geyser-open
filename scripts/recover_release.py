@@ -32,6 +32,10 @@ def api(path: str) -> dict:
 
 def verify_source() -> None:
     version = release_version()
+    recovery_ref = os.environ.get("GITHUB_REF", "")
+    if recovery_ref and not re.fullmatch(
+            rf"refs/tags/v{re.escape(version)}-publish-[0-9]+", recovery_ref):
+        raise ValueError("publication recovery requires an immutable publication tag")
     run_id = os.environ["REUSE_RUN_ID"]
     if not re.fullmatch(r"[0-9]+", run_id):
         raise ValueError("original release run must be a numeric ID")
