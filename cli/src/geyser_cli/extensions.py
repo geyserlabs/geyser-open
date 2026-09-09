@@ -12,7 +12,7 @@ from typing import Any
 from geyser_sdk import bytes_digest
 from geyser_sdk.bundles import OVERLAY_KINDS, overlay_descriptor
 from geyser_sdk.extensions import EXECUTABLE_KINDS, descriptor, run_extension
-from geyser_sdk.sandbox import SandboxError
+from geyser_sdk.sandbox import SandboxError, SandboxUnavailable
 from pydantic import BaseModel, ConfigDict, Field
 
 from .scaffolds import KINDS
@@ -102,19 +102,42 @@ def test_extension(root: Path) -> dict[str, Any]:
         )
     cases = _load_json(root.expanduser().resolve() / "evals" / "cases.json")["cases"]
     failed = []
+    failures = []
     for row in cases:
+        code = "output_mismatch"
         try:
             actual = run_extension(root, row["input"])
             passed = "expected_output" in row and actual == row["expected_output"]
+            if "expected_error" in row:
+                code = "expected_error_missing"
         except (ValueError, SandboxError) as exc:
             passed = str(exc) == row.get("expected_error")
+            # Package output and exception details can contain private input.
+            # Only these implementation-owned categories reach test reports.
+            if isinstance(exc, SandboxUnavailable):
+                code = "sandbox_unavailable"
+            elif isinstance(exc, SandboxError):
+                code = {
+                    "extension exceeded its execution deadline": "execution_deadline",
+                    "extension exceeded its memory bound or memory inspection failed": (
+                        "memory_bound_or_inspection"
+                    ),
+                    "extension output exceeds 1 MiB": "output_bound",
+                    "extension did not return one JSON value": "output_not_json",
+                }.get(str(exc), "sandbox_failed")
+            else:
+                code = {"input_invalid": "input_invalid", "output_invalid": "output_invalid"}.get(
+                    str(exc), "validation_failed"
+                )
         if not passed:
             failed.append(row.get("case_id", "unknown"))
+            failures.append({"case_id": row.get("case_id", "unknown"), "code": code})
     return {
         **validation,
         "cases": len(cases),
         "passed": len(cases) - len(failed),
         "failed": failed,
+        "failures": failures,
     }
 
 

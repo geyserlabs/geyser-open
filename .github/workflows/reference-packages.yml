@@ -2,11 +2,51 @@ name: Signed reference packages
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/reference-packages.yml'
+      - 'sdk/**'
+      - 'cli/**'
+      - 'examples/packages/**'
 
 permissions: {}
 
 jobs:
+  handlers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-14, ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --all-packages --all-extras --dev --locked
+      - name: Install Linux extension sandbox
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y apparmor bubblewrap
+          if test -s /etc/apparmor.d/bwrap-userns-restrict; then
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          else
+            sudo install -m 0644 .github/ci/bwrap.apparmor /etc/apparmor.d/geyser-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/geyser-ci-bwrap
+          fi
+      - name: Exercise handlers and validate instructions
+        run: |
+          uv run geyser test examples/packages/issue-normalizer
+          uv run geyser test examples/packages/source-review-gate
+          uv run geyser validate examples/packages/careful-review
+
   packages:
+    needs: handlers
     if: github.ref == 'refs/heads/main'
     runs-on: macos-14
     timeout-minutes: 10
@@ -20,11 +60,6 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --all-packages --all-extras --dev --locked
-      - name: Exercise handlers and validate instructions
-        run: |
-          uv run geyser test examples/packages/issue-normalizer
-          uv run geyser test examples/packages/source-review-gate
-          uv run geyser validate examples/packages/careful-review
       - name: Build once and sign the exact archives
         run: |
           .venv/bin/python scripts/build_reference_packages.py --output-dir dist/reference-packages
