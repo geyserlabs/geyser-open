@@ -9,6 +9,10 @@ on:
         description: "Version to publish without the v prefix"
         required: true
         type: string
+      reuse_run_id:
+        description: "Optional original release run whose verified artifacts should be published without rebuilding"
+        required: false
+        type: string
 
 permissions: {}
 
@@ -21,6 +25,7 @@ env:
 
 jobs:
   python-distributions:
+    if: ${{ !inputs.reuse_run_id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -45,6 +50,7 @@ jobs:
           retention-days: 1
 
   standalone-cli:
+    if: ${{ !inputs.reuse_run_id }}
     strategy:
       fail-fast: false
       matrix:
@@ -111,9 +117,41 @@ jobs:
           path: release-assets/*
           retention-days: 1
 
-  publish-pypi-sdk:
-    needs: assemble
+  reuse-artifacts:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.reuse_run_id != '' }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Verify original release run and tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REUSE_RUN_ID: ${{ inputs.reuse_run_id }}
+        run: python scripts/recover_release.py source
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: complete-release
+          path: release-assets
+          run-id: ${{ inputs.reuse_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify exact artifacts and distribution metadata
+        run: python scripts/recover_release.py assets release-assets
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: complete-release
+          path: release-assets/*
+          retention-days: 1
+
+  publish-pypi-sdk:
+    needs: [assemble, reuse-artifacts]
+    if: ${{ !cancelled() && (needs.assemble.result == 'success' || needs.reuse-artifacts.result == 'success') }}
+    runs-on: ubuntu-24.04
+    environment: pypi
     permissions:
       id-token: write
     steps:
@@ -128,8 +166,10 @@ jobs:
           attestations: false
 
   publish-pypi-open:
-    needs: assemble
+    needs: [assemble, reuse-artifacts]
+    if: ${{ !cancelled() && (needs.assemble.result == 'success' || needs.reuse-artifacts.result == 'success') }}
     runs-on: ubuntu-24.04
+    environment: pypi
     permissions:
       id-token: write
     steps:
@@ -144,7 +184,7 @@ jobs:
           attestations: false
 
   publish-github-release:
-    needs: [assemble, publish-pypi-sdk, publish-pypi-open]
+    needs: [publish-pypi-sdk, publish-pypi-open]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -156,4 +196,12 @@ jobs:
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$RELEASE_TAG" release-assets/* --generate-notes --title "Geyser Open $RELEASE_TAG"
+          GH_REPO: geyserlabs/geyser-open
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            mkdir published
+            gh release download "$RELEASE_TAG" --pattern SHA256SUMS --dir published
+            cmp release-assets/SHA256SUMS published/SHA256SUMS
+          else
+            gh release create "$RELEASE_TAG" release-assets/* --generate-notes --title "Geyser Open $RELEASE_TAG"
+          fi
