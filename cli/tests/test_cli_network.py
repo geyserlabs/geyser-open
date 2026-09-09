@@ -45,13 +45,18 @@ class FakeClient:
     def fork(self, run_id: str, request: Any) -> dict[str, Any]:
         return {"run_id": run_id, "fork_id": request.fork_key}
 
+    def replay(self, run_id: str, request: Any) -> dict[str, Any]:
+        return {"run_id": run_id, "task_key": request.fork_key, "mode": request.mode}
+
     def list_approvals(self) -> dict[str, Any]:
         return {"data": []}
 
     def get_approval(self, approval_id: str) -> dict[str, Any]:
         return {"approval_id": approval_id}
 
-    def decide_approval(self, run_id: str, approval_id: str, decision: Any) -> dict[str, Any]:
+    def decide_approval(
+        self, run_id: str, approval_id: str, decision: Any, *, expected_run_sequence: int
+    ) -> dict[str, Any]:
         return {"run_id": run_id, "approval_id": approval_id, "decision": decision.decision}
 
     def upload_package(self, package: Any, *, idempotency_key: str) -> dict[str, Any]:
@@ -72,6 +77,18 @@ class FakeClient:
         ["runs", "trace", "run-1", "--customer"],
         ["runs", "stop", "run-1", "--expected-sequence", "2", "--yes"],
         ["runs", "fork", "run-1", "--mode", "tool_stubbed", "--expected-sequence", "2", "--yes"],
+        [
+            "runs",
+            "replay",
+            "run-1",
+            "--mode",
+            "model_only",
+            "--expected-sequence",
+            "2",
+            "--idempotency-key",
+            "replay-key-1",
+            "--yes",
+        ],
         ["approvals", "list"],
         ["approvals", "get", "approval-1"],
         [
@@ -82,6 +99,8 @@ class FakeClient:
             "approve",
             "--expected-sequence",
             "2",
+            "--expected-run-sequence",
+            "3",
             "--binding-digest",
             SHA,
             "--reason-code",

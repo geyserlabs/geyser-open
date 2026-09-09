@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from geyser_sdk.bundles import ModelSelection, TaskBundle
 from geyser_sdk.models import (
     API_VERSION,
     ApprovalDecision,
@@ -24,6 +25,7 @@ from geyser_sdk.models import (
     PackagePromotion,
     PackageResponse,
     PackageUpload,
+    ReplayCreate,
     ResultResponse,
     RevocationResponse,
     RunEventPage,
@@ -34,6 +36,7 @@ from geyser_sdk.models import (
     TaskResponse,
     TraceResponse,
 )
+from geyser_sdk.replay import ToolStubs
 from pydantic import BaseModel
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +45,9 @@ OPENAPI_PATH = ROOT / "openapi" / "geyser-v1.openapi.json"
 MODELS: dict[str, type[BaseModel]] = {
     model.__name__: model
     for model in (
+        ModelSelection,
+        TaskBundle,
+        ToolStubs,
         ApprovalDecision,
         ApprovalPage,
         ApprovalResponse,
@@ -58,6 +64,7 @@ MODELS: dict[str, type[BaseModel]] = {
         PackagePromotion,
         PackageResponse,
         PackageUpload,
+        ReplayCreate,
         RunEventPage,
         RunPage,
         RunResponse,

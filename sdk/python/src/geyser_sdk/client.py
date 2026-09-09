@@ -31,6 +31,7 @@ from .models import (
     PackagePromotion,
     PackageResponse,
     PackageUpload,
+    ReplayCreate,
     ResultResponse,
     RevocationResponse,
     Run,
@@ -283,7 +284,12 @@ class AsyncGeyserClient:
         )
 
     async def decide_approval(
-        self, run_id: str, approval_id: str, decision: ApprovalDecision
+        self,
+        run_id: str,
+        approval_id: str,
+        decision: ApprovalDecision,
+        *,
+        expected_run_sequence: int,
     ) -> RunResponse:
         return await self._request(
             "POST",
@@ -291,7 +297,7 @@ class AsyncGeyserClient:
             RunResponse,
             json=decision.model_dump(mode="json"),
             idempotency_key=decision.decision_id,
-            if_match=decision.expected_approval_sequence,
+            if_match=expected_run_sequence,
         )
 
     async def list_approvals(self, *, cursor: str = "", limit: int = 100) -> ApprovalPage:
@@ -371,6 +377,17 @@ class AsyncGeyserClient:
             json=fork.model_dump(mode="json"),
             idempotency_key=fork.fork_key,
             if_match=fork.expected_sequence,
+        )
+
+    async def replay(self, run_id: str, replay: ReplayCreate) -> TaskResponse:
+        """Create a new project task; requires current customer decision authority."""
+        return await self._request(
+            "POST",
+            f"/api/v1/customer/runs/{run_id}/replays",
+            TaskResponse,
+            json=replay.model_dump(mode="json"),
+            idempotency_key=replay.fork_key,
+            if_match=replay.expected_sequence,
         )
 
 
@@ -547,7 +564,12 @@ class GeyserClient:
         )
 
     def decide_approval(
-        self, run_id: str, approval_id: str, decision: ApprovalDecision
+        self,
+        run_id: str,
+        approval_id: str,
+        decision: ApprovalDecision,
+        *,
+        expected_run_sequence: int,
     ) -> RunResponse:
         return self._request(
             "POST",
@@ -555,7 +577,7 @@ class GeyserClient:
             RunResponse,
             json=decision.model_dump(mode="json"),
             idempotency_key=decision.decision_id,
-            if_match=decision.expected_approval_sequence,
+            if_match=expected_run_sequence,
         )
 
     def list_approvals(self, *, cursor: str = "", limit: int = 100) -> ApprovalPage:
@@ -629,6 +651,17 @@ class GeyserClient:
             json=fork.model_dump(mode="json"),
             idempotency_key=fork.fork_key,
             if_match=fork.expected_sequence,
+        )
+
+    def replay(self, run_id: str, replay: ReplayCreate) -> TaskResponse:
+        """Create a new project task; requires current customer decision authority."""
+        return self._request(
+            "POST",
+            f"/api/v1/customer/runs/{run_id}/replays",
+            TaskResponse,
+            json=replay.model_dump(mode="json"),
+            idempotency_key=replay.fork_key,
+            if_match=replay.expected_sequence,
         )
 
 

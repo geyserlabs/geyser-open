@@ -7,6 +7,11 @@
           "title": "Approval Id",
           "type": "string"
         },
+        "arguments_digest": {
+          "default": "",
+          "title": "Arguments Digest",
+          "type": "string"
+        },
         "binding_digest": {
           "default": "",
           "title": "Binding Digest",
@@ -22,6 +27,11 @@
           "title": "Data Boundary",
           "type": "string"
         },
+        "effect_id": {
+          "default": "",
+          "title": "Effect Id",
+          "type": "string"
+        },
         "expires_at": {
           "anyOf": [
             {
@@ -34,13 +44,29 @@
           "default": null,
           "title": "Expires At"
         },
+        "requested_sequence": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Requested Sequence",
+          "type": "integer"
+        },
         "risk_class": {
           "default": "",
           "title": "Risk Class",
           "type": "string"
         },
+        "run_id": {
+          "default": "",
+          "title": "Run Id",
+          "type": "string"
+        },
         "state": {
           "title": "State",
+          "type": "string"
+        },
+        "tool_name": {
+          "default": "",
+          "title": "Tool Name",
           "type": "string"
         },
         "version": {

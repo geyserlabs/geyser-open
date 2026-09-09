@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "StubReply": {
+      "additionalProperties": false,
+      "properties": {
+        "args_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Args Digest",
+          "type": "string"
+        },
+        "result": {
+          "title": "Result"
+        },
+        "tool_name": {
+          "title": "Tool Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_name",
+        "args_digest",
+        "result"
+      ],
+      "title": "StubReply",
+      "type": "object"
+    },
+    "StubTool": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,159}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "parameters"
+      ],
+      "title": "StubTool",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "replies": {
+      "items": {
+        "$ref": "#/$defs/StubReply"
+      },
+      "maxItems": 128,
+      "title": "Replies",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "tools": {
+      "items": {
+        "$ref": "#/$defs/StubTool"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Tools",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tools"
+  ],
+  "title": "ToolStubs",
+  "type": "object"
+}

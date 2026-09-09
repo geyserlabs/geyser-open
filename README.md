@@ -17,7 +17,7 @@ python examples/extension_app.py source-review-gate
 
 Linux execution requires bubblewrap and allowed user namespaces; macOS requires sandbox-exec. Code is imported only after isolation. The HTTP SDK does not require a local sandbox. The in-memory emulator runs application-registered callbacks in your own process and is separate from extension isolation.
 
-Start with [the quickstart](docs/quickstart.md), [reference applications](docs/recipes.md), [authentication](docs/authentication.md), and [costs, limits and support](docs/program.md). Read [availability and migration](docs/compatibility.md) before using a remote workspace.
+Start with [the quickstart](docs/quickstart.md), [reference applications](docs/recipes.md), [authentication](docs/authentication.md), and [costs, limits and support](docs/program.md). Apply [task-specific bundles](docs/bundles.md), require exact approvals before writes, or compare deliberate new executions with [replay modes](docs/replay.md). Read [availability and migration](docs/compatibility.md) before using a remote workspace.
 
 Service credentials submit project work; human grants make authorized customer decisions; Agent keys produce run events. Credentials never silently change audience. Inputs/results and package bytes belong to the Customer Cell. The compatibility relay processes plaintext transiently; see [custody](docs/cells-privacy.md).
 

@@ -73,6 +73,7 @@ nav:
       - Structured outcomes: outcomes.md
   - Durable execution:
       - Runs, events, and checkpoints: durable-runs.md
+      - Replay modes: replay.md
   - Build and extend:
       - Skills, tools, connectors, and evaluators: extensions.md
       - Specialists and model profiles: specialists.md

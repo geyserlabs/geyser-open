@@ -80,12 +80,16 @@ Here `client`, `run_id`, `save_cursor` and `handle_event` belong to your applica
 
 ## Decisions and errors
 
-Cancellation uses `CancelRequest(cancellation_id="can_...", expected_sequence=sequence, reason_code="...")`. Evaluation and fork requests also carry `expected_sequence`; it must agree with `If-Match`. A stale decision returns `412`. Inspect the current state before deciding again. Approvals additionally bind the exact approval and argument digest.
+Cancellation uses `CancelRequest(cancellation_id="can_...", expected_sequence=sequence, reason_code="...")`. Evaluation and fork requests also carry `expected_sequence`; it must agree with `If-Match`. A stale decision returns `412`. Inspect the current state before deciding again. Approvals additionally bind the exact approval and argument digest. Read `approval.requested_sequence` for `ApprovalDecision.expected_approval_sequence`; pass the current run sequence separately to `decide_approval(..., expected_run_sequence=run.sequence)`.
 
-Forks are **preview inspection records**. They create a paused child record from a checkpoint; no public replay dispatcher or automatic re-execution is provided. Do not use them as a job retry mechanism.
+Forks are **preview inspection records**. They create a paused child record from a checkpoint; the separate [replay API](replay.md) dispatches a deliberately new task. Do not use them as a job retry mechanism.
 
 The SDK raises `ProblemError` for RFC problem details, `ResponseValidationError` for an incompatible response and `TransportError` when no response is available. Retries are bounded and honor `Retry-After`; long retry delays are returned to your application instead of sleeping indefinitely. Idempotent creation can be retried; unknown consequential effects require reconciliation, not blind resubmission.
 
 ## Async applications
 
 `AsyncGeyserClient` exposes the same operations with `await`, async context management and async iterators. Reuse a client and close it. Do not store credentials in source code; a token-provider callback can read your own secret manager.
+
+## Task-specific instructions
+
+Use `bundle_package_id`, `skill_package_ids`, and `model_profile_package_id` on `TaskCreate` to select active signed packages. Use `require_write_approval=True` to require exact human decisions before consequential calls. These options need the corresponding advertised execution flags. See [bundles](bundles.md) for formats, applied-content reports and omitted references.

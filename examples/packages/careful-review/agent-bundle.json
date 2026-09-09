@@ -1,0 +1,22 @@
+{
+  "context": [
+    {
+      "title": "Review terminology",
+      "source": "example:review-guidance:1",
+      "kind": "notes",
+      "content": "A review is complete when every accepted claim has a supplied source ID and uncertain claims are labeled."
+    }
+  ],
+  "name": "careful-review",
+  "persona": "Review supplied material, cite its source IDs, and identify what remains uncertain.",
+  "references": [],
+  "schema_version": 1,
+  "selection": {},
+  "skills": [
+    {
+      "description": "Check supplied claims.",
+      "instructions": "Compare each claim with the supplied sources. Return source IDs for supported claims, and list unsupported claims separately. Do not treat a source reference as evidence unless its content is present.",
+      "name": "review-facts"
+    }
+  ]
+}

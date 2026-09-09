@@ -359,6 +359,11 @@
             "title": "Approval Id",
             "type": "string"
           },
+          "arguments_digest": {
+            "default": "",
+            "title": "Arguments Digest",
+            "type": "string"
+          },
           "binding_digest": {
             "default": "",
             "title": "Binding Digest",
@@ -374,6 +379,11 @@
             "title": "Data Boundary",
             "type": "string"
           },
+          "effect_id": {
+            "default": "",
+            "title": "Effect Id",
+            "type": "string"
+          },
           "expires_at": {
             "anyOf": [
               {
@@ -384,6 +394,12 @@
               }
             ],
             "title": "Expires At"
+          },
+          "requested_sequence": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Requested Sequence",
+            "type": "integer"
           },
           "risk_class": {
             "default": "",
@@ -396,6 +412,11 @@
           },
           "state": {
             "title": "State",
+            "type": "string"
+          },
+          "tool_name": {
+            "default": "",
+            "title": "Tool Name",
             "type": "string"
           },
           "version": {
@@ -994,6 +1015,86 @@
         "title": "PublicPackageResponse",
         "type": "object"
       },
+      "PublicReplayCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "authority_ref": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Authority Ref",
+            "type": "string"
+          },
+          "budget": {
+            "additionalProperties": true,
+            "title": "Budget",
+            "type": "object"
+          },
+          "expected_sequence": {
+            "minimum": 1.0,
+            "title": "Expected Sequence",
+            "type": "integer"
+          },
+          "fork_key": {
+            "maxLength": 160,
+            "minLength": 8,
+            "pattern": "^[A-Za-z0-9._:-]+$",
+            "title": "Fork Key",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "model_only",
+              "tool_stubbed",
+              "read_only_shadow",
+              "full_reexecution"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "sanitized": {
+            "default": false,
+            "title": "Sanitized",
+            "type": "boolean"
+          },
+          "stubs_ref": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Stubs Ref",
+            "type": "string"
+          },
+          "target_framework": {
+            "default": "",
+            "maxLength": 64,
+            "title": "Target Framework",
+            "type": "string"
+          },
+          "target_model_profile_digest": {
+            "default": "",
+            "maxLength": 80,
+            "title": "Target Model Profile Digest",
+            "type": "string"
+          },
+          "target_model_ref": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Target Model Ref",
+            "type": "string"
+          },
+          "target_policy_ref": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Target Policy Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fork_key",
+          "expected_sequence",
+          "mode"
+        ],
+        "title": "PublicReplayCreate",
+        "type": "object"
+      },
       "PublicResultResponse": {
         "additionalProperties": false,
         "properties": {
@@ -1052,6 +1153,11 @@
             "minimum": 0.0,
             "title": "Evaluation Count",
             "type": "integer"
+          },
+          "execution": {
+            "additionalProperties": true,
+            "title": "Execution",
+            "type": "object"
           },
           "framework": {
             "title": "Framework",
@@ -1336,6 +1442,12 @@
             "title": "Budget",
             "type": "object"
           },
+          "bundle_package_id": {
+            "default": "",
+            "maxLength": 80,
+            "title": "Bundle Package Id",
+            "type": "string"
+          },
           "input_digest": {
             "title": "Input Digest",
             "type": "string"
@@ -1349,11 +1461,22 @@
             "title": "Metadata",
             "type": "object"
           },
+          "model_profile_package_id": {
+            "default": "",
+            "maxLength": 80,
+            "title": "Model Profile Package Id",
+            "type": "string"
+          },
           "outcome_contract_ref": {
             "default": "",
             "maxLength": 1000,
             "title": "Outcome Contract Ref",
             "type": "string"
+          },
+          "require_write_approval": {
+            "default": false,
+            "title": "Require Write Approval",
+            "type": "boolean"
           },
           "required_capabilities": {
             "items": {
@@ -1361,6 +1484,14 @@
             },
             "maxItems": 64,
             "title": "Required Capabilities",
+            "type": "array"
+          },
+          "skill_package_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "title": "Skill Package Ids",
             "type": "array"
           }
         },
@@ -3493,6 +3624,193 @@
           }
         ],
         "summary": "Public Customer Fork Run"
+      }
+    },
+    "/api/v1/customer/runs/{run_id}/replays": {
+      "post": {
+        "operationId": "public_customer_replay_run_api_v1_customer_runs__run_id__replays_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "title": "If-Match",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-session-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Session-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicReplayCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicTaskResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Conflict"
+          },
+          "412": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Precondition Failed"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Too Many Requests"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {}
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "CustomerSession": []
+          },
+          {
+            "ProjectCredential": []
+          }
+        ],
+        "summary": "Public Customer Replay Run"
       }
     },
     "/api/v1/customer/runs/{run_id}/trace": {

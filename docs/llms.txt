@@ -8,3 +8,5 @@
 - [Extensions](https://github.com/geyserlabs/geyser-open/blob/main/docs/extensions.md): Exact publisher trust and actual installation.
 - [Availability](https://github.com/geyserlabs/geyser-open/blob/main/docs/compatibility.md): Runtime requirements and preview boundaries.
 - [Costs and limits](https://github.com/geyserlabs/geyser-open/blob/main/docs/program.md): Account billing, constraints and support.
+- [Bundles](https://github.com/geyserlabs/geyser-open/blob/main/docs/bundles.md): Signed per-task instructions and attributed context.
+- [Replay modes](https://github.com/geyserlabs/geyser-open/blob/main/docs/replay.md): Actual restricted or freshly authorized new executions.

@@ -33,7 +33,7 @@ Code is imported only after OS isolation is active. Linux uses bubblewrap user/p
 
 Each invocation accepts/returns at most 1 MiB of JSON, runs for at most 30 seconds, and has bounded output, CPU and file descriptors. Linux applies an address-space limit. macOS applies a sampled RSS watchdog; this is not a hard kernel allocation ceiling. Temporary writes are private and removed after execution. The package is copied through directory handles that refuse symlink traversal. Archive paths, special files, links and size bounds are validated again on the Agent.
 
-Packages are limited to 512 entries, 2 MiB per file and 10 MiB unpacked. Installation runs 1–32 frozen cases with at most two seconds per case and ten seconds total. Keep installation cases fast and deterministic. At most 200 desired packages may be assigned to an Agent.
+Packages are limited to 512 entries, 2 MiB per file and 10 MiB unpacked. Executable JSON handler installation runs 1–32 frozen cases with at most two seconds per case and ten seconds total. Keep installation cases fast and deterministic. At most 200 desired packages may be assigned to an Agent.
 
 ## Trust, stage, install
 
@@ -61,10 +61,16 @@ If installation fails, inspect `status`, verify publisher settings and sandbox a
 
 ## Configuration previews
 
-`skill`, `model-profile`, and `agent-bundle` scaffolds support validation and packaging only. They are not installed or executed by the public JSON package consumer. Imported third-party runtimes, arbitrary connectors with credentials, and provider/model registration are not supported public extension features.
+`skill`, `model-profile`, and `agent-bundle` packages apply actual instructions, context and current-selection assertions to qualified Open tasks. See [bundle execution](bundles.md). They do not execute as JSON handlers. Imported third-party runtimes, arbitrary connectors with credentials, and provider/model registration are not supported public extension features.
 
 ## Supported JSON Schema subset
 
 Input/output and task outcome schemas use bounded validation. Supported constraints are `type`, `properties`, `required`, `additionalProperties`, `items`, `prefixItems`, `minItems`, `maxItems`, `minLength`, `maxLength`, `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `minProperties`, `maxProperties`, scalar `const`, and `enum` with at most 32 scalar values. Descriptive `title`, `description`, `$schema`, `default`, and `examples` are allowed. Unknown keywords fail validation; references, regex/format validation, combinators, `contains` and `uniqueItems` are unavailable.
 
 Schemas allow at most 512 nodes, depth 24, and 4,096 characters per schema string. JSON data allows at most 10,000 nodes and depth 24, within the 1 MiB input/output byte limit. Numeric magnitudes must be finite and at most 1e100. Validation has a 50,000-operation budget, a one-second ceiling, and checks the invocation's remaining deadline and cancellation. Handler execution uses that same remaining invocation deadline. These limits apply during package qualification and Agent execution; the Cell applies them again to results.
+
+## Maintained reference archives
+
+Maintainers can run the [Signed reference packages workflow](https://github.com/geyserlabs/geyser-open/actions/workflows/reference-packages.yml) on reviewed `main`. It tests the two JSON handlers, validates the `careful-review` instruction bundle, builds each archive once, and signs the exact bytes. Download the `developer-reference-packages` artifact from that run; `packages.json` identifies its archives and digests.
+
+For the Geyser repository's workflow, the publisher identity is `https://github.com/geyserlabs/geyser-open/.github/workflows/reference-packages.yml@refs/heads/main` and the issuer is `https://token.actions.githubusercontent.com`. Review that publisher before setting project trust. A fork has a different identity. Artifact availability alone does not install or promote a package.

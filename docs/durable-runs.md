@@ -10,6 +10,14 @@ A run may pause for approval, billing, or recovery while its task remains claime
 
 Cancellation records a request and an adapter acknowledgement before the canceled state. It stops future work; it does not undo a committed effect. Events use increasing sequence numbers. `watch_events` drains the terminal sequence, and saved cursors support reconnects.
 
+## Require approval before a write
+
+Set `TaskCreate(require_write_approval=True)` or use `geyser tasks create --require-write-approval`. The assigned Agent must advertise `write_approval_tasks: true`. This adds an approval requirement for writes, commands and other consequential tool calls; it never grants a tool or overrides workspace policy. Read-only tools need no added approval.
+
+Approval responses expose the exact `tool_name`, `arguments_digest`, `binding_digest` and `requested_sequence`. Check the intended action before deciding. Call `decide_approval(..., expected_run_sequence=current_run.sequence)` and put `approval.requested_sequence` in `ApprovalDecision.expected_approval_sequence`. These are different versions. A recorded rejection settles the unexecuted action as failed and lets the Agent respond without performing it.
+
+If the decision response is interrupted, retrieve that same approval and inspect its committed state. Do not create another task to recover the response. The [remote record example](recipes.md#approve-a-real-agent-workspace-write) demonstrates this flow.
+
 ## Local emulator
 
 `LocalEmulator` simulates durable control state with application-registered model and tool callbacks. It is in-memory test machinery, not a production runtime or sandbox. Its callbacks execute in your process and have that process’s authority. Use synthetic data and deterministic fakes.
@@ -19,3 +27,7 @@ After an injected crash following `tool.started`, the emulator refuses to invoke
 ## Forks
 
 The public fork operation creates a paused inspection record tied to a checkpoint. It does not dispatch a new execution, reuse historical approvals, or provide an automatic replay engine. Treat it as preview functionality; use a new, explicitly authorized task for new work.
+
+## Replays
+
+The separate [replay API](replay.md) dispatches model-only, stubbed, workspace-read-only or fully authorized new execution from the original input. It preserves project ownership and explicit lineage and acquires fresh authority. It is not a mechanism for retrying an unknown write.

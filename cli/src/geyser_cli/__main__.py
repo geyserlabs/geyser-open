@@ -25,6 +25,7 @@ from geyser_sdk import (
     PackagePromotion,
     PackageUpload,
     ProblemError,
+    ReplayCreate,
     TaskCreate,
     normalize_contract,
     validate_outcome,
@@ -113,6 +114,10 @@ def _parser() -> argparse.ArgumentParser:
     create.add_argument("--input", type=Path, required=True)
     create.add_argument("--contract", type=Path)
     create.add_argument("--package", dest="package_id")
+    create.add_argument("--require-write-approval", action="store_true")
+    create.add_argument("--bundle", dest="bundle_package_id", default="")
+    create.add_argument("--skill", dest="skill_package_ids", action="append", default=[])
+    create.add_argument("--model-profile", dest="model_profile_package_id", default="")
     create.add_argument("--idempotency-key", required=True)
     create.add_argument("--max-cost", type=float, default=1.0)
     create.add_argument("--max-seconds", type=float, default=300)
@@ -135,6 +140,20 @@ def _parser() -> argparse.ArgumentParser:
     fork.add_argument("--expected-sequence", type=int, required=True)
     fork.add_argument("--reason-code", default="developer_requested")
     fork.add_argument("--yes", action="store_true")
+    replay = run_commands.add_parser("replay", help="create a new task from an original run input")
+    replay.add_argument("run_id")
+    replay.add_argument(
+        "--mode",
+        choices=["model_only", "tool_stubbed", "read_only_shadow", "full_reexecution"],
+        required=True,
+    )
+    replay.add_argument("--expected-sequence", type=int, required=True)
+    replay.add_argument("--idempotency-key", required=True)
+    replay.add_argument("--stubs-ref", default="")
+    replay.add_argument("--authority-ref", default="")
+    replay.add_argument("--max-seconds", type=float, default=300)
+    replay.add_argument("--max-cost", type=float, default=1.0)
+    replay.add_argument("--yes", action="store_true")
     stop = run_commands.add_parser("stop")
     stop.add_argument("run_id")
     stop.add_argument("--expected-sequence", type=int, required=True)
@@ -150,7 +169,10 @@ def _parser() -> argparse.ArgumentParser:
     decide.add_argument("run_id")
     decide.add_argument("approval_id")
     decide.add_argument("decision", choices=("approve", "reject"))
-    decide.add_argument("--expected-sequence", type=int, required=True)
+    decide.add_argument(
+        "--expected-sequence", "--expected-approval-sequence", type=int, required=True
+    )
+    decide.add_argument("--expected-run-sequence", type=int, required=True)
     decide.add_argument("--binding-digest", required=True)
     decide.add_argument("--reason-code", required=True)
     decide.add_argument("--yes", action="store_true")
@@ -248,6 +270,16 @@ def _doctor(args: argparse.Namespace) -> dict[str, Any]:
 
 def _handle_network(args: argparse.Namespace) -> Any:
     if args.command == "tasks" and args.tasks_command == "create":
+        if args.package_id and (
+            args.bundle_package_id
+            or args.skill_package_ids
+            or args.model_profile_package_id
+            or args.require_write_approval
+        ):
+            raise ValueError(
+                "pure JSON handler tasks cannot select Agent instruction packages "
+                "or write approvals"
+            )
         TaskCreate.valid_budget(
             {
                 "max_cost_usd": args.max_cost,
@@ -292,6 +324,10 @@ def _handle_network(args: argparse.Namespace) -> Any:
                 TaskCreate(
                     input_ref=value.input.ref,
                     input_digest=value.input.digest,
+                    require_write_approval=args.require_write_approval,
+                    bundle_package_id=args.bundle_package_id,
+                    skill_package_ids=args.skill_package_ids,
+                    model_profile_package_id=args.model_profile_package_id,
                     outcome_contract_ref=outcome_ref,
                     budget={
                         "max_cost_usd": args.max_cost,
@@ -320,6 +356,25 @@ def _handle_network(args: argparse.Namespace) -> Any:
         if args.command == "capabilities":
             return client.capabilities(agent_name=args.agent)
         if args.command == "runs":
+            if args.runs_command == "replay":
+                replay_request = ReplayCreate(
+                    fork_key=args.idempotency_key,
+                    expected_sequence=args.expected_sequence,
+                    mode=args.mode,
+                    stubs_ref=args.stubs_ref,
+                    authority_ref=args.authority_ref,
+                    budget={"max_cost_usd": args.max_cost, "max_elapsed_seconds": args.max_seconds},
+                )
+                _confirm(
+                    args,
+                    {
+                        "operation": "replay_run",
+                        "run_id": args.run_id,
+                        "mode": args.mode,
+                        "budget": replay_request.budget,
+                    },
+                )
+                return client.replay(args.run_id, replay_request)
             if args.runs_command == "list":
                 return client.list_runs(customer=args.customer)
             if args.runs_command == "get":
@@ -372,7 +427,12 @@ def _handle_network(args: argparse.Namespace) -> Any:
                 binding_digest=args.binding_digest,
                 reason_code=args.reason_code,
             )
-            return client.decide_approval(args.run_id, args.approval_id, decision)
+            return client.decide_approval(
+                args.run_id,
+                args.approval_id,
+                decision,
+                expected_run_sequence=args.expected_run_sequence,
+            )
         if args.command == "publish":
             archive = args.archive.expanduser().resolve()
             details = inspect_archive(archive)

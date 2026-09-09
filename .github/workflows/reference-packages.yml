@@ -1,0 +1,38 @@
+name: Signed reference packages
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  packages:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-14
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --all-packages --all-extras --dev --locked
+      - name: Exercise handlers and validate instructions
+        run: |
+          uv run geyser test examples/packages/issue-normalizer
+          uv run geyser test examples/packages/source-review-gate
+          uv run geyser validate examples/packages/careful-review
+      - name: Build once and sign the exact archives
+        run: |
+          .venv/bin/python scripts/build_reference_packages.py --output-dir dist/reference-packages
+          for archive in dist/reference-packages/*.zip; do
+            uv tool run --from sigstore==4.5.0 sigstore sign --bundle "$archive.sigstore.json" "$archive"
+          done
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: developer-reference-packages
+          path: dist/reference-packages/*
+          retention-days: 14
