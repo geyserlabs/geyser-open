@@ -1,54 +1,64 @@
-# Give an Agent a new capability
+# Signed JSON extensions
 
-An extension packages something your team can reuse: instructions, a tool, an app connection,
-an evaluator, or a model profile. Start with the smallest piece that solves your problem.
+Executable extensions in the **0.2.0 source preview** are synchronous Python handlers that accept one JSON value and return one JSON value. `tool`, `connector`, and `evaluator` share this contract. Their effect class is `pure`: no network, host files, subprocesses, inherited credentials, or external side effects.
 
-## Choose a package type
+## Package contract
 
-| Type | Use it for | Main file |
-|---|---|---|
-| `skill` | Instructions for a repeatable task | `SKILL.md` |
-| `tool` | A named operation with an input schema | `tool.json` |
-| `connector` | An application connection and its permitted events | `connector.json` |
-| `evaluator` | A way to assess a result | `evaluator.json` |
-| `model-profile` | A model's processing route and capabilities | `model-profile.json` |
-| `agent-bundle` | A selection of components for an Agent | `agent-bundle-selection.json` |
+A package contains `geyser-package.json`, a kind-specific descriptor (`tool.json`, `connector.json`, or `evaluator.json`), the handler, and `evals/cases.json`.
 
-## Create a tool package
-
-```console
-geyser init tool careful-search
-geyser validate careful-search
-geyser test careful-search
-geyser dev careful-search
+```json
+{
+  "schema_version": 1,
+  "name": "word-count",
+  "description": "Count words in supplied text.",
+  "handler": "handler.py:run",
+  "effect_class": "pure",
+  "input_schema": {"type": "object", "required": ["text"], "properties": {"text": {"type": "string"}}, "additionalProperties": false},
+  "output_schema": {"type": "object", "required": ["word_count"], "properties": {"word_count": {"type": "integer"}}, "additionalProperties": false}
+}
 ```
 
-The generated directory contains:
-
-- `geyser-package.json`: name, kind, version, and requested permissions.
-- `tool.json`: description, input schema, effect class, and approval posture.
-- `evals/cases.json`: declared success and denial fixtures.
-- `README.md`: a place to explain the package to its next developer.
-
-In 0.1.0, `test` checks the fixture declarations and `dev` demonstrates a local admission and
-completion. Use your own tool tests to exercise its implementation. For an example that actually
-calls a registered local function, follow the [emulator quickstart](quickstart.md#follow-a-complete-run).
-
-## Describe the action clearly
-
-Give the tool a name and description that explain what it does. Define its accepted inputs with a
-schema. Declare whether it reads information or changes another system, and request only the
-permissions it needs. A package requests access; the workspace decides what it receives.
-
-Write examples for both a useful result and an action the tool should decline. For a result your
-application needs to parse, add a [structured outcome](outcomes.md).
-
-## Package and connect
-
-```console
-geyser package careful-search
+```python
+def run(value):
+    return {"word_count": len(value["text"].split())}
 ```
 
-This creates a local archive and reports its digest. Signing and remote staging come next; see the
-[CLI reference](cli.md#publish-an-extension) and [authentication](authentication.md) for the required
-project access. For a collection of capabilities, use an [Agent Bundle](bundles.md).
+The manifest name must match the descriptor. Permissions must be empty. The handler path must remain inside the package. Use the standard library; dependency installation and arbitrary build/install hooks are not supported.
+
+Frozen cases require `input` and exactly one `expected_output` or `expected_error`, with at least one critical case. `geyser test` actually invokes each handler and checks the result. A label saying “expected success” is not a test.
+
+## Isolation and bounds
+
+Code is imported only after OS isolation is active. Linux uses bubblewrap user/process/network namespaces and a syscall filter denying process creation, execution, networking and namespace escape. macOS uses a deny-by-default sandbox profile. There is no unsandboxed fallback.
+
+Each invocation accepts/returns at most 1 MiB of JSON, runs for at most 30 seconds, and has bounded output, CPU and file descriptors. Linux applies an address-space limit. macOS applies a sampled RSS watchdog; this is not a hard kernel allocation ceiling. Temporary writes are private and removed after execution. The package is copied through directory handles that refuse symlink traversal. Archive paths, special files, links and size bounds are validated again on the Agent.
+
+Packages are limited to 512 entries, 2 MiB per file and 10 MiB unpacked. Installation runs 1–32 frozen cases with at most two seconds per case and ten seconds total. Keep installation cases fast and deterministic. At most 200 desired packages may be assigned to an Agent.
+
+## Trust, stage, install
+
+1. In **Developers**, configure the exact trusted certificate identity and OIDC issuer for the project. For GitHub Actions, use the exact workflow certificate identity and `https://token.actions.githubusercontent.com`. For an interactive Sigstore identity, use its actual certificate identity and issuer; do not copy a GitHub issuer onto a personal identity.
+2. Install the Sigstore CLI and sign the exact archive with `geyser sign ARCHIVE`. Never modify the archive after signing.
+3. Login with the required package scopes and upload:
+
+```console
+geyser publish ARCHIVE --stage --signature-bundle BUNDLE
+geyser promote PACKAGE_ID --digest SHA256_DIGEST --canary
+geyser status
+```
+
+The Cell cryptographically verifies the archive, certificate, issuer and transparency bundle against the administrator’s trust configuration. Supplied `verified: true` metadata has no authority.
+
+Promotion creates `pending_install`. The assigned Agent verifies the exact bytes again, executes the frozen cases inside the sandbox, and acknowledges the package digest, publisher generation, Cell generation and installation generation. Only a matching successful acknowledgement produces `active`. Failed installation is visible as `install_failed`; it is not executable. Existing unverified records are shown as `unverified`.
+
+“Canary” selects this project’s assigned Agent; it is not a fleet-wide deployment cohort. `geyser promote ... --production` changes the same project’s stage and requires another installation acknowledgement. No other customer gains the package. The prior active version remains available while a new candidate installs; successful activation supersedes it. An older pending acknowledgement cannot replace the newer candidate.
+
+## Revoke and recover
+
+`geyser revoke PACKAGE_ID --digest SHA256_DIGEST` removes assignment authority. Replacing publisher trust revokes prior verification generations; re-upload/re-promote verified bytes after reviewing the new identity. Revoking the project removes all package authority. The Agent rechecks current assignment before every execution, so a local archive cache cannot restore revoked authority.
+
+If installation fails, inspect `status`, verify publisher settings and sandbox availability, correct the package under a new version, and promote again. A repeated promotion ID identifies the same decision; use a new ID for a deliberate new installation attempt. Local validation alone does not activate an Agent package.
+
+## Configuration previews
+
+`skill`, `model-profile`, and `agent-bundle` scaffolds support validation and packaging only. They are not installed or executed by the public JSON package consumer. Imported third-party runtimes, arbitrary connectors with credentials, and provider/model registration are not supported public extension features.

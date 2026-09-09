@@ -1,0 +1,4 @@
+[
+  {"source_id": "account:synthetic-42", "text": "Synthetic test account. Its API credential was rotated at 10:00 UTC. Requests from the application still use the prior credential."},
+  {"source_id": "request:synthetic-42", "text": "The synthetic failing request received HTTP 401. No customer write was applied."}
+]

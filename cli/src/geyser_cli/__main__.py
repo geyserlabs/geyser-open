@@ -9,6 +9,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 import uuid
 from collections.abc import Sequence
 from pathlib import Path
@@ -20,15 +21,16 @@ from geyser_sdk import (
     CancelRequest,
     ForkCreate,
     GeyserClient,
-    LocalEmulator,
+    InputCreate,
     PackagePromotion,
     PackageUpload,
     ProblemError,
-    TypedTask,
-    bytes_digest,
+    TaskCreate,
     normalize_contract,
     validate_outcome,
 )
+from geyser_sdk.extensions import run_extension
+from geyser_sdk.urls import require_credential_destination, validate_api_url
 
 from . import __version__
 from .auth import DeviceAuthorization, login_device, login_service_token
@@ -47,7 +49,7 @@ def _add_path(command: argparse.ArgumentParser) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="geyser", description="Build governed durable agents.")
-    parser.add_argument("--api-url", default=os.getenv("GEYSER_API_URL", DEFAULT_API_URL))
+    parser.add_argument("--api-url", default=os.getenv("GEYSER_API_URL"))
     parser.add_argument("--profile", default=os.getenv("GEYSER_PROFILE", "default"))
     parser.add_argument("--json", action="store_true", help="emit stable JSON")
     parser.add_argument("--allow-file-credentials", action="store_true")
@@ -56,7 +58,11 @@ def _parser() -> argparse.ArgumentParser:
     login = commands.add_parser("login", help="authenticate with OAuth device flow")
     login.add_argument("--scope", action="append", dest="scopes")
     login.add_argument("--no-browser", action="store_true")
-    login.add_argument("--service-token-stdin", action="store_true", help=argparse.SUPPRESS)
+    login.add_argument(
+        "--service-token-stdin",
+        action="store_true",
+        help="read a service credential from stdin; supply its issued --api-url",
+    )
     commands.add_parser("logout", help="remove the current profile credential")
     commands.add_parser("doctor", help="check local configuration and public API reachability")
 
@@ -65,7 +71,10 @@ def _parser() -> argparse.ArgumentParser:
     init.add_argument("name")
     init.add_argument("--output", type=Path, default=Path.cwd())
     for name in ("validate", "test", "dev", "package"):
-        _add_path(commands.add_parser(name))
+        local_command = commands.add_parser(name)
+        _add_path(local_command)
+        if name == "dev":
+            local_command.add_argument("--input", type=Path)
     validate_result = commands.add_parser("validate-outcome")
     validate_result.add_argument("contract", type=Path)
     validate_result.add_argument("result", type=Path)
@@ -80,9 +89,35 @@ def _parser() -> argparse.ArgumentParser:
     promote = commands.add_parser("promote", help="request promotion of exact staged bytes")
     promote.add_argument("package_id")
     promote.add_argument("--digest", required=True)
-    promote.add_argument("--canary", action="store_true", required=True)
+    target = promote.add_mutually_exclusive_group(required=True)
+    target.add_argument("--canary", action="store_true")
+    target.add_argument("--production", action="store_true")
     promote.add_argument("--yes", action="store_true")
     commands.add_parser("status", help="list package lifecycle state")
+
+    revoke = commands.add_parser("revoke", help="revoke one exact package assignment")
+    revoke.add_argument("package_id")
+    revoke.add_argument("--digest", required=True)
+    revoke.add_argument("--yes", action="store_true")
+    tasks = commands.add_parser("tasks")
+    task_commands = tasks.add_subparsers(dest="tasks_command", required=True)
+    task_commands.add_parser("list")
+    for action in ("get", "result", "wait"):
+        command = task_commands.add_parser(action)
+        command.add_argument("task_id")
+        if action == "wait":
+            command.add_argument("--timeout", type=float, default=300)
+    create = task_commands.add_parser(
+        "create", help="upload JSON and submit one idempotent bounded task"
+    )
+    create.add_argument("--input", type=Path, required=True)
+    create.add_argument("--contract", type=Path)
+    create.add_argument("--package", dest="package_id")
+    create.add_argument("--idempotency-key", required=True)
+    create.add_argument("--max-cost", type=float, default=1.0)
+    create.add_argument("--max-seconds", type=float, default=300)
+    create.add_argument("--max-provider-requests", type=int, default=10)
+    create.add_argument("--max-tool-calls", type=int, default=20)
 
     runs = commands.add_parser("runs")
     run_commands = runs.add_subparsers(dest="runs_command", required=True)
@@ -94,7 +129,9 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument("--customer", action="store_true")
     fork = run_commands.add_parser("fork")
     fork.add_argument("run_id")
-    fork.add_argument("--child-run-id", required=True)
+    fork.add_argument(
+        "--mode", choices=["model_only", "tool_stubbed", "read_only_shadow"], default="tool_stubbed"
+    )
     fork.add_argument("--expected-sequence", type=int, required=True)
     fork.add_argument("--reason-code", default="developer_requested")
     fork.add_argument("--yes", action="store_true")
@@ -118,7 +155,9 @@ def _parser() -> argparse.ArgumentParser:
     decide.add_argument("--reason-code", required=True)
     decide.add_argument("--yes", action="store_true")
     capabilities = commands.add_parser("capabilities")
-    capabilities.add_argument("--agent", required=True)
+    capabilities.add_argument(
+        "--agent", default="", help="optionally assert the project's assigned Agent name"
+    )
     commands.add_parser("version")
     return parser
 
@@ -131,7 +170,10 @@ def _client(args: argparse.Namespace) -> GeyserClient:
     credential = _store(args).load()
     if credential is None:
         raise RuntimeError("not authenticated; run `geyser login`")
-    return GeyserClient(args.api_url, credential.access_token)
+    destination = require_credential_destination(
+        credential.api_url, args.api_url or credential.api_url
+    )
+    return GeyserClient(destination, credential.access_token)
 
 
 def _confirm(args: argparse.Namespace, preview: dict[str, Any]) -> None:
@@ -169,36 +211,25 @@ def _handle_local(args: argparse.Namespace) -> Any:
         return {"valid": True, "contract_digest": contract["contract_digest"]}
     if args.command == "dev":
         root = args.path.expanduser().resolve()
-        result = test_extension(root)
-        task = TypedTask(
-            task_id="local-task",
-            context_id="local-context",
-            prompt_digest="sha256:" + "0" * 64,
-            model_ref="deterministic:echo",
+        validate_extension(root)
+        value = (
+            json.loads(args.input.read_text())
+            if args.input
+            else json.loads((root / "evals/cases.json").read_text())["cases"][0]["input"]
         )
-        emulator = LocalEmulator()
-        emulator.admit("local-run", task)
-        emulator.append(
-            "local-run",
-            event_type="run.completed",
-            key="complete",
-            expected_sequence=1,
-            data={
-                "extension_digest": bytes_digest(
-                    root.joinpath("geyser-package.json").read_bytes()
-                )
-            },
-        )
-        return {"extension": result, "run": emulator.project("local-run"), "network_used": False}
+        return {"result": run_extension(root, value), "sandboxed": True}
     raise RuntimeError("unknown local command")
 
 
 def _doctor(args: argparse.Namespace) -> dict[str, Any]:
     credential = _store(args).load()
+    destination = validate_api_url(
+        args.api_url or (credential.api_url if credential else "") or DEFAULT_API_URL
+    )
     reachable = False
     api_version = ""
     try:
-        response = httpx.get(f"{args.api_url.rstrip('/')}/api/v1/openapi.json", timeout=5)
+        response = httpx.get(f"{destination}/api/v1/openapi.json", timeout=5)
         reachable = response.status_code == 200
         if reachable:
             api_version = str(response.json().get("info", {}).get("version") or "")
@@ -207,7 +238,7 @@ def _doctor(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "python": sys.version.split()[0],
         "cli_version": __version__,
-        "api_url": args.api_url,
+        "api_url": destination,
         "api_reachable": reachable,
         "api_version": api_version,
         "authenticated": credential is not None,
@@ -216,7 +247,74 @@ def _doctor(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _handle_network(args: argparse.Namespace) -> Any:
+    if args.command == "tasks" and args.tasks_command == "create":
+        TaskCreate.valid_budget(
+            {
+                "max_cost_usd": args.max_cost,
+                "max_elapsed_seconds": args.max_seconds,
+                "max_provider_requests": args.max_provider_requests,
+                "max_tool_calls": args.max_tool_calls,
+            }
+        )
     with _client(args) as client:
+        if args.command == "tasks":
+            if args.tasks_command == "list":
+                return client.list_tasks()
+            if args.tasks_command == "get":
+                return client.get_task(args.task_id)
+            if args.tasks_command == "result":
+                return client.result(args.task_id)
+            if args.tasks_command == "wait":
+                if not 0 < args.timeout <= 3600:
+                    raise ValueError("wait timeout must be between 0 and 3600 seconds")
+                deadline = time.monotonic() + args.timeout
+                while True:
+                    task = client.get_task(args.task_id).task
+                    if task.state in {"completed", "failed", "canceled"}:
+                        return {
+                            "task": task.model_dump(),
+                            "result": client.result(task.id).result.model_dump()
+                            if task.state == "completed"
+                            else None,
+                        }
+                    if time.monotonic() >= deadline:
+                        raise RuntimeError("wait timed out; task continues remotely")
+                    time.sleep(min(5, max(0, deadline - time.monotonic())))
+            value = client.upload_input(InputCreate(value=json.loads(args.input.read_text())))
+            outcome_ref = ""
+            if args.contract:
+                outcome_ref = client.upload_input(
+                    InputCreate(
+                        kind="outcome_contract", value=json.loads(args.contract.read_text())
+                    )
+                ).input.ref
+            return client.create_task(
+                TaskCreate(
+                    input_ref=value.input.ref,
+                    input_digest=value.input.digest,
+                    outcome_contract_ref=outcome_ref,
+                    budget={
+                        "max_cost_usd": args.max_cost,
+                        "max_elapsed_seconds": args.max_seconds,
+                        "max_provider_requests": args.max_provider_requests,
+                        "max_tool_calls": args.max_tool_calls,
+                    },
+                    metadata={"execution": "extension", "package_id": args.package_id}
+                    if args.package_id
+                    else {"execution": "agent"},
+                ),
+                idempotency_key=args.idempotency_key,
+            )
+        if args.command == "revoke":
+            _confirm(
+                args,
+                {
+                    "operation": "revoke_package",
+                    "package_id": args.package_id,
+                    "digest": args.digest,
+                },
+            )
+            return client.revoke_package(args.package_id, expected_digest=args.digest)
         if args.command == "status":
             return client.list_packages()
         if args.command == "capabilities":
@@ -228,8 +326,6 @@ def _handle_network(args: argparse.Namespace) -> Any:
                 return client.get_run(args.run_id, customer=args.customer)
             if args.runs_command == "trace":
                 return client.trace(args.run_id, customer=args.customer)
-            if args.runs_command == "watch":
-                return {"events": list(client.watch_events(args.run_id, customer=args.customer))}
             if args.runs_command == "stop":
                 operation = {
                     "operation": "stop_run",
@@ -238,7 +334,7 @@ def _handle_network(args: argparse.Namespace) -> Any:
                 }
                 _confirm(args, operation)
                 request = CancelRequest(
-                    cancellation_id="cancel_" + uuid.uuid4().hex,
+                    cancellation_id="can_" + uuid.uuid4().hex,
                     expected_sequence=args.expected_sequence,
                     reason_code=args.reason_code,
                 )
@@ -246,15 +342,14 @@ def _handle_network(args: argparse.Namespace) -> Any:
             operation = {
                 "operation": "fork_run",
                 "run_id": args.run_id,
-                "child_run_id": args.child_run_id,
+                "mode": args.mode,
                 "expected_sequence": args.expected_sequence,
             }
             _confirm(args, operation)
             fork_request = ForkCreate(
-                fork_id="fork_" + uuid.uuid4().hex,
-                child_run_id=args.child_run_id,
+                fork_key="fork_" + uuid.uuid4().hex,
+                mode=args.mode,
                 expected_sequence=args.expected_sequence,
-                reason_code=args.reason_code,
             )
             return client.fork(args.run_id, fork_request)
         if args.command == "approvals":
@@ -283,9 +378,12 @@ def _handle_network(args: argparse.Namespace) -> Any:
             details = inspect_archive(archive)
             manifest = _manifest_from_archive(archive)
             _confirm(args, {"operation": "package_upload", "stage": "staging", **details})
-            bundle = {}
-            if args.signature_bundle:
-                bundle = json.loads(args.signature_bundle.read_text(encoding="utf-8"))
+            bundle_path = args.signature_bundle or archive.with_suffix(
+                archive.suffix + ".sigstore.json"
+            )
+            if not bundle_path.is_file():
+                raise ValueError("sign the exact archive first or supply --signature-bundle")
+            bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
             upload = PackageUpload(
                 name=str(manifest["name"]),
                 version=str(manifest["version"]),
@@ -296,15 +394,18 @@ def _handle_network(args: argparse.Namespace) -> Any:
             )
             return client.upload_package(upload, idempotency_key=str(details["digest"]))
         if args.command == "promote":
-            _confirm(args, {
-                "operation": "package_promotion",
-                "package_id": args.package_id,
-                "target": "canary",
-                "expected_digest": args.digest,
-            })
+            _confirm(
+                args,
+                {
+                    "operation": "package_promotion",
+                    "package_id": args.package_id,
+                    "target": "production" if args.production else "canary",
+                    "expected_digest": args.digest,
+                },
+            )
             promotion = PackagePromotion(
                 promotion_id="promote_" + uuid.uuid4().hex,
-                target="canary",
+                target="production" if args.production else "canary",
                 expected_digest=args.digest,
             )
             return client.promote_package(args.package_id, promotion)
@@ -313,19 +414,25 @@ def _handle_network(args: argparse.Namespace) -> Any:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.command == "login":
+        args.api_url = args.api_url or DEFAULT_API_URL
     try:
         if args.command == "version":
             value: Any = {"geyser_open": __version__}
         elif args.command == "login":
             store = _store(args)
             if args.service_token_stdin:
-                value = login_service_token(store, sys.stdin.readline())
+                value = login_service_token(store, sys.stdin.readline(), api_url=args.api_url)
             else:
+
                 def notify(device: DeviceAuthorization) -> None:
-                    emit({
-                        "verification_uri": device.verification_uri,
-                        "user_code": device.user_code,
-                    }, machine=args.json)
+                    emit(
+                        {
+                            "verification_uri": device.verification_uri,
+                            "user_code": device.user_code,
+                        },
+                        machine=args.json,
+                    )
 
                 value = login_device(
                     args.api_url,
@@ -334,6 +441,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                     open_browser=not args.no_browser,
                     notify=notify,
                 )
+        elif args.command == "runs" and args.runs_command == "watch":
+            with _client(args) as client:
+                for event in client.watch_events(args.run_id, customer=args.customer):
+                    emit(event, machine=args.json)
+            return 0
         elif args.command == "logout":
             value = {"removed": _store(args).delete(), "profile": args.profile}
         elif args.command == "doctor":

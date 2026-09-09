@@ -1,25 +1,45 @@
 {
   "additionalProperties": false,
   "properties": {
+    "critical": {
+      "default": false,
+      "title": "Critical",
+      "type": "boolean"
+    },
     "evaluation_id": {
+      "maxLength": 160,
+      "minLength": 8,
       "title": "Evaluation Id",
       "type": "string"
     },
     "evaluator_ref": {
+      "maxLength": 512,
+      "minLength": 1,
       "title": "Evaluator Ref",
       "type": "string"
     },
-    "evidence_refs": {
-      "items": {
-        "type": "string"
-      },
-      "title": "Evidence Refs",
-      "type": "array"
+    "evaluator_version": {
+      "default": "1",
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "evidence_digest": {
+      "default": "",
+      "pattern": "^(|sha256:[0-9a-f]{64})$",
+      "title": "Evidence Digest",
+      "type": "string"
     },
     "expected_sequence": {
       "minimum": 1,
       "title": "Expected Sequence",
       "type": "integer"
+    },
+    "metrics": {
+      "additionalProperties": true,
+      "title": "Metrics",
+      "type": "object"
     },
     "score": {
       "maximum": 1,
@@ -28,6 +48,12 @@
       "type": "number"
     },
     "verdict": {
+      "enum": [
+        "pass",
+        "fail",
+        "warn",
+        "unknown"
+      ],
       "title": "Verdict",
       "type": "string"
     }

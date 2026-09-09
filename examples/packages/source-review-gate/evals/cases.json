@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "cases": [
+    {
+      "case_id": "all-sources-known",
+      "input": {
+        "source_ids": [
+          "source:1"
+        ],
+        "claims": [
+          {
+            "text": "A bounded claim.",
+            "source_ids": [
+              "source:1"
+            ]
+          }
+        ]
+      },
+      "expected_output": {
+        "passed": true,
+        "unsupported_claims": []
+      },
+      "critical": false
+    },
+    {
+      "case_id": "reject-invented-source",
+      "input": {
+        "source_ids": [
+          "source:1"
+        ],
+        "claims": [
+          {
+            "text": "An unsupported claim.",
+            "source_ids": [
+              "invented:2"
+            ]
+          }
+        ]
+      },
+      "expected_output": {
+        "passed": false,
+        "unsupported_claims": [
+          0
+        ]
+      },
+      "critical": true
+    },
+    {
+      "case_id": "reject-empty-evaluation",
+      "input": {
+        "source_ids": [],
+        "claims": []
+      },
+      "expected_error": "input_invalid",
+      "critical": true
+    }
+  ]
+}

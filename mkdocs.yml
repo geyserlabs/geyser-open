@@ -63,7 +63,7 @@ extra:
 nav:
   - Overview: index.md
   - Start:
-      - Five-minute emulator quickstart: quickstart.md
+      - First sandboxed handler: quickstart.md
       - Authentication and projects: authentication.md
       - Recipes and examples: recipes.md
       - Troubleshooting: troubleshooting.md
@@ -80,12 +80,13 @@ nav:
   - Platform:
       - Runtime capability matrix: compatibility.md
       - Customer Cells and privacy: cells-privacy.md
+      - Costs, limits and support: program.md
       - OpenAPI and schemas: reference.md
   - Trust and releases:
       - Release verification: releases.md
       - Security: security.md
       - Changelog: changelog.md
-      - Optional validation exercise: external-preview.md
+      - Try a workflow: external-preview.md
   - Geyser website: https://www.geyserlabs.ai
   - Customer guides: https://www.geyserlabs.ai/guides
 

@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import os
 import stat
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from tempfile import NamedTemporaryFile
 
 import keyring
 from keyring.errors import KeyringError
@@ -22,6 +23,8 @@ class StoredCredential:
     scope: str = ""
     customer_id: int = 0
     project_id: str = ""
+    api_url: str = ""
+    cell_generation: int = 0
 
 
 class CredentialStore:
@@ -31,14 +34,7 @@ class CredentialStore:
         self.path = user_config_path("geyser", "Geyser Labs") / "credentials.json"
 
     def save(self, credential: StoredCredential) -> str:
-        payload = json.dumps(credential.__dict__ if hasattr(credential, "__dict__") else {
-            "access_token": credential.access_token,
-            "token_type": credential.token_type,
-            "expires_at": credential.expires_at,
-            "scope": credential.scope,
-            "customer_id": credential.customer_id,
-            "project_id": credential.project_id,
-        })
+        payload = json.dumps(asdict(credential))
         try:
             keyring.set_password(SERVICE, self.profile, payload)
             return "os-keychain"
@@ -51,13 +47,43 @@ class CredentialStore:
         self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         existing: dict[str, str] = {}
         if self.path.exists():
-            existing = json.loads(self.path.read_text(encoding="utf-8"))
+            existing = self._read_file()
         existing[self.profile] = payload
-        temporary = self.path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(existing), encoding="utf-8")
-        os.chmod(temporary, stat.S_IRUSR | stat.S_IWUSR)
-        temporary.replace(self.path)
+        self._write_file(existing)
         return "restricted-file"
+
+    def _read_file(self) -> dict[str, str]:
+        descriptor = os.open(self.path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, "r", encoding="utf-8") as stream:
+            info = os.fstat(stream.fileno())
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_uid != os.getuid()
+            ):
+                raise RuntimeError(
+                    "credential fallback must be a regular 0600 file owned by this user"
+                )
+            payload = stream.read(1024 * 1024 + 1)
+            if len(payload) > 1024 * 1024:
+                raise RuntimeError("credential fallback exceeds 1 MiB")
+        values: dict[str, str] = json.loads(payload)
+        return values
+
+    def _write_file(self, values: dict[str, str]) -> None:
+        # mkstemp creates 0600 atomically; no interval with a world-readable token.
+        with NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=self.path.parent, prefix=".credentials-", delete=False
+        ) as stream:
+            temporary = stream.name
+            try:
+                json.dump(values, stream)
+                stream.flush()
+                os.fsync(stream.fileno())
+                os.replace(temporary, self.path)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
 
     def load(self) -> StoredCredential | None:
         payload: str | None = None
@@ -69,7 +95,7 @@ class CredentialStore:
             mode = stat.S_IMODE(self.path.stat().st_mode)
             if mode & 0o077:
                 raise RuntimeError("credential fallback file permissions are not 0600")
-            payload = json.loads(self.path.read_text(encoding="utf-8")).get(self.profile)
+            payload = self._read_file().get(self.profile)
         if payload is None:
             return None
         value = json.loads(payload)
@@ -84,11 +110,10 @@ class CredentialStore:
         except (KeyringError, RuntimeError):
             pass
         if self.allow_file_fallback and self.path.exists():
-            values = json.loads(self.path.read_text(encoding="utf-8"))
+            values = self._read_file()
             removed = values.pop(self.profile, None) is not None or removed
             if values:
-                self.path.write_text(json.dumps(values), encoding="utf-8")
-                os.chmod(self.path, 0o600)
+                self._write_file(values)
             else:
                 self.path.unlink()
         return removed

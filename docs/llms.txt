@@ -1,22 +1,10 @@
-# Geyser Developer Platform
+# Geyser Developers
 
-> Build tools, connect applications, and follow agent work with Geyser’s open Python SDK, CLI, and local emulator.
+> The main branch describes the 0.2.0 source preview. Published 0.1.0 and running services are separate release states.
 
-- [Start](https://docs.geyserlabs.ai/stable/)
-- [Five-minute emulator quickstart](https://docs.geyserlabs.ai/stable/quickstart/)
-- [Python SDK](https://docs.geyserlabs.ai/stable/sdk/)
-- [CLI reference](https://docs.geyserlabs.ai/stable/cli/)
-- [Durable runs](https://docs.geyserlabs.ai/stable/durable-runs/)
-- [OpenAPI and schemas](https://docs.geyserlabs.ai/stable/reference/)
-- [Compatibility status](https://docs.geyserlabs.ai/stable/compatibility/)
-- [Security](https://docs.geyserlabs.ai/stable/security/)
-- [Canonical source](https://github.com/geyserlabs/geyser-open)
-
-Geyser Open includes the MIT-licensed SDK, CLI, local emulator, schemas, and examples.
-SDK and CLI 0.1.0 support Python 3.11–3.13. The SDK connects to Geyser's API;
-the configured workspace supplies Agent runtimes, models, tools, and access.
-
-- [Geyser website](https://www.geyserlabs.ai)
-- [Customer guides](https://www.geyserlabs.ai/guides)
-- [Practical recipes](https://docs.geyserlabs.ai/stable/recipes/)
-- [Extensions](https://docs.geyserlabs.ai/stable/extensions/)
+- [Quickstart](https://github.com/geyserlabs/geyser-open/blob/main/docs/quickstart.md): Execute a real sandboxed JSON handler.
+- [Authentication](https://github.com/geyserlabs/geyser-open/blob/main/docs/authentication.md): Project setup and exact issued API URL.
+- [SDK](https://github.com/geyserlabs/geyser-open/blob/main/docs/sdk.md): Owned inputs, bounded tasks and typed results.
+- [Extensions](https://github.com/geyserlabs/geyser-open/blob/main/docs/extensions.md): Exact publisher trust and actual installation.
+- [Availability](https://github.com/geyserlabs/geyser-open/blob/main/docs/compatibility.md): Runtime requirements and preview boundaries.
+- [Costs and limits](https://github.com/geyserlabs/geyser-open/blob/main/docs/program.md): Account billing, constraints and support.

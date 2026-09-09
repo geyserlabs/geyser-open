@@ -1,0 +1,19 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "revoked": {
+      "title": "Revoked",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "revoked"
+  ],
+  "title": "RevocationResponse",
+  "type": "object"
+}

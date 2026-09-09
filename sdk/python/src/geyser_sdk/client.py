@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import time
 from collections.abc import AsyncIterator, Callable, Iterator
+from datetime import UTC, datetime
+from email.utils import parsedate_to_datetime
 from typing import Any, TypeVar
 
 import httpx
 from pydantic import BaseModel, ValidationError
 
+from ._json import digest
 from .errors import Problem, ProblemError, ResponseValidationError, TransportError
 from .models import (
     TERMINAL_RUN_STATES,
@@ -20,10 +24,15 @@ from .models import (
     CapabilityResponse,
     EvaluationCreate,
     ForkCreate,
+    ForkResponse,
+    InputCreate,
+    InputResponse,
     PackagePage,
     PackagePromotion,
     PackageResponse,
     PackageUpload,
+    ResultResponse,
+    RevocationResponse,
     Run,
     RunEvent,
     RunEventPage,
@@ -35,6 +44,7 @@ from .models import (
     TaskResponse,
     TraceResponse,
 )
+from .urls import validate_api_url
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 TokenProvider = Callable[[], str]
@@ -81,6 +91,20 @@ def _retry_allowed(method: str, idempotency_key: str) -> bool:
     return method.upper() in _SAFE_METHODS or bool(idempotency_key)
 
 
+def _retry_delay(response: httpx.Response | None, attempt: int) -> float:
+    delay = 0.1 * (2**attempt)
+    if response is not None and (value := response.headers.get("Retry-After")):
+        try:
+            delay = max(delay, float(value))
+        except ValueError:
+            try:
+                when = parsedate_to_datetime(value)
+                delay = max(delay, (when - datetime.now(UTC)).total_seconds())
+            except (ValueError, TypeError, OverflowError):
+                pass
+    return float(delay)
+
+
 class AsyncGeyserClient:
     """Reusable async client; call ``aclose`` or use it as a context manager."""
 
@@ -93,8 +117,7 @@ class AsyncGeyserClient:
         max_retries: int = 2,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
-        if not base_url.startswith(("https://", "http://localhost", "http://127.0.0.1")):
-            raise ValueError("base_url must use HTTPS except for loopback development")
+        base_url = validate_api_url(base_url)
         if max_retries < 0 or max_retries > 8:
             raise ValueError("max_retries must be between 0 and 8")
         self._token = _token_provider(token)
@@ -121,11 +144,13 @@ class AsyncGeyserClient:
         json: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
         idempotency_key: str = "",
-        if_match: int | None = None,
+        if_match: int | str | None = None,
     ) -> ModelT:
         headers = _headers(self._token, idempotency_key)
         if if_match is not None:
-            headers["If-Match"] = f'"run-v{if_match}"'
+            headers["If-Match"] = (
+                f'"run-v{if_match}"' if isinstance(if_match, int) else f'"{if_match}"'
+            )
         can_retry = _retry_allowed(method, idempotency_key)
         attempts = self._max_retries + 1 if can_retry else 1
         response: httpx.Response | None = None
@@ -140,8 +165,20 @@ class AsyncGeyserClient:
             else:
                 if response.status_code not in _RETRYABLE or attempt + 1 >= attempts:
                     return _decode(response, model)
-            await asyncio.sleep(0.1 * (2**attempt))
+            delay = _retry_delay(response, attempt)
+            if delay > 60 and response is not None:
+                return _decode(response, model)
+            await asyncio.sleep(delay)
         raise TransportError("Geyser could not be reached")
+
+    async def upload_input(self, value: InputCreate) -> InputResponse:
+        body = value.model_dump(mode="json")
+        return await self._request(
+            "POST", "/api/v1/inputs", InputResponse, json=body, idempotency_key=digest(body)
+        )
+
+    async def result(self, task_id: str) -> ResultResponse:
+        return await self._request("GET", f"/api/v1/tasks/{task_id}/result", ResultResponse)
 
     async def create_task(self, task: TaskCreate, *, idempotency_key: str) -> TaskResponse:
         if not idempotency_key:
@@ -172,7 +209,7 @@ class AsyncGeyserClient:
                 return
             cursor = page.next_cursor
 
-    async def capabilities(self, *, agent_name: str) -> CapabilityResponse:
+    async def capabilities(self, *, agent_name: str = "") -> CapabilityResponse:
         return await self._request(
             "GET", "/api/v1/capabilities", CapabilityResponse, params={"agent_name": agent_name}
         )
@@ -189,9 +226,7 @@ class AsyncGeyserClient:
             "GET", f"{prefix}/runs", RunPage, params={"cursor": cursor, "limit": limit}
         )
 
-    async def iter_runs(
-        self, *, limit: int = 100, customer: bool = False
-    ) -> AsyncIterator[Run]:
+    async def iter_runs(self, *, limit: int = 100, customer: bool = False) -> AsyncIterator[Run]:
         cursor = ""
         while True:
             page = await self.list_runs(cursor=cursor, limit=limit, customer=customer)
@@ -222,21 +257,19 @@ class AsyncGeyserClient:
         run_id: str,
         *,
         after_sequence: int = 0,
-        poll_interval: float = 1.0,
+        poll_interval: float = 5.0,
         customer: bool = False,
     ) -> AsyncIterator[RunEvent]:
         sequence = after_sequence
         while True:
-            page = await self.events(
-                run_id, after_sequence=sequence, customer=customer
-            )
+            page = await self.events(run_id, after_sequence=sequence, customer=customer)
             for event in page.data:
                 sequence = max(sequence, event.sequence)
                 yield event
             run = await self.get_run(run_id, customer=customer)
-            if run.run.state in TERMINAL_RUN_STATES and sequence >= page.current_sequence:
+            if run.run.state in TERMINAL_RUN_STATES and sequence >= run.run.sequence:
                 return
-            await asyncio.sleep(max(0.05, poll_interval))
+            await asyncio.sleep(max(1.0, poll_interval))
 
     async def trace(
         self, run_id: str, *, visibility: str = "customer", customer: bool = False
@@ -261,9 +294,7 @@ class AsyncGeyserClient:
             if_match=decision.expected_approval_sequence,
         )
 
-    async def list_approvals(
-        self, *, cursor: str = "", limit: int = 100
-    ) -> ApprovalPage:
+    async def list_approvals(self, *, cursor: str = "", limit: int = 100) -> ApprovalPage:
         return await self._request(
             "GET",
             "/api/v1/customer/approvals",
@@ -300,6 +331,13 @@ class AsyncGeyserClient:
             idempotency_key=promotion.promotion_id,
         )
 
+    async def revoke_package(self, package_id: str, *, expected_digest: str) -> RevocationResponse:
+        if not re.fullmatch(r"sha256:[0-9a-f]{64}", expected_digest):
+            raise ValueError("expected_digest must identify exact package bytes")
+        return await self._request(
+            "DELETE", f"/api/v1/packages/{package_id}", RevocationResponse, if_match=expected_digest
+        )
+
     async def list_packages(self, *, cursor: str = "", limit: int = 100) -> PackagePage:
         return await self._request(
             "GET", "/api/v1/packages", PackagePage, params={"cursor": cursor, "limit": limit}
@@ -325,13 +363,13 @@ class AsyncGeyserClient:
             if_match=evaluation.expected_sequence,
         )
 
-    async def fork(self, run_id: str, fork: ForkCreate) -> RunResponse:
+    async def fork(self, run_id: str, fork: ForkCreate) -> ForkResponse:
         return await self._request(
             "POST",
             f"/api/v1/customer/runs/{run_id}/forks",
-            RunResponse,
+            ForkResponse,
             json=fork.model_dump(mode="json"),
-            idempotency_key=fork.fork_id,
+            idempotency_key=fork.fork_key,
             if_match=fork.expected_sequence,
         )
 
@@ -348,8 +386,7 @@ class GeyserClient:
         max_retries: int = 2,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
-        if not base_url.startswith(("https://", "http://localhost", "http://127.0.0.1")):
-            raise ValueError("base_url must use HTTPS except for loopback development")
+        base_url = validate_api_url(base_url)
         if max_retries < 0 or max_retries > 8:
             raise ValueError("max_retries must be between 0 and 8")
         self._token = _token_provider(token)
@@ -376,11 +413,13 @@ class GeyserClient:
         json: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
         idempotency_key: str = "",
-        if_match: int | None = None,
+        if_match: int | str | None = None,
     ) -> ModelT:
         headers = _headers(self._token, idempotency_key)
         if if_match is not None:
-            headers["If-Match"] = f'"run-v{if_match}"'
+            headers["If-Match"] = (
+                f'"run-v{if_match}"' if isinstance(if_match, int) else f'"{if_match}"'
+            )
         attempts = self._max_retries + 1 if _retry_allowed(method, idempotency_key) else 1
         for attempt in range(attempts):
             try:
@@ -393,8 +432,20 @@ class GeyserClient:
             else:
                 if response.status_code not in _RETRYABLE or attempt + 1 >= attempts:
                     return _decode(response, model)
-            time.sleep(0.1 * (2**attempt))
+            delay = _retry_delay(response, attempt)
+            if delay > 60 and response is not None:
+                return _decode(response, model)
+            time.sleep(delay)
         raise TransportError("Geyser could not be reached")
+
+    def upload_input(self, value: InputCreate) -> InputResponse:
+        body = value.model_dump(mode="json")
+        return self._request(
+            "POST", "/api/v1/inputs", InputResponse, json=body, idempotency_key=digest(body)
+        )
+
+    def result(self, task_id: str) -> ResultResponse:
+        return self._request("GET", f"/api/v1/tasks/{task_id}/result", ResultResponse)
 
     def create_task(self, task: TaskCreate, *, idempotency_key: str) -> TaskResponse:
         if not idempotency_key:
@@ -424,7 +475,7 @@ class GeyserClient:
                 return
             cursor = page.next_cursor
 
-    def capabilities(self, *, agent_name: str) -> CapabilityResponse:
+    def capabilities(self, *, agent_name: str = "") -> CapabilityResponse:
         return self._request(
             "GET", "/api/v1/capabilities", CapabilityResponse, params={"agent_name": agent_name}
         )
@@ -433,9 +484,7 @@ class GeyserClient:
         prefix = "/api/v1/customer" if customer else "/api/v1"
         return self._request("GET", f"{prefix}/runs/{run_id}", RunResponse)
 
-    def list_runs(
-        self, *, cursor: str = "", limit: int = 100, customer: bool = False
-    ) -> RunPage:
+    def list_runs(self, *, cursor: str = "", limit: int = 100, customer: bool = False) -> RunPage:
         prefix = "/api/v1/customer" if customer else "/api/v1"
         return self._request(
             "GET", f"{prefix}/runs", RunPage, params={"cursor": cursor, "limit": limit}
@@ -471,7 +520,7 @@ class GeyserClient:
         run_id: str,
         *,
         after_sequence: int = 0,
-        poll_interval: float = 1.0,
+        poll_interval: float = 5.0,
         customer: bool = False,
     ) -> Iterator[RunEvent]:
         sequence = after_sequence
@@ -481,9 +530,9 @@ class GeyserClient:
                 sequence = max(sequence, event.sequence)
                 yield event
             run = self.get_run(run_id, customer=customer)
-            if run.run.state in TERMINAL_RUN_STATES and sequence >= page.current_sequence:
+            if run.run.state in TERMINAL_RUN_STATES and sequence >= run.run.sequence:
                 return
-            time.sleep(max(0.05, poll_interval))
+            time.sleep(max(1.0, poll_interval))
 
     def trace(
         self, run_id: str, *, visibility: str = "customer", customer: bool = False
@@ -517,13 +566,9 @@ class GeyserClient:
         )
 
     def get_approval(self, approval_id: str) -> ApprovalResponse:
-        return self._request(
-            "GET", f"/api/v1/customer/approvals/{approval_id}", ApprovalResponse
-        )
+        return self._request("GET", f"/api/v1/customer/approvals/{approval_id}", ApprovalResponse)
 
-    def upload_package(
-        self, package: PackageUpload, *, idempotency_key: str
-    ) -> PackageResponse:
+    def upload_package(self, package: PackageUpload, *, idempotency_key: str) -> PackageResponse:
         if not idempotency_key:
             raise ValueError("upload_package requires an idempotency_key")
         return self._request(
@@ -534,15 +579,20 @@ class GeyserClient:
             idempotency_key=idempotency_key,
         )
 
-    def promote_package(
-        self, package_id: str, promotion: PackagePromotion
-    ) -> PackageResponse:
+    def promote_package(self, package_id: str, promotion: PackagePromotion) -> PackageResponse:
         return self._request(
             "POST",
             f"/api/v1/packages/{package_id}/promotions",
             PackageResponse,
             json=promotion.model_dump(mode="json"),
             idempotency_key=promotion.promotion_id,
+        )
+
+    def revoke_package(self, package_id: str, *, expected_digest: str) -> RevocationResponse:
+        if not re.fullmatch(r"sha256:[0-9a-f]{64}", expected_digest):
+            raise ValueError("expected_digest must identify exact package bytes")
+        return self._request(
+            "DELETE", f"/api/v1/packages/{package_id}", RevocationResponse, if_match=expected_digest
         )
 
     def list_packages(self, *, cursor: str = "", limit: int = 100) -> PackagePage:
@@ -570,13 +620,13 @@ class GeyserClient:
             if_match=evaluation.expected_sequence,
         )
 
-    def fork(self, run_id: str, fork: ForkCreate) -> RunResponse:
+    def fork(self, run_id: str, fork: ForkCreate) -> ForkResponse:
         return self._request(
             "POST",
             f"/api/v1/customer/runs/{run_id}/forks",
-            RunResponse,
+            ForkResponse,
             json=fork.model_dump(mode="json"),
-            idempotency_key=fork.fork_id,
+            idempotency_key=fork.fork_key,
             if_match=fork.expected_sequence,
         )
 

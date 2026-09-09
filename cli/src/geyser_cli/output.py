@@ -21,7 +21,10 @@ def serializable(value: Any) -> Any:
 def emit(value: Any, *, machine: bool) -> None:
     normalized = serializable(value)
     if machine:
-        print(json.dumps(normalized, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+        print(
+            json.dumps(normalized, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
+            flush=True,
+        )
     elif isinstance(normalized, str):
         print(normalized)
     else:

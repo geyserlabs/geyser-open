@@ -22,20 +22,22 @@ def run(*arguments: str) -> subprocess.CompletedProcess[str]:
 def test_workspace_versions_are_consistent() -> None:
     result = run("version")
     assert result.returncode == 0, result.stderr
-    assert result.stdout.strip() == "0.1.0"
+    assert result.stdout.strip() == "0.2.0"
 
 
 def test_contract_archive_is_reproducible(tmp_path: Path) -> None:
     outputs = [tmp_path / "one", tmp_path / "two"]
     for output in outputs:
         result = run(
-            "contracts", "--output-dir", str(output),
-            "--source-epoch", "1700000000",
+            "contracts",
+            "--output-dir",
+            str(output),
+            "--source-epoch",
+            "1700000000",
         )
         assert result.returncode == 0, result.stderr
-    for name in ("geyser-contracts-0.1.0.tar.gz", "geyser-openapi-0.1.0.json"):
+    for name in ("geyser-contracts-0.2.0.tar.gz", "geyser-openapi-0.2.0.json"):
         values = [
-            hashlib.sha256((directory / name).read_bytes()).hexdigest()
-            for directory in outputs
+            hashlib.sha256((directory / name).read_bytes()).hexdigest() for directory in outputs
         ]
         assert values[0] == values[1]

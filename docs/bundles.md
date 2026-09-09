@@ -1,13 +1,6 @@
-# Agent Bundles and safe imports
+# Agent Bundle configuration preview
 
-An Agent Bundle selects persona, policy, skills, tools, connectors, evaluators, model profiles, and
-runtime requirements by immutable reference. It is a declaration of desired bytes and capabilities,
-not permission to activate them.
-
-OpenClaw and Letta imports are treated as untrusted archives. Inspection is non-executing and
-enforces compressed and expanded size limits, file-count limits, normalized relative paths, and
-rejection of traversal, absolute paths, links, device files, nested archives, credentials, provider
-sessions, and hidden reasoning. A person reviews the normalized selection before signing or staging.
+The public CLI can scaffold, validate and package an `agent-bundle` selection. This is a configuration preview, not an installed Agent runtime.
 
 ```console
 geyser init agent-bundle careful-assistant
@@ -15,5 +8,6 @@ geyser validate careful-assistant
 geyser package careful-assistant
 ```
 
-Package creation is local. Signing, upload, staging, canary, and production promotion are distinct
-steps with distinct scopes and retained evidence.
+The JSON extension consumer does not activate these bundles. `geyser test` and `geyser dev` require an executable `tool`, `connector`, or `evaluator` handler. Public OpenClaw/Letta import, credential migration, runtime installation and bundle rollout are not implemented features of this CLI. Archive inspection alone is not an importer or an execution guarantee.
+
+Use the supported [JSON extension contract](extensions.md) for executable public packages. Workspace runtime and Agent configuration remain first-party controls.

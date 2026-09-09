@@ -1,13 +1,7 @@
-# Specialists and model profiles
+# Runtime features and configuration previews
 
-A specialist is a durable child run, not an ambient nested prompt. The parent records the exact
-specialist identity, typed input, authority boundary, budget, depth, concurrency slot, runtime and
-model profile digests, and typed result.
+Geyser’s first-party Agent runtimes have their own specialist, model-selection and policy controls. The public SDK can inspect capabilities and task/run state; it does not register a provider, qualify a new model, or install a specialist runtime.
 
-Use read-only specialists for analysis whenever mutation is unnecessary. Consequential specialist
-tools still pass through the same effect and approval interceptors as the parent. Cancellation and
-budget exhaustion propagate durably; completed child evidence remains readable.
+`geyser init model-profile NAME` creates a declaration that can be validated and packaged. It does not make that model executable. Skill and Agent Bundle scaffolds have the same configuration-preview boundary.
 
-A model profile describes an exact provider/model/transport posture and its bounded capabilities.
-It does not grant access. Platform, customer, project, placement, privacy, and policy authority are
-composed separately before admission.
+For remote tasks, use the Agent and qualified runtime already configured by the workspace owner. Check `geyser capabilities`, submit explicit requirements and budgets, and let the server reject unsupported combinations. See [availability](compatibility.md).

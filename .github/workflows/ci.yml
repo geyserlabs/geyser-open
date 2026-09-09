@@ -22,5 +22,7 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --all-packages --all-extras --all-groups --locked
+      - name: Install extension sandbox
+        run: sudo apt-get update -qq && sudo apt-get install -y bubblewrap
       - name: Compile and smoke
         run: make check

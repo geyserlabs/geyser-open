@@ -1,0 +1,22 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "default": "input",
+      "enum": [
+        "input",
+        "outcome_contract"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value"
+    }
+  },
+  "required": [
+    "value"
+  ],
+  "title": "InputCreate",
+  "type": "object"
+}

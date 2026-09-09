@@ -1,57 +1,39 @@
 # CLI reference
 
-Use `geyser --help` for top-level options and `geyser COMMAND --help` for a command's arguments.
-Global flags go **before** the command:
+The **0.2.0 source preview** provides these commands. Global options (`--api-url`, `--profile`, `--json`, `--allow-file-credentials`) precede the command.
 
-```console
-geyser --json version
-geyser --json doctor
-geyser --profile work runs list
-```
-
-## Work locally
-
-| Command | What it does |
+| Command | Behavior |
 |---|---|
-| `geyser init tool NAME` | Create a tool scaffold |
-| `geyser validate PATH` | Check a package's declarations |
-| `geyser test PATH` | Check its success and denial fixtures |
-| `geyser dev PATH` | Demonstrate a local emulator run |
-| `geyser validate-outcome SCHEMA RESULT` | Check a JSON result against its schema |
-| `geyser package PATH` | Create a local package archive |
+| `login [--scope SCOPE]` | Device login; stores the issued origin in the OS keychain |
+| `login --service-token-stdin` | Save a bounded service token from stdin with its explicit issued API URL |
+| `logout` | Remove the local profile; remote revocation is separate |
+| `doctor` | Check the selected/stored API URL, schema version and local credential presence |
+| `capabilities [--agent NAME]` | Read the project Agent’s execution readiness and runtime matrix; optional name must match |
+| `init KIND NAME` | Create a scaffold |
+| `validate PATH` | Validate package declarations and bounded file layout |
+| `test PATH` | Execute frozen JSON handler cases in the OS sandbox |
+| `dev PATH [--input FILE]` | Invoke a handler on supplied JSON or the first fixture |
+| `package PATH` | Build deterministic ZIP bytes and print their digest |
+| `sign ARCHIVE [--bundle FILE]` | Invoke the Sigstore CLI for exact archive bytes |
+| `publish ARCHIVE --stage [--signature-bundle FILE]` | Upload a signed package; the default bundle is `ARCHIVE.sigstore.json` |
+| `promote ID --digest DIGEST --canary` | Request installation on the project Agent |
+| `promote ID --digest DIGEST --production` | Advance the same project’s stage and re-acknowledge installation |
+| `status` | List package states; `pending_install` is not active |
+| `revoke ID --digest DIGEST` | Revoke an exact package assignment |
+| `tasks create --input FILE --idempotency-key KEY` | Upload JSON and submit a budgeted Agent task |
+| `tasks list`, `tasks get ID`, `tasks result ID` | Inspect tasks and retrieve completed results |
+| `tasks wait ID [--timeout SECONDS]` | Poll with a bounded deadline; timeout does not cancel remote work |
+| `runs list`, `runs get ID`, `runs trace ID` | Inspect project run state and trace |
+| `runs watch ID` | Emit each event immediately; `--json` emits newline-delimited JSON |
+| `runs stop ID --expected-sequence N` | Request cancellation as a current owner/admin |
+| `runs fork ID --expected-sequence N [--mode MODE]` | Create a paused preview inspection record; it does not dispatch a replay |
+| `approvals list`, `approvals get ID` | Read current approvals within the credential’s scope |
+| `approvals decide RUN APPROVAL approve\|reject ...` | Submit a version- and digest-bound customer decision |
+| `validate-outcome CONTRACT RESULT` | Check a JSON result against a local outcome contract |
+| `version` | Print SDK/CLI source version |
 
-`init` also accepts `skill`, `connector`, `evaluator`, `model-profile`, and `agent-bundle`.
-Start with the [quickstart](quickstart.md) for a complete example.
+Task creation accepts `--contract FILE`, `--package PACKAGE_ID`, `--max-cost`, `--max-seconds`, `--max-provider-requests`, and `--max-tool-calls`. Defaults are $1, 300 seconds, ten provider requests, and twenty tool calls. These are upper bounds, not included usage. A package task performs pure JSON execution and does not call a model.
 
-## Connect and inspect
+Decision and package mutation commands show a preview. `--yes` skips that local prompt; server authorization and current-state checks still apply. `approvals decide` requires `--expected-sequence`, `--binding-digest`, and `--reason-code`. Run commands support `--customer` for authorized customer-wide inspection.
 
-| Command | What it does |
-|---|---|
-| `geyser login` | Sign in through OAuth device authorization |
-| `geyser logout` | Remove the current profile's saved credential |
-| `geyser doctor` | Check configuration and API reachability |
-| `geyser runs list` | List accessible runs |
-| `geyser runs get RUN_ID` | Read a run's current state |
-| `geyser runs watch RUN_ID` | Follow its events |
-| `geyser runs trace RUN_ID` | Export its recorded trace |
-| `geyser approvals list` | List approvals |
-| `geyser approvals get APPROVAL_ID` | Read an approval's exact binding |
-| `geyser capabilities --agent NAME` | Inspect an Agent's available capabilities |
-
-## Make a decision or change a run
-
-`runs stop`, `runs fork`, and `approvals decide` require the current sequence. Approval decisions
-also require the binding digest and a reason. Use `--help` to see the required fields and read the
-current run or approval immediately before acting.
-
-Mutating commands show the intended action and request confirmation. `--yes` accepts that local
-preview; the server still checks your scope, the current state, and the applicable policy.
-
-## Publish an extension
-
-Package creation, signing, upload, staging, and promotion are separate steps. `sign` signs the
-archive. `publish ARCHIVE --stage` uploads signed bytes for staging. `promote PACKAGE_ID --digest
-DIGEST --canary` requests a canary promotion. `status` lists package lifecycle state.
-
-Each remote step needs the corresponding project scope. Read [authentication](authentication.md)
-and [Agent Bundles](bundles.md) before publishing.
+Human-readable mode is for a terminal; `--json` is for automation. Errors exit with code 2. Do not attach output containing private result values or credentials to public issues.

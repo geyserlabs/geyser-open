@@ -1,35 +1,11 @@
-# Where your application's work lives
+# Customer custody and transport
 
-Geyser separates the place your work is stored, the computer an Agent uses, and the services that
-process model, speech, or tool requests. Those choices matter when you connect an application.
+The Customer Cell owns developer projects, credential verifiers, task inputs/results, package bytes and run state. In a dedicated Cell, JSON objects and new package archives use its encrypted Data Home. Raw input/result bytes do not enter the Agent’s durable control spool. Legacy monolith installations retain their existing local storage boundary; a dedicated Cell does not silently fall back to a Global content copy.
 
-## Customer Cell: the data home
+Global sign-in bootstraps a human session and selects the current Cell. The credential response includes an API URL bound to that Cell generation. Global’s developer relay forwards a project bearer unchanged, uses only registered active Cell routes, and does not exchange it for customer or Fleet authority. A changed generation requires authentication again.
 
-Run content, approvals, events, checkpoints, artifacts, and developer package records are
-authoritative in the assigned Customer Cell. Credentials and project access are bound to that
-customer and Cell assignment.
+**The compatibility relay processes plaintext content transiently.** TLS protects each network leg; this is not end-to-end encryption from your application to the Cell. Responses identify customer-cell custody and compatibility-relay transit. Storage location, relay transit, Agent compute and model/provider processing are separate choices.
 
-Global routing and fleet-health views use content-free operational information. Requests through
-configured provider brokers may still carry content in transit, so storage placement and processing
-routes should be reviewed separately.
+Pure JSON extensions run without network or credential access. Open Agent tasks use the workspace’s configured model and tool routes, which can process authorized content outside the Cell. Moving compute to your hardware does not automatically move its data home or replace an external model provider.
 
-## Agent computers and processing routes
-
-Agent compute can run on managed infrastructure or customer hardware. Model and speech services
-can use supported hosted or customer-controlled routes. Connected applications receive the inputs
-needed for the actions you authorize.
-
-Moving an Agent to your hardware does not, by itself, move its data home or replace an external
-model provider. The [deployment guide](https://www.geyserlabs.ai/deployments) shows how these choices
-fit together.
-
-## Design your integration around the boundary
-
-- Request access for the project your application serves.
-- Keep tokens in your application's secret store and apply short, useful scopes.
-- Store only the run content and artifacts your application needs.
-- Include your integration's own retained copies in its deletion and retention workflow.
-- Check the intended Agent's capabilities and privacy posture before selecting its runtime.
-
-Read the [privacy architecture](https://www.geyserlabs.ai/privacy-architecture) for transport and
-support access, or [authentication](authentication.md) for developer credentials.
+Retention follows the customer policy and excludes active task inputs. Agent deletion erases its owned developer objects and package records. Your integration must include its own downloads, logs, backups and result copies in its retention/deletion workflow. See [costs and limits](program.md) and the [privacy architecture](https://www.geyserlabs.ai/privacy-architecture).
