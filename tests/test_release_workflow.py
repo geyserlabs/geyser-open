@@ -1,11 +1,11 @@
 from pathlib import Path
 
 
-def test_pypi_projects_publish_without_environment_approval_gates() -> None:
+def test_pypi_projects_match_the_existing_trusted_publisher() -> None:
     workflow = Path(".github/workflows/release.yml").read_text()
 
     assert "  publish-pypi-sdk:\n" in workflow
-    assert "environment:" not in workflow
+    assert workflow.count("environment: pypi") == 2
     assert "packages-dir: pypi-dist-sdk/" in workflow
     assert "  publish-pypi-open:\n" in workflow
     assert "packages-dir: pypi-dist-open/" in workflow
@@ -13,7 +13,9 @@ def test_pypi_projects_publish_without_environment_approval_gates() -> None:
     assert workflow.count(
         "pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33"
     ) == 2
-    assert "needs: [assemble, publish-pypi-sdk, publish-pypi-open]" in workflow
+    assert "needs: [publish-pypi-sdk, publish-pypi-open]" in workflow
+    assert "run-id: ${{ inputs.reuse_run_id }}" in workflow
+    assert "needs.reuse-artifacts.result == 'success'" in workflow
 
 
 def test_standalone_release_artifacts_use_an_upload_visible_directory() -> None:

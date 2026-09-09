@@ -17,3 +17,16 @@ an explicit failure; packages never run without the required isolation.
 
 Documentation: https://geyserlabs.ai/developers
 Security: https://github.com/geyserlabs/geyser-open/security/policy
+Publication recovery
+--------------------
+PyPI trusts release.yml in the existing pypi GitHub environment. Keep that
+environment on both publish jobs; it is part of the publisher identity.
+
+If builds complete but publication stops, reuse the original run's
+complete-release artifact. Do not rebuild or move the package release tag.
+After merging any workflow correction, create a separate immutable tag such as
+v0.2.0-publish-20260909 at that reviewed merge. This is a workflow tag, not a
+new package version. It matches the existing tag-only environment policy and
+does not trigger a new build. Dispatch release.yml from that tag with version
+0.2.0 and reuse_run_id set to the original release run. The workflow checks
+the original build against v0.2.0 and validates every artifact before upload.
