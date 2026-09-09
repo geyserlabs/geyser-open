@@ -83,6 +83,7 @@ jobs:
           uv run geyser test examples/packages/issue-normalizer
           uv run geyser test examples/packages/source-review-gate
           uv run geyser validate examples/packages/careful-review
+          uv run pytest -q sdk/python/tests/test_sandbox.py
 
   packages:
     needs: handlers

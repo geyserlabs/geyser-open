@@ -186,6 +186,12 @@ def _command(
 ) -> list[str]:
     executable = str(Path(sys.executable).resolve())
     runtime = str(Path(sys.base_prefix).resolve())
+    if sys.platform == "darwin":
+        # Framework Python's bin/python is a launcher that starts Python.app.
+        # Execute the real interpreter so the policy permits exactly one binary.
+        framework_python = Path(runtime) / "Resources/Python.app/Contents/MacOS/Python"
+        if framework_python.is_file():
+            executable = str(framework_python.resolve())
     arguments = [
         executable,
         "-I",
@@ -202,10 +208,15 @@ def _command(
         def literal(path: str | Path) -> str:
             return json.dumps(str(path))
 
+        # realpath() needs metadata on parent directories, even when the target
+        # itself is readable. This permits no contents of those directories.
+        parents = set(Path(executable).parents) | set(root.parents) | set(writable.parents)
+        parent_metadata = " ".join(f"(literal {literal(path)})" for path in sorted(parents))
         policy = "\n".join(
             [
                 "(version 1)",
                 "(deny default)",
+                f"(allow file-read-metadata {parent_metadata})",
                 f"(allow process-exec (literal {literal(executable)}))",
                 f"(allow file-read* (subpath {literal(root)}) (subpath {literal(runtime)}) "
                 '(subpath "/System/Library") (subpath "/usr/lib") '
