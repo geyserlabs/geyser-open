@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import io
+import json
+import urllib.error
 from pathlib import Path
 
 import pytest
@@ -56,3 +60,30 @@ def test_recovery_rejects_unrelated_workflow_refs(monkeypatch, ref):
     monkeypatch.setenv("GITHUB_REF", ref)
     with pytest.raises(ValueError, match="immutable publication tag"):
         recovery.verify_source()
+
+
+@pytest.mark.parametrize("status", [404, 403, 503, "same", "different"])
+def test_publication_retry_requires_missing_version_or_exact_existing_hashes(
+    monkeypatch, tmp_path, status,
+):
+    files = ["geyser_sdk-0.2.0.tar.gz", "geyser_sdk-0.2.0-py3-none-any.whl"]
+    for name in files:
+        (tmp_path / name).write_bytes(b"verified-artifact")
+    def response(*args, **kwargs):
+        if isinstance(status, int):
+            raise urllib.error.HTTPError("https://pypi.org/", status, "test", {}, None)
+        digest = hashlib.sha256(b"verified-artifact").hexdigest()
+        return io.BytesIO(json.dumps({
+            "info": {"name": "geyser-sdk", "version": "0.2.0"},
+            "urls": [{"filename": name, "digests": {
+                "sha256": digest if status == "same" else "0" * 64,
+            }} for name in files],
+        }).encode())
+    monkeypatch.setattr(recovery.urllib.request, "urlopen", response)
+    if status == 404:
+        assert recovery.already_published(tmp_path, "geyser-sdk", "0.2.0") is False
+    elif status == "same":
+        assert recovery.already_published(tmp_path, "geyser-sdk", "0.2.0") is True
+    else:
+        with pytest.raises((ValueError, urllib.error.HTTPError)):
+            recovery.already_published(tmp_path, "geyser-sdk", "0.2.0")
