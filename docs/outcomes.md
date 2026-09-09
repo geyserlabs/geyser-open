@@ -1,19 +1,9 @@
-# Structured outcomes
+# Typed outcomes
 
-An outcome schema turns a successful-looking response into a testable contract. Use Draft 2020-12
-JSON Schema inside a versioned contract with `schema_version`, `schema_ref`, and `json_schema`.
-External `$ref` values are rejected. Keep both valid and invalid result fixtures in source.
-The [structured-result recipe](recipes.md#validate-a-structured-result) includes a complete contract
-and result you can copy.
+Upload an outcome contract as `InputCreate(kind="outcome_contract", value=...)`, then use the returned reference in `TaskCreate.outcome_contract_ref`. The Cell verifies project ownership, binds the exact reference at admission and validates the committed result.
 
-```console
-geyser validate-outcome outcome.schema.json result.json
-```
+A contract has `schema_version: 1`, a stable `schema_ref`, optional `schema_revision`, and a Draft 2020-12 `json_schema`. Public executable schemas are self-contained: references (`$ref`, `$dynamicRef`, `$id`) and regular-expression validation are not accepted. Schema depth and node count are bounded. Keep schemas small and explicit.
 
-At runtime, Geyser records the schema digest with the run. A valid response completes with its typed
-value. An invalid response may enter a bounded repair loop if policy allows. Exhausted repair ends in
-an explicit terminal failure; it never silently converts malformed output into success.
+The SDK’s local `normalize_contract` and `validate_outcome` helpers also support existing standalone contracts. A locally valid schema may use features intentionally excluded at the remote execution boundary; uploading it is the authoritative compatibility check.
 
-Input declarations are strict because an unknown field could request new authority. Output models
-preserve additive server fields so an older client can observe a newer API without discarding
-evidence.
+Inputs and results are limited to 1 MiB remotely. A schema-valid answer can still be wrong. Use independent evidence and application-specific evaluators; the source-review reference application checks citation coverage only. No hidden reasoning is required or exposed.

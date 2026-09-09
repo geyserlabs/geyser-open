@@ -21,14 +21,16 @@ def main() -> int:
                 "geyser_cli",
                 "init",
                 "tool",
-                "careful-search",
+                "word-count",
                 "--output",
                 str(root),
             ],
-            [sys.executable, "-m", "geyser_cli", "validate", str(root / "careful-search")],
-            [sys.executable, "-m", "geyser_cli", "test", str(root / "careful-search")],
-            [sys.executable, "-m", "geyser_cli", "dev", str(root / "careful-search")],
+            [sys.executable, "-m", "geyser_cli", "validate", str(root / "word-count")],
+            [sys.executable, "-m", "geyser_cli", "test", str(root / "word-count")],
+            [sys.executable, "-m", "geyser_cli", "dev", str(root / "word-count")],
             [sys.executable, "examples/emulator_quickstart.py"],
+            [sys.executable, "examples/extension_app.py", "issue-normalizer"],
+            [sys.executable, "examples/extension_app.py", "source-review-gate"],
         ]
         for command in commands:
             subprocess.run(command, check=True)

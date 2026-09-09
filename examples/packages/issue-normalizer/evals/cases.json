@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "cases": [
+    {
+      "case_id": "bug",
+      "input": {
+        "number": 42,
+        "title": " Login fails ",
+        "body": " Steps to reproduce ",
+        "labels": [
+          "Bug"
+        ]
+      },
+      "expected_output": {
+        "source_id": "issue:42",
+        "title": "Login fails",
+        "description": "Steps to reproduce",
+        "category": "bug"
+      },
+      "critical": false
+    },
+    {
+      "case_id": "reject-unbounded-import",
+      "input": {
+        "number": 0,
+        "title": "x",
+        "body": "x",
+        "labels": []
+      },
+      "expected_error": "input_invalid",
+      "critical": true
+    }
+  ]
+}

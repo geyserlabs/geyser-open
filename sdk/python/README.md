@@ -1,15 +1,7 @@
-# geyser-sdk
+# Geyser Python SDK
 
-Typed sync/async clients and a deterministic, credential-free local emulator
-for Geyser's public `/api/v1` developer contract.
+This source is the 0.2.0 preview: typed sync/async clients, owned JSON inputs and results, idempotent tasks, current customer authority, real sandboxed extension tests and exact signed package installation. Published 0.1.0 artifacts do not contain these corrections. Remote execution requires matching Cell and Agent software.
 
-```python
-from geyser_sdk import GeyserClient
+Start with the [source quickstart](https://github.com/geyserlabs/geyser-open/blob/main/docs/quickstart.md), [authentication](https://github.com/geyserlabs/geyser-open/blob/main/docs/authentication.md), and [availability](https://github.com/geyserlabs/geyser-open/blob/main/docs/compatibility.md). Use the API URL issued with your credential. The SDK does not include a model or an Agent runtime.
 
-with GeyserClient("https://api.geyserlabs.ai", access_token="...") as geyser:
-    for run in geyser.runs.iter():
-        print(run.id, run.state)
-```
-
-Tokens are always explicit. The package never reads an ambient Agent key,
-provider credential, or browser session.
+MIT-licensed. Remote compute/models follow your workspace billing. Pure JSON handlers require a supported OS sandbox; there is no unsandboxed fallback. Report vulnerabilities under the [security policy](https://github.com/geyserlabs/geyser-open/security/policy).

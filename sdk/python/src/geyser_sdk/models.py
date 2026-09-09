@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from typing import Any, Literal
 
@@ -21,6 +22,32 @@ class StrictInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class InputCreate(StrictInput):
+    value: Any
+    kind: Literal["input", "outcome_contract"] = "input"
+
+
+class DeveloperObject(PublicModel):
+    ref: str
+    digest: str
+    kind: Literal["input", "outcome_contract", "result"]
+    size_bytes: int
+
+
+class InputResponse(PublicModel):
+    api_version: str = API_VERSION
+    input: DeveloperObject
+
+
+class DeveloperResult(DeveloperObject):
+    value: Any
+
+
+class ResultResponse(PublicModel):
+    api_version: str = API_VERSION
+    result: DeveloperResult
+
+
 class TaskCreate(StrictInput):
     input_ref: str
     input_digest: str
@@ -28,6 +55,34 @@ class TaskCreate(StrictInput):
     outcome_contract_ref: str = Field(default="", max_length=1000)
     budget: dict[str, Any] = Field(default_factory=dict)
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("budget")
+    @classmethod
+    def valid_budget(cls, value: dict[str, Any]) -> dict[str, Any]:
+        supported = {
+            "max_cost_usd",
+            "max_elapsed_seconds",
+            "max_provider_requests",
+            "max_tool_calls",
+        }
+        for key, ceiling in value.items():
+            try:
+                finite = math.isfinite(float(ceiling))
+            except (ValueError, TypeError, OverflowError):
+                finite = False
+            if (
+                key not in supported
+                or not isinstance(ceiling, (float, int))
+                or isinstance(ceiling, bool)
+                or not finite
+                or ceiling <= 0
+                or (key in {"max_provider_requests", "max_tool_calls"} and int(ceiling) != ceiling)
+            ):
+                raise ValueError(
+                    "budget must contain supported finite positive ceilings; "
+                    "call limits must be integers"
+                )
+        return value
 
     @field_validator("input_ref")
     @classmethod
@@ -80,13 +135,14 @@ class CapabilityProfile(PublicModel):
     model_profile_digest: str
     qualification_evidence_digest: str
     qualification_expires_at: float | None = None
-    qualification_state: Literal["qualified", "expired"] = "qualified"
+    qualification_state: Literal["qualified", "review_due", "expired"] = "qualified"
     capabilities: dict[str, CapabilityMode]
 
 
 class CapabilityResponse(PublicModel):
     api_version: str = API_VERSION
-    capability_profile: CapabilityProfile
+    execution: dict[str, Any] = Field(default_factory=dict)
+    capability_profile: CapabilityProfile | None = None
     capability_matrix: list[CapabilityProfile] = Field(default_factory=list)
     generated_from_evidence: bool = False
     matrix_digest: str = ""
@@ -178,6 +234,13 @@ class RunResponse(PublicModel):
     run: Run
 
 
+class ForkResponse(PublicModel):
+    api_version: str = API_VERSION
+    parent_run: Run
+    child_run: Run
+    historical_approval_reuse: Literal[False] = False
+
+
 class RunPage(PublicModel):
     api_version: str = API_VERSION
     data: list[Run]
@@ -252,19 +315,28 @@ class CancelRequest(StrictInput):
 
 
 class EvaluationCreate(StrictInput):
-    evaluation_id: str
+    evaluation_id: str = Field(min_length=8, max_length=160)
     expected_sequence: int = Field(ge=1)
-    evaluator_ref: str
-    verdict: str
+    evaluator_ref: str = Field(min_length=1, max_length=512)
+    evaluator_version: str = Field(default="1", min_length=1, max_length=80)
+    verdict: Literal["pass", "fail", "warn", "unknown"]
     score: float = Field(ge=0, le=1)
-    evidence_refs: list[str] = Field(default_factory=list)
+    metrics: dict[str, Any] = Field(default_factory=dict)
+    evidence_digest: str = Field(default="", pattern=r"^(|sha256:[0-9a-f]{64})$")
+    critical: bool = False
 
 
 class ForkCreate(StrictInput):
-    fork_id: str
-    child_run_id: str
+    fork_key: str = Field(min_length=8, max_length=160, pattern=r"^[A-Za-z0-9._:-]+$")
     expected_sequence: int = Field(ge=1)
-    reason_code: str
+    mode: Literal["model_only", "tool_stubbed", "read_only_shadow", "full_reexecution"]
+    target_framework: str = Field(default="", max_length=64)
+    target_model_ref: str = Field(default="", max_length=512)
+    target_model_profile_digest: str = Field(default="", max_length=80)
+    target_policy_ref: str = Field(default="", max_length=512)
+    authority_ref: str = Field(default="", max_length=512)
+    sanitized: bool = False
+    budget: dict[str, Any] = Field(default_factory=dict)
 
 
 class PackageRecord(PublicModel):
@@ -330,3 +402,8 @@ class TypedTask(StrictInput):
 
 
 TERMINAL_RUN_STATES = frozenset({"completed", "failed", "canceled"})
+
+
+class RevocationResponse(PublicModel):
+    api_version: str = API_VERSION
+    revoked: bool

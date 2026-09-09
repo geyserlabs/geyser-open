@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "name": "issue-normalizer",
+  "version": "0.1.0",
+  "kind": "connector",
+  "permissions": []
+}

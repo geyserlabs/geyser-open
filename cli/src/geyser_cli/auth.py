@@ -7,8 +7,10 @@ import webbrowser
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import urlsplit
 
 import httpx
+from geyser_sdk.urls import validate_api_url
 
 from .credentials import CredentialStore, StoredCredential
 
@@ -34,15 +36,14 @@ def login_device(
     timeout: float = 10.0,
     notify: Callable[[DeviceAuthorization], None] | None = None,
 ) -> dict[str, Any]:
-    with httpx.Client(base_url=base_url.rstrip("/"), timeout=timeout) as client:
+    base_url = validate_api_url(base_url)
+    with httpx.Client(base_url=base_url, timeout=timeout) as client:
         response = client.post(
             "/api/v1/oauth/device/code",
             json={"client_id": CLIENT_ID, "scope": " ".join(scopes)},
         )
         if response.status_code >= 400:
-            raise RuntimeError(
-                f"device authorization could not start ({response.status_code})"
-            )
+            raise RuntimeError(f"device authorization could not start ({response.status_code})")
         device = DeviceAuthorization(**response.json())
         if notify:
             notify(device)
@@ -61,6 +62,14 @@ def login_device(
             )
             value = token_response.json()
             if token_response.status_code == 200:
+                destination = validate_api_url(str(value.get("api_url") or base_url))
+                if (
+                    urlsplit(destination).netloc != urlsplit(base_url).netloc
+                    or urlsplit(destination).scheme != urlsplit(base_url).scheme
+                ):
+                    raise RuntimeError(
+                        "OAuth returned a credential destination outside the sign-in origin"
+                    )
                 credential = StoredCredential(
                     access_token=str(value["access_token"]),
                     token_type=str(value.get("token_type") or "Bearer"),
@@ -68,6 +77,8 @@ def login_device(
                     scope=str(value.get("scope") or ""),
                     customer_id=int(value.get("customer_id") or 0),
                     project_id=str(value.get("project_id") or ""),
+                    api_url=destination,
+                    cell_generation=int(value.get("cell_generation") or 0),
                 )
                 backend = store.save(credential)
                 return {
@@ -90,10 +101,12 @@ def login_device(
     raise RuntimeError("device authorization expired")
 
 
-def login_service_token(store: CredentialStore, token: str) -> dict[str, Any]:
+def login_service_token(store: CredentialStore, token: str, *, api_url: str) -> dict[str, Any]:
     if not token.strip():
         raise ValueError("service token input was empty")
-    backend = store.save(StoredCredential(access_token=token.strip()))
+    backend = store.save(
+        StoredCredential(access_token=token.strip(), api_url=validate_api_url(api_url))
+    )
     return {"authenticated": True, "storage": backend, "credential_type": "service"}
 
 

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "name": "issue-normalizer",
+  "description": "Normalize supplied issue records.",
+  "handler": "handler.py:run",
+  "effect_class": "pure",
+  "input_schema": {
+    "type": "object",
+    "required": [
+      "number",
+      "title",
+      "body",
+      "labels"
+    ],
+    "properties": {
+      "number": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "body": {
+        "type": "string",
+        "maxLength": 8000
+      },
+      "labels": {
+        "type": "array",
+        "maxItems": 30,
+        "items": {
+          "type": "string",
+          "maxLength": 80
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "source_id",
+      "title",
+      "description",
+      "category"
+    ],
+    "properties": {
+      "source_id": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "category": {
+        "enum": [
+          "bug",
+          "question",
+          "request"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+}

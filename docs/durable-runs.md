@@ -1,25 +1,21 @@
-# Runs, events, checkpoints, approvals, and effects
+# Durable tasks, runs and effects
 
-A run is admitted before provider use. Its append-only events use monotonic sequences and
-idempotency identities. Checkpoints bind exact bytes by digest. Cancellation is a durable request,
-not proof that a provider, tool, or specialist already stopped.
+A developer task begins `queued`, becomes `claimed` by its assigned Agent, and ends `completed`, `failed`, or `canceled`. The Agent claims a stable run ID with a versioned, expiring ownership lease. Recovery preserves that run ID and increments a fencing token; an older process cannot renew, read task input, produce run events or publish a result after ownership changes.
 
-## Approvals, effects, and idempotency
+The task’s input digest, required capabilities, budget ceilings, project and outcome-contract reference must match admission. Unsupported modes are rejected before queueing. Inputs/results belong to the Customer Cell; event metadata contains references and digests.
 
-Consequential tool calls create an effect intent before execution and a receipt afterward. An
-approval binds the run, tool, exact argument digest, consequence summary, risk class, data
-boundary, and expiry. Argument drift or a stale sequence is denied. Unknown effects require
-reconciliation rather than optimistic retry.
+The worker commits the result before completion. If acknowledgement is lost, recovery checks for a committed result and completes the existing run without invoking the handler or provider again. Terminal run state is projected back onto the task.
 
-Every retryable mutation carries a stable idempotency key. Reusing that identity with different
-arguments is a conflict, not a second action. A crash after the external effect but before its
-receipt leaves the effect `unknown` until an adapter-specific reconciliation proves what happened.
+A run may pause for approval, billing, or recovery while its task remains claimed. An external effect whose outcome is unknown is not retried automatically. Reconcile the actual outcome through the workspace’s authorized controls before continuing. Idempotent submission cannot make an arbitrary third-party side effect exactly-once.
 
-## Trace, replay, and fork
+Cancellation records a request and an adapter acknowledgement before the canceled state. It stops future work; it does not undo a committed effect. Events use increasing sequence numbers. `watch_events` drains the terminal sequence, and saved cursors support reconnects.
 
-Trace export includes durable state, usage precision, budget enforcement, effects, approvals,
-artifacts, evaluations, and event digests. It never exports hidden model reasoning.
+## Local emulator
 
-Replay re-evaluates retained evidence without repeating consequential effects. Fork creates a new
-run from an eligible checkpoint with a new identity and explicit authority evaluation. Neither
-operation rewrites the original event stream.
+`LocalEmulator` simulates durable control state with application-registered model and tool callbacks. It is in-memory test machinery, not a production runtime or sandbox. Its callbacks execute in your process and have that process’s authority. Use synthetic data and deterministic fakes.
+
+After an injected crash following `tool.started`, the emulator refuses to invoke that effect again. Record an independently observed result with `reconcile_tool` before continuing. Completed/reconciled calls return the recorded result. Use a fresh operation identity for a deliberately distinct effect.
+
+## Forks
+
+The public fork operation creates a paused inspection record tied to a checkpoint. It does not dispatch a new execution, reuse historical approvals, or provide an automatic replay engine. Treat it as preview functionality; use a new, explicitly authorized task for new work.

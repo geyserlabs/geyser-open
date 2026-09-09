@@ -43,7 +43,7 @@ class FakeClient:
         return {"run_id": run_id, "cancellation_id": request.cancellation_id}
 
     def fork(self, run_id: str, request: Any) -> dict[str, Any]:
-        return {"run_id": run_id, "fork_id": request.fork_id}
+        return {"run_id": run_id, "fork_id": request.fork_key}
 
     def list_approvals(self) -> dict[str, Any]:
         return {"data": []}
@@ -61,24 +61,36 @@ class FakeClient:
         return {"package_id": package_id, "target": promotion.target}
 
 
-@pytest.mark.parametrize("arguments", [
-    ["status"],
-    ["capabilities", "--agent", "Ada"],
-    ["runs", "list", "--customer"],
-    ["runs", "get", "run-1"],
-    ["runs", "watch", "run-1"],
-    ["runs", "trace", "run-1", "--customer"],
-    ["runs", "stop", "run-1", "--expected-sequence", "2", "--yes"],
-    ["runs", "fork", "run-1", "--child-run-id", "run-2", "--expected-sequence", "2", "--yes"],
-    ["approvals", "list"],
-    ["approvals", "get", "approval-1"],
+@pytest.mark.parametrize(
+    "arguments",
     [
-        "approvals", "decide", "run-1", "approval-1", "approve",
-        "--expected-sequence", "2", "--binding-digest", SHA,
-        "--reason-code", "reviewed", "--yes",
+        ["status"],
+        ["capabilities", "--agent", "Ada"],
+        ["runs", "list", "--customer"],
+        ["runs", "get", "run-1"],
+        ["runs", "watch", "run-1"],
+        ["runs", "trace", "run-1", "--customer"],
+        ["runs", "stop", "run-1", "--expected-sequence", "2", "--yes"],
+        ["runs", "fork", "run-1", "--mode", "tool_stubbed", "--expected-sequence", "2", "--yes"],
+        ["approvals", "list"],
+        ["approvals", "get", "approval-1"],
+        [
+            "approvals",
+            "decide",
+            "run-1",
+            "approval-1",
+            "approve",
+            "--expected-sequence",
+            "2",
+            "--binding-digest",
+            SHA,
+            "--reason-code",
+            "reviewed",
+            "--yes",
+        ],
+        ["promote", "package-1", "--digest", SHA, "--canary", "--yes"],
     ],
-    ["promote", "package-1", "--digest", SHA, "--canary", "--yes"],
-])
+)
 def test_network_commands(
     arguments: list[str], monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -94,6 +106,9 @@ def test_publish_and_sign(
     root = scaffold("tool", "sample-tool", tmp_path)
     archive = Path(package_extension(root)["path"])
     monkeypatch.setattr(cli, "_client", lambda _args: FakeClient())
+    archive.with_suffix(archive.suffix + ".sigstore.json").write_text(
+        "{}"
+    )  # Transport test; real verification is server-side.
     assert cli.main(["--json", "publish", str(archive), "--stage", "--yes"]) == 0
     assert json.loads(capsys.readouterr().out.strip().splitlines()[-1])["stage"] == "staging"
     monkeypatch.setattr(cli.shutil, "which", lambda _name: "/usr/bin/true")
@@ -109,9 +124,13 @@ def test_doctor_and_confirmation_cancel(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(cli, "_store", lambda _args: SimpleNamespace(load=lambda: None))
-    monkeypatch.setattr(cli.httpx, "get", lambda *_args, **_kwargs: SimpleNamespace(
-        status_code=200, json=lambda: {"info": {"version": "2026-08-24"}}
-    ))
+    monkeypatch.setattr(
+        cli.httpx,
+        "get",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            status_code=200, json=lambda: {"info": {"version": "2026-08-24"}}
+        ),
+    )
     assert cli.main(["--json", "doctor"]) == 0
     assert json.loads(capsys.readouterr().out)["api_reachable"] is True
     monkeypatch.setattr(cli, "_client", lambda _args: FakeClient())

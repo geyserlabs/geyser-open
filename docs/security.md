@@ -1,39 +1,19 @@
-# Security for developers
+# Developer security
 
-Report a suspected vulnerability privately to
-[security@geyserlabs.ai](mailto:security@geyserlabs.ai). We acknowledge reports within two business
-days and coordinate investigation, fixes, disclosure, and credit with the reporter.
+Report suspected vulnerabilities privately to [security@geyserlabs.ai](mailto:security@geyserlabs.ai), following the repository’s [security policy](https://github.com/geyserlabs/geyser-open/blob/main/SECURITY.md). Do not include credentials, customer content or exploit details in a public issue.
 
-Keep credentials, customer identifiers, private run content, and exploit details out of public
-issues. See the [security policy](https://github.com/geyserlabs/geyser-open/blob/main/SECURITY.md)
-for supported versions and reporting details.
+## Enforced boundaries
 
-## Credentials and project access
+- Human grants require current membership, role and Agent assignment. The Cell makes a signed, request-bound authorization check with Global at consent, exchange and use; it sends identifiers and scopes only. Missing connectivity denies human access. Membership/grant revisions bind issued credentials, so restoring an old role does not restore an old credential. Project service credentials do not depend on a human login.
+- Project credentials remain bound to one project, Agent, Cell and audience. Fleet sessions cannot read the customer developer API. Service credentials do not impersonate a person’s decision authority.
+- SDK/CLI HTTP destinations allow HTTPS or exact loopback development hosts. A stored credential cannot be silently redirected to another API origin or path.
+- Signed packages must match an administrator-configured certificate identity and issuer, their exact archive digest and the current publisher generation. Both Cell and Agent verify cryptography; metadata flags are not evidence.
+- Executable handlers start inside a supported OS sandbox before import. No ambient credentials, networking, host files or subprocesses are granted. Missing sandbox support disables execution.
+- Task claims and package acknowledgements bind exact current generations; late processes cannot reactivate revoked authority or overwrite another owner’s result.
+- Inputs, contracts and results are project-owned, bounded and validated. Public schemas use the [bounded subset](extensions.md#supported-json-schema-subset), with limits over schema structure, data traversal, validation work, deadline and cancellation.
 
-The CLI stores credentials in the OS keychain by default. Tokens are scoped, expiring, and
-revocable, with an audience, customer, project, and Cell assignment. Use a separate bounded service
-credential for CI. Read [authentication](authentication.md) before adding a remote integration.
+## Compromise response
 
-## Actions and approvals
+Revoke the affected credential or project in the console. Revoke an installed package with its expected digest. If publisher identity changes, update trust, review/sign the new bytes and explicitly promote again. Stop affected runs using a current owner/admin credential. Already committed external effects require domain-specific reconciliation.
 
-An approval binds a decision to the run, tool, arguments, and current state. An argument change or
-stale binding requires a new decision. Stable idempotency keys let the server recognize a repeated
-request; they must not be reused for a different intended action.
-
-See [durable execution](durable-runs.md) for effects, unknown outcomes, and recovery.
-
-## Packages and imports
-
-Validate package contents before signing or staging. Archive inspection rejects unsafe paths,
-links, and oversized contents. Imported Agent Bundles exclude credentials, provider sessions,
-and hidden reasoning. A person reviews the selected components before activation.
-
-The workspace remains responsible for granting capabilities. Installing a package does not give
-it access to customer tools or data. Read [Agent Bundles](bundles.md) and
-[release verification](releases.md).
-
-## If something is compromised
-
-Revoke affected credentials, stop using the affected package or runtime, and follow the security
-advisory. Geyser can revoke capabilities and withdraw unsafe releases. Replacement packages use
-new versions; published bytes are not silently replaced.
+A software release, local test pass or valid signature does not establish that code is free of defects. Test critical behavior with synthetic fixtures and keep your application’s own permission, secret-storage and review controls. The in-memory emulator executes your registered callbacks in your process; only the executable extension path supplies the OS sandbox.

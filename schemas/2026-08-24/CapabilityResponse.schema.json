@@ -60,6 +60,7 @@
           "default": "qualified",
           "enum": [
             "qualified",
+            "review_due",
             "expired"
           ],
           "title": "Qualification State",
@@ -100,7 +101,20 @@
       "type": "array"
     },
     "capability_profile": {
-      "$ref": "#/$defs/CapabilityProfile"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CapabilityProfile"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "execution": {
+      "additionalProperties": true,
+      "title": "Execution",
+      "type": "object"
     },
     "generated_from_evidence": {
       "default": false,
@@ -113,9 +127,6 @@
       "type": "string"
     }
   },
-  "required": [
-    "capability_profile"
-  ],
   "title": "CapabilityResponse",
   "type": "object"
 }

@@ -10,6 +10,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from geyser_sdk import bytes_digest
+from geyser_sdk.extensions import EXECUTABLE_KINDS, descriptor, run_extension
+from geyser_sdk.sandbox import SandboxError
 from pydantic import BaseModel, ConfigDict, Field
 
 from .scaffolds import KINDS
@@ -24,8 +26,8 @@ class ExtensionManifest(BaseModel):
 
     schema_version: int = 1
     kind: str
-    name: str
-    version: str
+    name: str = Field(pattern=r"^[a-z][a-z0-9-]{1,79}$")
+    version: str = Field(pattern=r"^[0-9A-Za-z][0-9A-Za-z.+-]{0,79}$")
     permissions: list[str] = Field(default_factory=list, max_length=128)
 
 
@@ -44,6 +46,20 @@ def validate_extension(root: Path) -> dict[str, Any]:
     manifest = ExtensionManifest.model_validate(_load_json(manifest_path))
     if manifest.schema_version != 1 or manifest.kind not in KINDS:
         raise ValueError("unsupported extension manifest kind or schema version")
+    if manifest.kind in EXECUTABLE_KINDS:
+        descriptor(root, manifest.model_dump())
+    elif manifest.kind == "skill":
+        if not (root / "SKILL.md").is_file() or not (root / "SKILL.md").read_text().strip():
+            raise ValueError("skill requires a nonempty SKILL.md")
+    else:
+        name = (
+            "agent-bundle-selection.json"
+            if manifest.kind == "agent-bundle"
+            else "model-profile.json"
+        )
+        value = _load_json(root / name)
+        if not isinstance(value, dict) or value.get("schema_version") != 1:
+            raise ValueError("descriptor must be a version 1 JSON object")
     files = 0
     total = 0
     for path in sorted(root.rglob("*")):
@@ -66,19 +82,38 @@ def validate_extension(root: Path) -> dict[str, Any]:
     if not isinstance(cases, dict) or cases.get("frozen") is not True:
         raise ValueError("evals/cases.json must declare frozen=true")
     rows = cases.get("cases")
-    if not isinstance(rows, list) or not rows:
+    if not isinstance(rows, list) or not 1 <= len(rows) <= 32:
         raise ValueError("evals/cases.json must contain at least one case")
     if not any(isinstance(row, dict) and row.get("critical") is True for row in rows):
         raise ValueError("at least one frozen critical denial case is required")
+    if manifest.kind in EXECUTABLE_KINDS:
+        for row in rows:
+            if (
+                not isinstance(row, dict)
+                or "input" not in row
+                or ("expected_output" in row) == ("expected_error" in row)
+            ):
+                raise ValueError(
+                    "every executable case requires input and exactly one "
+                    "expected_output or expected_error"
+                )
     return {"manifest": manifest.model_dump(), "files": files, "size_bytes": total}
 
 
 def test_extension(root: Path) -> dict[str, Any]:
     validation = validate_extension(root)
     cases = _load_json(root.expanduser().resolve() / "evals" / "cases.json")["cases"]
-    failed = [row.get("case_id", "unknown") for row in cases if row.get("expected") not in {
-        "success", "deny_without_explicit_authority"
-    }]
+    if validation["manifest"]["kind"] not in EXECUTABLE_KINDS:
+        raise ValueError("this kind supports validation only; tests require an executable handler")
+    failed = []
+    for row in cases:
+        try:
+            actual = run_extension(root, row["input"])
+            passed = "expected_output" in row and actual == row["expected_output"]
+        except (ValueError, SandboxError) as exc:
+            passed = str(exc) == row.get("expected_error")
+        if not passed:
+            failed.append(row.get("case_id", "unknown"))
     return {
         **validation,
         "cases": len(cases),
@@ -99,7 +134,11 @@ def package_extension(root: Path, output: Path | None = None) -> dict[str, Any]:
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(root.rglob("*")):
             relative = path.relative_to(root)
-            if not path.is_file() or set(relative.parts) & IGNORED_PARTS:
+            if (
+                path.resolve() == output
+                or not path.is_file()
+                or set(relative.parts) & IGNORED_PARTS
+            ):
                 continue
             info = zipfile.ZipInfo(PurePosixPath(relative).as_posix(), (1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED

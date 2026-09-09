@@ -1,97 +1,91 @@
 # Python SDK
 
-Use `GeyserClient` in a synchronous application and `AsyncGeyserClient` in an asynchronous one.
-Both expose typed operations for tasks, runs, events, approvals, effects, artifacts, and packages.
+The examples below target the **0.2.0 source preview** and an upgraded, ready workspace. Use your issued Cell API URL, not a guessed global API host.
 
-## Read your runs
-
-Supply a scoped developer token through your application's secret source. This example reads it
-from `GEYSER_TOKEN` and prints only run IDs and states:
+## Submit a bounded task and retrieve its result
 
 ```python
 import os
-from geyser_sdk import GeyserClient
+from geyser_sdk import GeyserClient, InputCreate, TaskCreate
 
-with GeyserClient(
-    "https://agents.geyserlabs.ai",
-    os.environ["GEYSER_TOKEN"],
-    timeout=30.0,
-) as client:
-    for run in client.iter_runs():
-        print(run.id, run.state)
+with GeyserClient(os.environ["GEYSER_API_URL"], os.environ["GEYSER_SERVICE_TOKEN"]) as client:
+    capabilities = client.capabilities()
+    if not capabilities.execution.get("agent_tasks"):
+        raise RuntimeError("Select a ready, qualified Open Agent")
+
+    uploaded = client.upload_input(
+        InputCreate(
+            value={
+                "instruction": "Summarize the supplied text. Do not perform external actions.",
+                "text": "A short, application-provided document.",
+            }
+        )
+    )
+    contract = client.upload_input(
+        InputCreate(
+            kind="outcome_contract",
+            value={
+                "schema_version": 1,
+                "schema_ref": "example:summary:1",
+                "json_schema": {
+                    "type": "object",
+                    "properties": {"summary": {"type": "string", "maxLength": 2000}},
+                    "required": ["summary"],
+                    "additionalProperties": False,
+                },
+            },
+        )
+    )
+    submitted = client.create_task(
+        TaskCreate(
+            input_ref=uploaded.input.ref,
+            input_digest=uploaded.input.digest,
+            outcome_contract_ref=contract.input.ref,
+            budget={
+                "max_cost_usd": 1.0,
+                "max_elapsed_seconds": 300,
+                "max_provider_requests": 10,
+                "max_tool_calls": 20,
+            },
+            metadata={"execution": "agent"},
+        ),
+        idempotency_key="document-123:summary:v1",
+    )
+    print(submitted.task.id)
 ```
 
-`iter_runs` follows pagination for you. Use `list_runs` if you want to manage page cursors yourself.
-[Authentication](authentication.md) explains how credentials are scoped to your project.
+Use a stable business operation ID and keep it if the response is interrupted. Reuse with identical input returns the existing task; reuse with different input or requirements returns `409 idempotency_key_reused`.
 
-## Follow a run through reconnects
+Poll `client.get_task(task_id)` no faster than every five seconds. Once `task.state == "completed"`, call `client.result(task_id)`; `result.value` is the customer-owned JSON. Without an outcome contract, Open Agent results have the shape `{"text": "..."}`. A task may instead fail, be canceled, or remain claimed while its run needs an approval or effect reconciliation. Inspect `task.run_id` when present.
 
-Keep the last event sequence your application has processed. Pass it back when you reconnect:
+Inputs must be uploaded project-owned references. Arbitrary URLs, local paths, and opaque references from another project are rejected. The result is committed before terminal completion; no raw input/result is written into the Agent’s control spool. See [custody](cells-privacy.md).
+
+## Run the same JSON extension remotely
+
+Set `metadata={"execution": "extension", "package_id": "YOUR_ACTIVE_PACKAGE_ID"}` on the task. The package must be active in this project after the assigned Agent verifies its signature and passes its real sandboxed cases. Pure extensions do not receive model, network, subprocess, or credential access.
+
+`examples/task_workflow.py` contains submission, capability checks, bounded polling, terminal-state handling and result retrieval. `examples/agent_review.py` and `examples/extension_app.py` are complete applications built on that workflow.
+
+## Inspect runs and events
 
 ```python
-import os
-from geyser_sdk import GeyserClient
-
-run_id = os.environ["GEYSER_RUN_ID"]
-last_sequence = int(os.environ.get("GEYSER_AFTER_SEQUENCE", "0"))
-
-with GeyserClient(
-    "https://agents.geyserlabs.ai",
-    os.environ["GEYSER_TOKEN"],
-    timeout=30.0,
-) as client:
-    for event in client.watch_events(run_id, after_sequence=last_sequence):
-        print(event.sequence)
-        # Persist this sequence after your application processes the event.
-        last_sequence = event.sequence
+for event in client.watch_events(run_id, after_sequence=last_sequence):
+    save_cursor(event.sequence)
+    handle_event(event)
 ```
 
-`watch_events` follows committed events and finishes when the run is terminal and its events have
-been read. Persist your cursor alongside the work your application does with each event. See
-[durable execution](durable-runs.md) for retries, checkpoints, and effects.
+Here `client`, `run_id`, `save_cursor` and `handle_event` belong to your application. The iterator emits events as they arrive and drains events observed at completion before returning. Save sequence cursors for reconnects. For customer-wide inspection, pass `customer=True` with an authorized customer/developer grant; project grants remain restricted to their project and current Agent assignment.
 
-## Use the async client
+`trace(run_id)` returns content-free timing, usage and effect information. `list_tasks`, `list_runs`, `list_packages` and approval pages return cursors. Follow `next_cursor`, including on an empty filtered page.
 
-```python
-import asyncio
-import os
-from geyser_sdk import AsyncGeyserClient
+## Decisions and errors
 
-async def main():
-    async with AsyncGeyserClient(
-        "https://agents.geyserlabs.ai",
-        os.environ["GEYSER_TOKEN"],
-        timeout=30.0,
-    ) as client:
-        async for run in client.iter_runs():
-            print(run.id, run.state)
+Cancellation uses `CancelRequest(cancellation_id="can_...", expected_sequence=sequence, reason_code="...")`. Evaluation and fork requests also carry `expected_sequence`; it must agree with `If-Match`. A stale decision returns `412`. Inspect the current state before deciding again. Approvals additionally bind the exact approval and argument digest.
 
-asyncio.run(main())
-```
+Forks are **preview inspection records**. They create a paused child record from a checkpoint; no public replay dispatcher or automatic re-execution is provided. Do not use them as a job retry mechanism.
 
-## Choose the operation
+The SDK raises `ProblemError` for RFC problem details, `ResponseValidationError` for an incompatible response and `TransportError` when no response is available. Retries are bounded and honor `Retry-After`; long retry delays are returned to your application instead of sleeping indefinitely. Idempotent creation can be retried; unknown consequential effects require reconciliation, not blind resubmission.
 
-| Your application needs to… | SDK entry point |
-|---|---|
-| Submit authorized work | `create_task(task, idempotency_key=...)` |
-| Read a task and its state | `get_task(task_id)` |
-| List runs | `list_runs(...)` or `iter_runs(...)` |
-| Read a run | `get_run(run_id)` |
-| Fetch an event page | `events(run_id, after_sequence=...)` |
-| Follow progress | `watch_events(run_id, after_sequence=...)` |
-| Check an Agent's capabilities | `capabilities(agent_name=...)` |
+## Async applications
 
-Use the [API and schema reference](reference.md) for request fields and response shapes.
-
-## Connection and error behavior
-
-Clients reuse their HTTP connection and close it when the context manager exits. The default timeout
-is 30 seconds; set `timeout` to match your application. Tokens can be strings or callables that
-retrieve the current credential.
-
-Reads and mutations with an idempotency key can retry. Conditional decisions send `If-Match`.
-A stale sequence or approval binding produces a typed `ProblemError`; read the latest state before
-making a new decision. See [troubleshooting](troubleshooting.md).
-
-API v1 may add response fields. Output models preserve those fields, while input models reject
-unknown fields so a typo cannot silently change the meaning of a request.
+`AsyncGeyserClient` exposes the same operations with `await`, async context management and async iterators. Reuse a client and close it. Do not store credentials in source code; a token-provider callback can read your own secret manager.

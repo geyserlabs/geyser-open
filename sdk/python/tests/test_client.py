@@ -65,6 +65,16 @@ def run_value() -> dict[str, Any]:
 def response_for(request: httpx.Request) -> httpx.Response:
     path = request.url.path
     common = {"api_version": "2026-08-24"}
+    if path.endswith("/forks"):
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "parent_run": run_value(),
+                "child_run": run_value(),
+                "historical_approval_reuse": False,
+            },
+        )
     if path.endswith("/capabilities"):
         profile = {
             "agent_name": "Ada",
@@ -78,71 +88,105 @@ def response_for(request: httpx.Request) -> httpx.Response:
             "qualification_state": "qualified",
             "capabilities": {"durable_run": "native"},
         }
-        return httpx.Response(200, json={
-            **common,
-            "capability_profile": profile,
-            "capability_matrix": [profile],
-            "generated_from_evidence": True,
-            "matrix_digest": SHA,
-        })
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "capability_profile": profile,
+                "capability_matrix": [profile],
+                "generated_from_evidence": True,
+                "matrix_digest": SHA,
+            },
+        )
     if "/approvals/" in path and request.method == "GET":
-        return httpx.Response(200, json={**common, "approval": {
-            "approval_id": "approval-1", "state": "requested"
-        }})
+        return httpx.Response(
+            200, json={**common, "approval": {"approval_id": "approval-1", "state": "requested"}}
+        )
     if path.endswith("/approvals"):
         return httpx.Response(200, json={**common, "data": [], "next_cursor": ""})
     if path.endswith("/events"):
-        return httpx.Response(200, json={
-            **common,
-            "data": [{
-                "sequence": 2,
-                "event_type": "run.completed",
-                "event_id": "event-2",
-                "observed_at": 2,
-                "created_at": 2,
-                "data": {},
-                "digest": SHA,
-            }],
-            "next_cursor": "",
-            "current_sequence": 2,
-        })
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "data": [
+                    {
+                        "sequence": 2,
+                        "event_type": "run.completed",
+                        "event_id": "event-2",
+                        "observed_at": 2,
+                        "created_at": 2,
+                        "data": {},
+                        "digest": SHA,
+                    }
+                ],
+                "next_cursor": "",
+                "current_sequence": 2,
+            },
+        )
     if path.endswith("/trace"):
-        return httpx.Response(200, json={**common, "trace": {
-            "trace_id": "trace-1",
-            "run_id": "run-1",
-            "state": "completed",
-            "framework": "open",
-            "model_ref": "qualified:model",
-            "visibility": "customer",
-            "started_at": 1,
-            "finished_at": 2,
-            "duration_ms": 1000,
-            "usage": {},
-            "usage_precision": "exact",
-            "budget_enforcement": {},
-            "effect_count": 0,
-            "approval_count": 0,
-            "artifact_count": 0,
-            "evaluation_count": 0,
-            "spans": [],
-            "trace_digest": SHA,
-        }})
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "trace": {
+                    "trace_id": "trace-1",
+                    "run_id": "run-1",
+                    "state": "completed",
+                    "framework": "open",
+                    "model_ref": "qualified:model",
+                    "visibility": "customer",
+                    "started_at": 1,
+                    "finished_at": 2,
+                    "duration_ms": 1000,
+                    "usage": {},
+                    "usage_precision": "exact",
+                    "budget_enforcement": {},
+                    "effect_count": 0,
+                    "approval_count": 0,
+                    "artifact_count": 0,
+                    "evaluation_count": 0,
+                    "spans": [],
+                    "trace_digest": SHA,
+                },
+            },
+        )
     if "/runs" in path:
         if path.endswith("/runs") and request.method == "GET":
             return httpx.Response(200, json={**common, "data": [run_value()], "next_cursor": ""})
         return httpx.Response(200, json={**common, "run": run_value()})
     if "/packages/" in path:
-        return httpx.Response(200, json={**common, "package": {
-            "package_id": "package-1", "name": "sample", "version": "0.1.0",
-            "digest": SHA, "stage": "canary", "status": "active"
-        }})
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "package": {
+                    "package_id": "package-1",
+                    "name": "sample",
+                    "version": "0.1.0",
+                    "digest": SHA,
+                    "stage": "canary",
+                    "status": "active",
+                },
+            },
+        )
     if path.endswith("/packages"):
         if request.method == "GET":
             return httpx.Response(200, json={**common, "data": [], "next_cursor": ""})
-        return httpx.Response(200, json={**common, "package": {
-            "package_id": "package-1", "name": "sample", "version": "0.1.0",
-            "digest": SHA, "stage": "staging", "status": "uploaded"
-        }})
+        return httpx.Response(
+            200,
+            json={
+                **common,
+                "package": {
+                    "package_id": "package-1",
+                    "name": "sample",
+                    "version": "0.1.0",
+                    "digest": SHA,
+                    "stage": "staging",
+                    "status": "uploaded",
+                },
+            },
+        )
     if path.endswith("/tasks") and request.method == "GET":
         return httpx.Response(200, json={**common, "data": [task_value()], "next_cursor": ""})
     return httpx.Response(200, json={**common, "task": task_value()})
@@ -177,8 +221,11 @@ def test_sync_semantic_surface_and_headers() -> None:
         assert client.list_packages().data == []
         client.upload_package(
             PackageUpload(
-                name="sample", version="0.1.0", digest=SHA,
-                media_type="application/zip", content_base64="eA=="
+                name="sample",
+                version="0.1.0",
+                digest=SHA,
+                media_type="application/zip",
+                content_base64="eA==",
             ),
             idempotency_key=SHA,
         )
@@ -188,27 +235,37 @@ def test_sync_semantic_surface_and_headers() -> None:
         )
         client.cancel_run(
             "run-1",
-            CancelRequest(
-                cancellation_id="cancel-1", expected_sequence=2, reason_code="test"
+            CancelRequest(cancellation_id="cancel-1", expected_sequence=2, reason_code="test"),
+        )
+        client.evaluate(
+            "run-1",
+            EvaluationCreate(
+                evaluation_id="eval-test-1",
+                expected_sequence=2,
+                evaluator_ref="eval:test",
+                verdict="pass",
+                score=1,
             ),
         )
-        client.evaluate("run-1", EvaluationCreate(
-            evaluation_id="eval-1", expected_sequence=2, evaluator_ref="eval:test",
-            verdict="pass", score=1,
-        ))
-        client.fork("run-1", ForkCreate(
-            fork_id="fork-1", child_run_id="run-2", expected_sequence=2, reason_code="test"
-        ))
-        client.decide_approval("run-1", "approval-1", ApprovalDecision(
-            decision_id="decision-1", decision="approve", expected_approval_sequence=2,
-            binding_digest=SHA, reason_code="test",
-        ))
+        client.fork(
+            "run-1", ForkCreate(fork_key="fork-test-1", mode="tool_stubbed", expected_sequence=2)
+        )
+        client.decide_approval(
+            "run-1",
+            "approval-1",
+            ApprovalDecision(
+                decision_id="decision-1",
+                decision="approve",
+                expected_approval_sequence=2,
+                binding_digest=SHA,
+                reason_code="test",
+            ),
+        )
     assert all(request.headers["authorization"] == "Bearer dev-token" for request in requests)
     assert any(request.headers.get("idempotency-key") == "create-1" for request in requests)
     assert any(request.headers.get("if-match") == '"run-v2"' for request in requests)
     assert any(
-        request.url.path.endswith("/events")
-        and request.url.params.get("cursor") == "0"
+        request.url.path.endswith("/events") and request.url.params.get("cursor") == "0"
         for request in requests
     )
 
@@ -228,17 +285,17 @@ async def test_async_surface_and_safe_retry() -> None:
     async with AsyncGeyserClient(
         "https://api.example", lambda: "rotating-token", transport=httpx.MockTransport(handler)
     ) as client:
-        assert (await client.create_task(
-            TaskCreate(input_ref="artifact:prompt", input_digest=SHA),
-            idempotency_key="async-create",
-        )).task.id == "task-1"
+        assert (
+            await client.create_task(
+                TaskCreate(input_ref="artifact:prompt", input_digest=SHA),
+                idempotency_key="async-create",
+            )
+        ).task.id == "task-1"
         assert (await client.get_task("task-1")).task.id == "task-1"
         assert [item.id async for item in client.iter_tasks()] == ["task-1"]
         assert attempts == 2
         assert [item.id async for item in client.iter_runs(customer=True)] == ["run-1"]
-        assert [item.event_type async for item in client.watch_events("run-1")] == [
-            "run.completed"
-        ]
+        assert [item.event_type async for item in client.watch_events("run-1")] == ["run.completed"]
         assert (await client.capabilities(agent_name="Ada")).capability_profile.backend
         assert (await client.trace("run-1", customer=True)).trace.trace_id == "trace-1"
         assert (await client.list_approvals()).data == []
@@ -246,57 +303,66 @@ async def test_async_surface_and_safe_retry() -> None:
         assert (await client.list_packages()).data == []
         await client.upload_package(
             PackageUpload(
-                name="sample", version="0.1.0", digest=SHA,
-                media_type="application/zip", content_base64="eA==",
+                name="sample",
+                version="0.1.0",
+                digest=SHA,
+                media_type="application/zip",
+                content_base64="eA==",
             ),
             idempotency_key=SHA,
         )
         await client.promote_package(
             "package-1",
-            PackagePromotion(
-                promotion_id="promotion-1", target="canary", expected_digest=SHA
-            ),
+            PackagePromotion(promotion_id="promotion-1", target="canary", expected_digest=SHA),
         )
         await client.cancel_run(
             "run-1",
-            CancelRequest(
-                cancellation_id="cancel-1", expected_sequence=2, reason_code="test"
-            ),
+            CancelRequest(cancellation_id="cancel-1", expected_sequence=2, reason_code="test"),
         )
         await client.evaluate(
             "run-1",
             EvaluationCreate(
-                evaluation_id="eval-1", expected_sequence=2,
-                evaluator_ref="eval:test", verdict="pass", score=1,
+                evaluation_id="eval-test-1",
+                expected_sequence=2,
+                evaluator_ref="eval:test",
+                verdict="pass",
+                score=1,
             ),
         )
         await client.fork(
             "run-1",
             ForkCreate(
-                fork_id="fork-1", child_run_id="run-2",
-                expected_sequence=2, reason_code="test",
+                fork_key="fork-test-1",
+                mode="tool_stubbed",
+                expected_sequence=2,
             ),
         )
         await client.decide_approval(
             "run-1",
             "approval-1",
             ApprovalDecision(
-                decision_id="decision-1", decision="approve",
-                expected_approval_sequence=2, binding_digest=SHA, reason_code="test",
+                decision_id="decision-1",
+                decision="approve",
+                expected_approval_sequence=2,
+                binding_digest=SHA,
+                reason_code="test",
             ),
         )
 
 
 def test_problem_details_invalid_json_and_unsafe_retry() -> None:
     def problem(_request: httpx.Request) -> httpx.Response:
-        return httpx.Response(409, json={
-            "type": "https://docs.example/problems/conflict",
-            "title": "Conflict",
-            "status": 409,
-            "detail": "sequence changed",
-            "code": "sequence_conflict",
-            "current_version": 4,
-        })
+        return httpx.Response(
+            409,
+            json={
+                "type": "https://docs.example/problems/conflict",
+                "title": "Conflict",
+                "status": 409,
+                "detail": "sequence changed",
+                "code": "sequence_conflict",
+                "current_version": 4,
+            },
+        )
 
     client = GeyserClient("https://api.example", "token", transport=httpx.MockTransport(problem))
     with pytest.raises(ProblemError) as caught:
@@ -328,3 +394,35 @@ def test_client_rejects_insecure_remote_and_missing_idempotency() -> None:
             client.create_task(
                 TaskCreate(input_ref="artifact:x", input_digest=SHA), idempotency_key=""
             )
+
+
+@pytest.mark.parametrize("submit", [False, True])
+def test_sync_retry_recovers_first_transport_failure(
+    monkeypatch: pytest.MonkeyPatch, submit: bool
+) -> None:
+    calls = []
+    monkeypatch.setattr("geyser_sdk.client.time.sleep", lambda _: None)
+
+    def transport(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        if len(calls) == 1:
+            raise httpx.ReadError("synthetic first response lost", request=request)
+        return response_for(request)
+
+    with GeyserClient(
+        "http://localhost", "synthetic", transport=httpx.MockTransport(transport)
+    ) as client:
+        if submit:
+            assert (
+                client.create_task(
+                    TaskCreate(input_ref="artifact:input", input_digest=SHA),
+                    idempotency_key="synthetic-retry-submit",
+                ).task.id
+                == "task-1"
+            )
+        else:
+            assert client.get_task("task-1").task.id == "task-1"
+    assert len(calls) == 2
+    assert calls[0].url == calls[1].url
+    assert calls[0].headers == calls[1].headers
+    assert calls[0].content == calls[1].content

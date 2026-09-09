@@ -1,54 +1,24 @@
 # Geyser Open
 
-Geyser Open is the public, framework-neutral developer surface for building and
-operating durable agentic work on Geyser. This monorepo contains:
+Build applications around bounded Agent work, typed results, durable state and current customer authority. The repository contains the MIT-licensed sync/async Python SDK, CLI, OS-sandboxed JSON extension contract, deterministic emulator, actual server-exported OpenAPI, and executable reference applications.
 
-- `geyser-sdk`: a typed sync/async Python client and deterministic local emulator;
-- `geyser-open`: the `geyser` developer CLI;
-- versioned schemas and the public OpenAPI contract;
-- extension scaffolds, conformance fixtures, examples, and documentation.
+**This checkout is the 0.2.0 source preview.** Published 0.1.0 artifacts do not include these corrections. Remote execution requires matching Cell and Agent software; a source merge is not a deployment.
 
-The SDK and CLI do **not** include an Agent runtime, provider SDK, brain, model,
-browser, VM, or ambient credentials. Installing them does not grant authority.
-Server-side customer/project scopes, policy composition, task requirements,
-approval bindings, and runtime qualification remain authoritative.
-
-```bash
-python -m venv .venv
+```console
+python3 -m venv .venv
 . .venv/bin/activate
-pip install -e './sdk/python[test]' -e './cli[test]'
-geyser init tool careful-search
-geyser validate careful-search
-geyser test careful-search
+python -m pip install -e ./sdk/python -e ./cli
+geyser init tool word-count
+geyser test word-count
+geyser --json dev word-count
+python examples/extension_app.py issue-normalizer
+python examples/extension_app.py source-review-gate
 ```
 
-Then try the deterministic emulator:
+Linux execution requires bubblewrap and allowed user namespaces; macOS requires sandbox-exec. Code is imported only after isolation. The HTTP SDK does not require a local sandbox. The in-memory emulator runs application-registered callbacks in your own process and is separate from extension isolation.
 
-```bash
-python examples/emulator_quickstart.py
-```
+Start with [the quickstart](docs/quickstart.md), [reference applications](docs/recipes.md), [authentication](docs/authentication.md), and [costs, limits and support](docs/program.md). Read [availability and migration](docs/compatibility.md) before using a remote workspace.
 
-The production release targets Python 3.11–3.13, macOS Apple Silicon, and
-Ubuntu 24.04 AMD64. See [docs/compatibility.md](docs/compatibility.md),
-[SECURITY.md](SECURITY.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
-The short build-once release procedure is in [docs/releases.md](docs/releases.md).
+Service credentials submit project work; human grants make authorized customer decisions; Agent keys produce run events. Credentials never silently change audience. Inputs/results and package bytes belong to the Customer Cell. The compatibility relay processes plaintext transiently; see [custody](docs/cells-privacy.md).
 
-## Authority model
-
-Developer/service credentials can create project tasks and inspect project
-runs. Customer credentials can make customer decisions. Agent credentials can
-produce runtime events. The SDK never exchanges or silently upgrades one
-credential class into another.
-
-## Status
-
-Production release `0.1.0` is published on
-[PyPI](https://pypi.org/project/geyser-sdk/0.1.0/) and
-[GitHub Releases](https://github.com/geyserlabs/geyser-open/releases/tag/v0.1.0)
-from protected source commit `e567d9d6051b73d0fd4531a75245b65730c0790a` through
-[release workflow 32866021028](https://github.com/geyserlabs/geyser-open/actions/runs/32866021028).
-Clean public-index installs and the signed standalone artifacts are qualified on Apple-Silicon
-macOS and native AMD64 Ubuntu. The `geyser-open` Homebrew formula is published
-and qualified through the public `geyserlabs/tap`. See the
-[compatibility matrix](docs/compatibility.md).
-Public Geyser SDK, CLI, emulator, schemas, conformance, and developer documentation
+Use `make bootstrap` and `make check` to develop. Public schemas come from real server routes; do not hand-maintain an alternative OpenAPI. Report vulnerabilities privately under [SECURITY.md](SECURITY.md).

@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "DeveloperResult": {
+      "additionalProperties": true,
+      "properties": {
+        "digest": {
+          "title": "Digest",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "input",
+            "outcome_contract",
+            "result"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "size_bytes": {
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value"
+        }
+      },
+      "required": [
+        "ref",
+        "digest",
+        "kind",
+        "size_bytes",
+        "value"
+      ],
+      "title": "DeveloperResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "api_version": {
+      "default": "2026-08-24",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "result": {
+      "$ref": "#/$defs/DeveloperResult"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "ResultResponse",
+  "type": "object"
+}

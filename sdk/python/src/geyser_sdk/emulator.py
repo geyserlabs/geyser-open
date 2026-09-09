@@ -29,9 +29,9 @@ class LocalEmulator:
     checkpoints: dict[str, bytes] = field(default_factory=dict)
     approvals: dict[str, dict[str, Any]] = field(default_factory=dict)
     models: dict[str, Callable[[TypedTask], Any | Awaitable[Any]]] = field(default_factory=dict)
-    tools: dict[
-        str, Callable[[Mapping[str, Any]], Any | Awaitable[Any]]
-    ] = field(default_factory=dict)
+    tools: dict[str, Callable[[Mapping[str, Any]], Any | Awaitable[Any]]] = field(
+        default_factory=dict
+    )
     model_calls: list[dict[str, Any]] = field(default_factory=list)
     tool_calls: list[dict[str, Any]] = field(default_factory=list)
 
@@ -39,12 +39,14 @@ class LocalEmulator:
         if run_id in self.events:
             return self.project(run_id)
         task_data = task.model_dump(exclude={"outcome_contract"})
-        self.events[run_id] = [{
-            "sequence": 1,
-            "event_type": "run.admitted",
-            "data": task_data,
-            "digest": digest(task.model_dump()),
-        }]
+        self.events[run_id] = [
+            {
+                "sequence": 1,
+                "event_type": "run.admitted",
+                "data": task_data,
+                "digest": digest(task.model_dump()),
+            }
+        ]
         return self.project(run_id)
 
     def append(
@@ -68,12 +70,14 @@ class LocalEmulator:
             return self.project(run_id)
         if expected_sequence != len(rows):
             raise EmulatorError("emulator sequence conflict")
-        rows.append({
-            "sequence": len(rows) + 1,
-            "event_type": event_type,
-            "data": payload,
-            "digest": event_digest,
-        })
+        rows.append(
+            {
+                "sequence": len(rows) + 1,
+                "event_type": event_type,
+                "data": payload,
+                "digest": event_digest,
+            }
+        )
         self.idempotency[identity] = event_digest
         if event_type in self.crash_after:
             raise EmulatorError(f"injected crash after durable {event_type}")
@@ -174,7 +178,12 @@ class LocalEmulator:
         tool_name: str,
         arguments: Mapping[str, Any],
         approval_id: str = "",
+        operation_id: str = "",
     ) -> Any:
+        if operation_id and (
+            len(operation_id) > 160 or not operation_id.isascii() or not operation_id.isprintable()
+        ):
+            raise EmulatorError("operation_id must contain at most 160 printable ASCII characters")
         implementation = self.tools.get(tool_name)
         if implementation is None:
             raise EmulatorError("emulator tool is not registered")
@@ -186,18 +195,42 @@ class LocalEmulator:
                 "tool_name": tool_name,
                 "arguments_digest": arguments_digest,
             }
+            if operation_id:
+                binding["operation_id"] = operation_id
             if approval is None or approval.get("state") != "approved":
                 raise EmulatorError("tool approval is not approved")
             if approval.get("binding_digest") != digest(binding):
                 raise EmulatorError("tool approval does not bind this invocation")
-        effect_id = "eff_" + hashlib.sha256(
-            f"{run_id}\0{tool_name}\0{arguments_digest}".encode()
-        ).hexdigest()[:40]
-        index = len(self.tool_calls)
+        identity = (
+            f"operation:{operation_id}"
+            if operation_id
+            else f"arguments:{tool_name}:{arguments_digest}"
+        )
+        effect_id = "eff_" + hashlib.sha256(f"{run_id}\0{identity}".encode()).hexdigest()[:40]
+        prior = [
+            row for row in self.events.get(run_id, []) if row["data"].get("effect_id") == effect_id
+        ]
+        if prior and (
+            prior[0]["data"].get("arguments_digest") != arguments_digest
+            or prior[0]["data"].get("tool_name") != tool_name
+        ):
+            raise EmulatorError("operation_id was already bound to a different invocation")
+        completed = next(
+            (
+                row
+                for row in reversed(prior)
+                if row["event_type"] in {"tool.completed", "tool.reconciled"}
+            ),
+            None,
+        )
+        if completed is not None:
+            return copy.deepcopy(completed["data"]["result"])
+        if prior:
+            raise EmulatorError("tool outcome is unknown; reconcile the effect before continuing")
         self.append(
             run_id,
             event_type="tool.started",
-            key=f"tool:{index}:started",
+            key=f"tool:{effect_id}:started",
             expected_sequence=self.project(run_id)["sequence"],
             data={
                 "effect_id": effect_id,
@@ -214,16 +247,36 @@ class LocalEmulator:
             "tool_name": tool_name,
             "arguments_digest": arguments_digest,
             "result_digest": digest(result),
+            "result": copy.deepcopy(result),
         }
         self.tool_calls.append(call)
         self.append(
             run_id,
             event_type="tool.completed",
-            key=f"tool:{index}:completed",
+            key=f"tool:{effect_id}:completed",
             expected_sequence=self.project(run_id)["sequence"],
             data=call,
         )
         return result
+
+    def reconcile_tool(self, run_id: str, *, effect_id: str, result: Any) -> dict[str, Any]:
+        """Record an independently observed outcome; never retry an unknown effect."""
+        prior = [
+            row for row in self.events.get(run_id, []) if row["data"].get("effect_id") == effect_id
+        ]
+        if not prior or prior[-1]["event_type"] != "tool.started":
+            raise EmulatorError("effect is not awaiting reconciliation")
+        return self.append(
+            run_id,
+            event_type="tool.reconciled",
+            key=f"tool:{effect_id}:reconciled",
+            expected_sequence=self.project(run_id)["sequence"],
+            data={
+                "effect_id": effect_id,
+                "result": copy.deepcopy(result),
+                "result_digest": digest(result),
+            },
+        )
 
     def project(self, run_id: str) -> dict[str, Any]:
         rows = self.events.get(run_id)

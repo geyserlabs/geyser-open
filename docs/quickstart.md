@@ -1,64 +1,50 @@
-# Build your first tool
+# Run your first handler
 
-In a few minutes, you'll create a tool package, validate it, and exercise it locally. No account
-or credentials are needed. Installing the packages uses the network; the emulator itself runs locally.
+This is the **0.2.0 source preview**. It executes real Python code in an OS sandbox. You do not need an account, a model, or credentials.
 
-## Install the tools
+## Install from source
 
-Use Python 3.11–3.13. These commands create a separate environment for the example:
+Use Python 3.11–3.13 on macOS or Linux. Linux requires `bubblewrap` and permission to create user namespaces. macOS requires `sandbox-exec`. Execution fails closed if isolation is unavailable. Windows can use the HTTP SDK; this release has no Windows extension sandbox.
 
 ```console
-python -m venv .venv
+git clone https://github.com/geyserlabs/geyser-open.git
+cd geyser-open
+python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install geyser-sdk==0.1.0 geyser-open==0.1.0
+python -m pip install -e ./sdk/python -e ./cli
 geyser --json version
 ```
 
-On Windows, activate the environment with `.venv\Scripts\Activate.ps1` in PowerShell.
+The source version should be `0.2.0`. On Ubuntu, install `bubblewrap` using your administrator’s normal package-management process. Do not disable host security policy to bypass a failed sandbox check.
 
-## Create and check a tool
-
-```console
-geyser init tool careful-search
-geyser validate careful-search
-geyser test careful-search
-geyser dev careful-search
-```
-
-`init` creates the package files. `validate` checks their declarations. `test` checks the package's
-success and denial fixture declarations. `dev` demonstrates admission and completion in the local emulator.
-
-Open the new `careful-search` directory. The manifest describes the tool and its requested
-permissions; the fixtures describe the behavior its tests expect. Change the package, then run
-`validate` and `test` again. See [extensions](extensions.md) for the other package types.
-
-## Follow a complete run
-
-The source repository includes an example with a local tool, a specific approval, a checkpoint,
-and completion. Clone the released version and run it with the environment you just installed:
+## Execute a tool
 
 ```console
-git clone --depth 1 --branch v0.1.0 https://github.com/geyserlabs/geyser-open.git
-cd geyser-open
-python examples/emulator_quickstart.py
+geyser init tool word-count
+geyser validate word-count
+geyser test word-count
+geyser --json dev word-count
 ```
 
-The example stores the value `42` through a deterministic local function. Its final JSON projection
-shows the run state and event sequence. No model or external application is called.
+`dev` returns `{"result":{"word_count":2},"sandboxed":true}`. `test` invokes the real handler with two frozen cases: successful word counting and rejection of an input that does not match its schema.
 
-[Read the complete example](https://github.com/geyserlabs/geyser-open/blob/v0.1.0/examples/emulator_quickstart.py)
-to see how the task, approval, tool call, and checkpoint fit together.
-
-## Connect to your workspace
-
-When you have a Geyser account and project access, [sign in](authentication.md) and inspect the
-runs you can access:
+Edit `word-count/handler.py`, update `evals/cases.json` with expected outputs, and run the tests again. Validation checks declarations; it does not execute them. Tests and `dev` execute code.
 
 ```console
-geyser login
-geyser runs list
+geyser package word-count
 ```
 
-Local testing gives you a working package to develop. Your workspace's permissions and configured
-runtime determine what it can do remotely. Next, [use the SDK](sdk.md) or try a
-[practical recipe](recipes.md).
+The package command prints the archive path and SHA-256 digest. This is a local archive, not an installed Agent capability. [Publisher trust and installation](extensions.md) are separate steps.
+
+## Try a useful application
+
+From the repository checkout:
+
+```console
+python examples/extension_app.py issue-normalizer
+python examples/extension_app.py source-review-gate
+```
+
+The first normalizes an issue record. The second checks citation coverage. Both run their actual packaged handlers without network access. Read [recipes](recipes.md) to supply your own JSON or run the same package on an Agent.
+
+The SDK’s [deterministic emulator](durable-runs.md) is also available for state-machine experiments. It is distinct from the OS sandbox and does not prove production behavior.

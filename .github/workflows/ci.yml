@@ -22,5 +22,28 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --all-packages --all-extras --all-groups --locked
+      - name: Install extension sandbox
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y apparmor bubblewrap
+          # Hosted Ubuntu runners may install AppArmor profiles without loading them.
+          # Use the distro's restricted bwrap profile; keep system restrictions enabled.
+          if test -s /etc/apparmor.d/bwrap-userns-restrict; then
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          else
+            sudo install -m 0644 .github/ci/bwrap.apparmor /etc/apparmor.d/geyser-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/geyser-ci-bwrap
+          fi
+          .venv/bin/python - <<'PYTHON'
+          import subprocess
+          import tempfile
+          from pathlib import Path
+          from geyser_sdk.sandbox import _command
+          with tempfile.TemporaryDirectory() as directory:
+              root = Path(directory)
+              (root / "handler.py").write_text("def run(value): return value\n")
+              subprocess.run(_command(root, root, "handler.py", "run", 2, 536870912),
+                             input=b"{}", check=True, timeout=5)
+          PYTHON
       - name: Compile and smoke
         run: make check

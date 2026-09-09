@@ -1,50 +1,26 @@
-# Versions and compatibility
+# Availability and compatibility
 
-## Supported surfaces
+## Release status
 
-| Surface | Current version | Supported use |
+**0.2.0 is the source preview described by these docs.** The published Python, standalone and Homebrew release remains 0.1.0 until a separate release is published. A source merge, a published package and a running Cell/Agent are distinct states. Do not assume the new execution path exists on a workspace running older software.
+
+| Surface | 0.2.0 source behavior | Prerequisite |
 |---|---|---|
-| Python SDK | 0.1.0 | Python 3.11–3.13; synchronous and asynchronous clients |
-| Python CLI | 0.1.0 | Python 3.11–3.13 |
-| Standalone CLI | 0.1.0 | Apple silicon macOS and Ubuntu 24.04 AMD64 |
-| Homebrew CLI | 0.1.0 | `geyserlabs/tap/geyser` |
-| Developer API | v1, contract `2026-08-24` | Authenticated task, run, package, approval, and capability operations |
-| Local emulator | Included in SDK 0.1.0 | Credential-free development and deterministic examples |
+| Sync/async SDK | Owned input upload, tasks, results, events, traces, decisions and package lifecycle | Python 3.11–3.13; matching public API |
+| Local JSON extensions | Real handler tests and execution | macOS sandbox-exec, or Linux bubblewrap with permitted user namespaces |
+| Remote Agent tasks | Qualified Open runtime only | Cell and Agent advertise protocol 1 and `agent_tasks: true` |
+| Remote JSON extensions | Signed, tested pure handlers | Agent advertises `extension_tasks: true`; exact package is active |
+| Skills/model profiles/Agent Bundles | Validation and packaging only | No public runtime activation |
+| Forks | Paused inspection records | No public replay dispatch |
+| Third-party OAuth applications | Not offered | Current OAuth client is the Geyser CLI |
+| Windows extension execution | Not offered | HTTP SDK remains usable |
 
-The Python packages are platform-independent. Windows does not yet have a declared standalone
-CLI build. Install from the [public release channels](releases.md).
+`geyser capabilities` reports the assigned Agent’s `execution` flags and runtime matrix. The server rejects tasks whose execution mode is unavailable. A missing qualified model profile can coexist with usable pure JSON extensions.
 
-## API compatibility
+Capabilities report `native`, `geyser_emulated`, `unsupported`, or `forbidden`. `review_due` means the qualification evidence reached its review date; current server policy determines whether a last-known-good profile remains usable. A local emulator result never grants a production capability.
 
-API v1 is additive. The current and previous SDK minor versions are supported against the current
-server. Deprecations are documented for at least one minor version before removal, except when a
-security issue needs an immediate change.
+## Migrating from 0.1.0
 
-Use [typed SDK clients](sdk.md) for request and response handling. Read the
-[live OpenAPI document](https://agents.geyserlabs.ai/api/v1/openapi.json) for the current API shape.
+0.2.0 corrects broken contracts and narrows unsafe behavior. Reauthenticate old CLI profiles so credentials acquire an exact API URL. Upload inputs before task creation. Evaluation/fork requests carry the current sequence; fork responses contain `parent_run` and `child_run`. Cancellation IDs use `can_...`. Watch output streams immediately instead of returning a buffered array. Frozen extension cases must execute code and assert results. Configure a trusted publisher and re-verify old packages; old “active” metadata alone is insufficient.
 
-## Runtime capabilities
-
-A runtime's capabilities depend on its framework, backend, adapter version, model profile,
-placement, and privacy settings. Check the Agent you intend to use:
-
-```console
-geyser capabilities --agent YOUR_AGENT_NAME
-```
-
-Capability values mean:
-
-| Value | Meaning |
-|---|---|
-| `native` | The selected runtime implements the capability directly |
-| `geyser_emulated` | Geyser supplies the capability around the selected runtime |
-| `unsupported` | This configuration does not implement it |
-| `forbidden` | Policy disallows it in this configuration |
-
-The response for your Agent is the useful source for a runtime decision. A successful local
-emulator run does not change that Agent's permissions or supported capabilities.
-
-## Earlier releases
-
-The 0.1.0 beta releases are superseded by 0.1.0. See the [changelog](changelog.md) for the features
-introduced in each published release.
+Pin versions and inspect the current [OpenAPI](reference.md). We do not claim an untested rolling compatibility window across these corrections. Security fixes can immediately remove unsafe access. Published artifacts remain immutable and receive a new version when changed.

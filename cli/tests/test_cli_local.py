@@ -21,7 +21,7 @@ def test_complete_local_workflow(tmp_path: Path, capsys: pytest.CaptureFixture[s
     assert main(["--json", "test", str(root)]) == 0
     assert json.loads(capsys.readouterr().out)["passed"] == 2
     assert main(["--json", "dev", str(root)]) == 0
-    assert json.loads(capsys.readouterr().out)["network_used"] is False
+    assert json.loads(capsys.readouterr().out) == {"result": {"word_count": 2}, "sandboxed": True}
     assert main(["--json", "package", str(root)]) == 0
     packaged = json.loads(capsys.readouterr().out)
     archive = Path(packaged["path"])
@@ -34,14 +34,20 @@ def test_complete_local_workflow(tmp_path: Path, capsys: pytest.CaptureFixture[s
 def test_outcome_cli_and_errors(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     contract = tmp_path / "contract.json"
     result = tmp_path / "result.json"
-    contract.write_text(json.dumps({
-        "schema_version": 1,
-        "schema_ref": "example:answer:v1",
-        "json_schema": {
-            "type": "object", "properties": {"answer": {"type": "string"}},
-            "required": ["answer"], "additionalProperties": False,
-        },
-    }))
+    contract.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "schema_ref": "example:answer:v1",
+                "json_schema": {
+                    "type": "object",
+                    "properties": {"answer": {"type": "string"}},
+                    "required": ["answer"],
+                    "additionalProperties": False,
+                },
+            }
+        )
+    )
     result.write_text('{"answer":"yes"}')
     assert main(["--json", "validate-outcome", str(contract), str(result)]) == 0
     assert json.loads(capsys.readouterr().out)["valid"] is True
@@ -91,4 +97,4 @@ def test_explicit_restricted_file_credential_fallback(
 
 def test_version_is_machine_readable(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["--json", "version"]) == 0
-    assert json.loads(capsys.readouterr().out)["geyser_open"] == "0.1.0"
+    assert json.loads(capsys.readouterr().out)["geyser_open"] == "0.2.0"
