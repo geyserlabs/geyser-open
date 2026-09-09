@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from geyser_sdk import bytes_digest
+from geyser_sdk.bundles import OVERLAY_KINDS, overlay_descriptor
 from geyser_sdk.extensions import EXECUTABLE_KINDS, descriptor, run_extension
 from geyser_sdk.sandbox import SandboxError
 from pydantic import BaseModel, ConfigDict, Field
@@ -48,18 +49,8 @@ def validate_extension(root: Path) -> dict[str, Any]:
         raise ValueError("unsupported extension manifest kind or schema version")
     if manifest.kind in EXECUTABLE_KINDS:
         descriptor(root, manifest.model_dump())
-    elif manifest.kind == "skill":
-        if not (root / "SKILL.md").is_file() or not (root / "SKILL.md").read_text().strip():
-            raise ValueError("skill requires a nonempty SKILL.md")
-    else:
-        name = (
-            "agent-bundle-selection.json"
-            if manifest.kind == "agent-bundle"
-            else "model-profile.json"
-        )
-        value = _load_json(root / name)
-        if not isinstance(value, dict) or value.get("schema_version") != 1:
-            raise ValueError("descriptor must be a version 1 JSON object")
+    elif manifest.kind in OVERLAY_KINDS:
+        overlay_descriptor(root, manifest.model_dump())
     files = 0
     total = 0
     for path in sorted(root.rglob("*")):
@@ -77,6 +68,8 @@ def validate_extension(root: Path) -> dict[str, Any]:
             total += size
     if total > MAX_PACKAGE_BYTES:
         raise ValueError("extension exceeds the 10 MiB unpacked bound")
+    if manifest.kind in OVERLAY_KINDS:
+        return {"manifest": manifest.model_dump(), "files": files, "size_bytes": total}
     cases_path = root / "evals" / "cases.json"
     cases = _load_json(cases_path)
     if not isinstance(cases, dict) or cases.get("frozen") is not True:
@@ -102,9 +95,12 @@ def validate_extension(root: Path) -> dict[str, Any]:
 
 def test_extension(root: Path) -> dict[str, Any]:
     validation = validate_extension(root)
-    cases = _load_json(root.expanduser().resolve() / "evals" / "cases.json")["cases"]
     if validation["manifest"]["kind"] not in EXECUTABLE_KINDS:
-        raise ValueError("this kind supports validation only; tests require an executable handler")
+        raise ValueError(
+            "instruction packages require a task on a qualified Agent to test behavior; "
+            "use geyser validate for local configuration checks"
+        )
+    cases = _load_json(root.expanduser().resolve() / "evals" / "cases.json")["cases"]
     failed = []
     for row in cases:
         try:

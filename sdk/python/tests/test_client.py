@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import httpx
@@ -256,11 +257,20 @@ def test_sync_semantic_surface_and_headers() -> None:
             ApprovalDecision(
                 decision_id="decision-1",
                 decision="approve",
-                expected_approval_sequence=2,
+                expected_approval_sequence=1,
                 binding_digest=SHA,
                 reason_code="test",
             ),
+            expected_run_sequence=2,
         )
+    decision_requests = [request for request in requests if request.url.path.endswith("/decision")]
+    assert decision_requests and all(
+        request.headers["If-Match"] == '"run-v2"' for request in decision_requests
+    )
+    assert all(
+        json.loads(request.content)["expected_approval_sequence"] == 1
+        for request in decision_requests
+    )
     assert all(request.headers["authorization"] == "Bearer dev-token" for request in requests)
     assert any(request.headers.get("idempotency-key") == "create-1" for request in requests)
     assert any(request.headers.get("if-match") == '"run-v2"' for request in requests)
@@ -343,10 +353,11 @@ async def test_async_surface_and_safe_retry() -> None:
             ApprovalDecision(
                 decision_id="decision-1",
                 decision="approve",
-                expected_approval_sequence=2,
+                expected_approval_sequence=1,
                 binding_digest=SHA,
                 reason_code="test",
             ),
+            expected_run_sequence=2,
         )
 
 

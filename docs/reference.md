@@ -15,9 +15,12 @@ The live `/api/v1/openapi.json` at your issued API URL describes the software ac
 | `/api/v1/runs` | List project runs and read events, traces and state |
 | `/api/v1/capabilities` | Inspect assigned Agent execution flags and runtime profiles |
 | `/api/v1/packages` | Upload/list signed packages; promote and revoke exact versions |
+| `/api/v1/customer/runs/{id}/replays` | Create a new project task with an enforced replay mode and immutable lineage |
 | `/api/v1/customer/...` | Authorized human inspection/decisions; project grants remain project-scoped |
 | `/api/v1/oauth/...` | Geyser CLI device and loopback-PKCE authentication |
 
 Success bodies include `api_version`. Public failures use RFC problem details; OAuth failures use OAuth error responses. Mutations use `Idempotency-Key` and/or `If-Match` as shown in the specification. `429` includes `Retry-After`. Cursor pagination can return an empty page with a next cursor after authorization filtering; continue until the cursor is empty.
 
 Regenerate SDK schemas with `python scripts/generate_schemas.py`. The OpenAPI snapshot is copied from `fleet-coordinator/scripts/export-developer-openapi.py`, never re-created as a handwritten approximation of the SDK. The API contract version remains `2026-08-24`; the SDK’s 0.2.0 version identifies the compatibility corrections described in the [changelog](changelog.md).
+
+`TaskBundle`, `ModelSelection` and `ToolStubs` schemas describe the public instruction and recorded-reply formats. These local schemas do not grant runtime qualification or package trust.

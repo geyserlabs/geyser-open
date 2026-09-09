@@ -9,7 +9,10 @@
 - Sync/async evaluation, cancellation and fork contracts match the server. Event watching streams immediately and drains terminal events; retry delays honor server rate limits.
 - Unknown emulator effects require reconciliation. Scaffolds execute real JSON handlers. New issue-normalization, source-review and Agent-review applications show useful workflows.
 - Console project/credential/publisher setup and explicit revocation are available with the matching server rollout. OpenAPI is exported from actual server routes.
-- Agent HTTP runtime dependencies move to corrected httpx2/httpcore2 releases. Configuration-only extension types and undispatched forks are labeled as previews.
+- Signed skills, model-selection assertions and Agent Bundles apply to individual qualified Open tasks, with explicit reference omissions and no shared-settings changes.
+- Remote replay creates an atomic project-owned task with model-only, exact-stub, workspace-read-only or fresh-authority full execution.
+- Approval-required tasks pause before actual writes; rejection resumes without execution. Approval responses expose action digests and the SDK distinguishes run and approval versions.
+- Agent HTTP runtime dependencies move to corrected httpx2/httpcore2 releases. Undispatched inspection forks and unavailable native import formats are labeled explicitly.
 
 Read [migration details](compatibility.md). Publishing SDK artifacts and rolling out Cell/Agent software are separate release actions; source availability does not assert either has occurred.
 

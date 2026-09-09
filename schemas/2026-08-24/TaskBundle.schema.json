@@ -1,0 +1,184 @@
+{
+  "$defs": {
+    "BundleReference": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "history",
+            "memory",
+            "artifact",
+            "deployment",
+            "relationship"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "title": "BundleReference",
+      "type": "object"
+    },
+    "BundleSkill": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "instructions": {
+          "maxLength": 32768,
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,79}$",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "instructions"
+      ],
+      "title": "BundleSkill",
+      "type": "object"
+    },
+    "ModelSelection": {
+      "additionalProperties": false,
+      "properties": {
+        "model_profile_digest": {
+          "default": "",
+          "pattern": "^(|sha256:[0-9a-f]{64})$",
+          "title": "Model Profile Digest",
+          "type": "string"
+        },
+        "model_ref": {
+          "default": "",
+          "maxLength": 512,
+          "title": "Model Ref",
+          "type": "string"
+        },
+        "policy_ref": {
+          "default": "",
+          "maxLength": 512,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "title": "ModelSelection",
+      "type": "object"
+    },
+    "PortableContext": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "maxLength": 32768,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "kind": {
+          "default": "notes",
+          "enum": [
+            "notes",
+            "history",
+            "memory"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "source",
+        "content"
+      ],
+      "title": "PortableContext",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "context": {
+      "items": {
+        "$ref": "#/$defs/PortableContext"
+      },
+      "maxItems": 32,
+      "title": "Context",
+      "type": "array"
+    },
+    "name": {
+      "pattern": "^[a-z][a-z0-9-]{1,79}$",
+      "title": "Name",
+      "type": "string"
+    },
+    "persona": {
+      "default": "",
+      "maxLength": 32768,
+      "title": "Persona",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "$ref": "#/$defs/BundleReference"
+      },
+      "maxItems": 32,
+      "title": "References",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "selection": {
+      "$ref": "#/$defs/ModelSelection"
+    },
+    "skills": {
+      "items": {
+        "$ref": "#/$defs/BundleSkill"
+      },
+      "maxItems": 32,
+      "title": "Skills",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "TaskBundle",
+  "type": "object"
+}

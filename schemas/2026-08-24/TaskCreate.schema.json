@@ -6,6 +6,12 @@
       "title": "Budget",
       "type": "object"
     },
+    "bundle_package_id": {
+      "default": "",
+      "maxLength": 80,
+      "title": "Bundle Package Id",
+      "type": "string"
+    },
     "input_digest": {
       "title": "Input Digest",
       "type": "string"
@@ -19,11 +25,22 @@
       "title": "Metadata",
       "type": "object"
     },
+    "model_profile_package_id": {
+      "default": "",
+      "maxLength": 80,
+      "title": "Model Profile Package Id",
+      "type": "string"
+    },
     "outcome_contract_ref": {
       "default": "",
       "maxLength": 1000,
       "title": "Outcome Contract Ref",
       "type": "string"
+    },
+    "require_write_approval": {
+      "default": false,
+      "title": "Require Write Approval",
+      "type": "boolean"
     },
     "required_capabilities": {
       "items": {
@@ -31,6 +48,14 @@
       },
       "maxItems": 64,
       "title": "Required Capabilities",
+      "type": "array"
+    },
+    "skill_package_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Skill Package Ids",
       "type": "array"
     }
   },

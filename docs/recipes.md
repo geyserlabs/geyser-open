@@ -12,6 +12,23 @@ This application example changes one synthetic ticket in a real temporary SQLite
 
 Approval binds the run, tool, exact arguments, and operation identity. In production, keep the corresponding receipt in your system of record and inspect the actual result before resolving uncertainty. This example uses `LocalEmulator` for control flow and runs callbacks in your application process. It does not install a write-capable extension or demonstrate a remote Agent approval. Remote decisions use the customer approval APIs described in [durable execution](durable-runs.md).
 
+## Approve a real Agent workspace write
+
+`examples/remote_approved_record.py` uses the real SDK and qualified Open Agent. It creates one synthetic JSON record in a disposable task workspace, after an exact human decision. It does not modify an external ticketing service. Use a project configured with Read/Write permission and the `write_approval_tasks` capability.
+
+```console
+python examples/remote_approved_record.py submit --operation-id synthetic-record:review:v1
+python examples/remote_approved_record.py approvals
+python examples/remote_approved_record.py decide APPROVAL_ID approve
+python examples/remote_approved_record.py status TASK_ID
+```
+
+Provide `GEYSER_API_URL` and a project `GEYSER_SERVICE_TOKEN` for submission/status. Approval inspection and decisions use `GEYSER_DEVELOPER_TOKEN`, issued to a current owner/admin with `approvals:decide` and `runs:read`. Use `reject` to exercise refusal. The example verifies the exact Write arguments digest before deciding and never approves a different proposal.
+
+The task has $1, 300-second, five-provider-request and two-tool-call ceilings. Waiting for a human pauses execution; inspect the task/run after deciding. If a response is interrupted, reuse the submission operation ID or inspect the same approval. Repeating the decision command recovers an already recorded matching decision. It does not submit a second write.
+
+The integration regression runs the actual Cell, worker, Open provider loop and filesystem write with a deterministic local model. It checks approval, rejection, interrupted decision acknowledgement and completed-task recovery without another write. Production provider behavior and cost must be measured separately. After trying the example, erase the disposable developer project through the console to remove its owned inputs/results and queued work; revoke its credentials.
+
 ## Normalize issue intake
 
 ```console

@@ -1,0 +1,31 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "model_profile_digest": {
+      "default": "",
+      "pattern": "^(|sha256:[0-9a-f]{64})$",
+      "title": "Model Profile Digest",
+      "type": "string"
+    },
+    "model_ref": {
+      "default": "",
+      "maxLength": 512,
+      "title": "Model Ref",
+      "type": "string"
+    },
+    "policy_ref": {
+      "default": "",
+      "maxLength": 512,
+      "title": "Policy Ref",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "title": "ModelSelection",
+  "type": "object"
+}

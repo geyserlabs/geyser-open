@@ -26,14 +26,15 @@ The **0.2.0 source preview** provides these commands. Global options (`--api-url
 | `runs list`, `runs get ID`, `runs trace ID` | Inspect project run state and trace |
 | `runs watch ID` | Emit each event immediately; `--json` emits newline-delimited JSON |
 | `runs stop ID --expected-sequence N` | Request cancellation as a current owner/admin |
+| `runs replay ID --mode MODE --expected-sequence N --idempotency-key KEY` | Create a project-owned new execution with enforced [replay limits](replay.md) |
 | `runs fork ID --expected-sequence N [--mode MODE]` | Create a paused preview inspection record; it does not dispatch a replay |
 | `approvals list`, `approvals get ID` | Read current approvals within the credential’s scope |
 | `approvals decide RUN APPROVAL approve\|reject ...` | Submit a version- and digest-bound customer decision |
 | `validate-outcome CONTRACT RESULT` | Check a JSON result against a local outcome contract |
 | `version` | Print SDK/CLI source version |
 
-Task creation accepts `--contract FILE`, `--package PACKAGE_ID`, `--max-cost`, `--max-seconds`, `--max-provider-requests`, and `--max-tool-calls`. Defaults are $1, 300 seconds, ten provider requests, and twenty tool calls. These are upper bounds, not included usage. A package task performs pure JSON execution and does not call a model.
+Task creation accepts `--bundle PACKAGE_ID`, repeatable `--skill PACKAGE_ID`, `--model-profile PACKAGE_ID`, `--require-write-approval`, `--contract FILE`, `--package PACKAGE_ID`, `--max-cost`, `--max-seconds`, `--max-provider-requests`, and `--max-tool-calls`. Defaults are $1, 300 seconds, ten provider requests, and twenty tool calls. These are upper bounds, not included usage. A package task performs pure JSON execution and does not call a model.
 
-Decision and package mutation commands show a preview. `--yes` skips that local prompt; server authorization and current-state checks still apply. `approvals decide` requires `--expected-sequence`, `--binding-digest`, and `--reason-code`. Run commands support `--customer` for authorized customer-wide inspection.
+Decision and package mutation commands show a preview. `--yes` skips that local prompt; server authorization and current-state checks still apply. `approvals decide` requires `--expected-approval-sequence` (or its `--expected-sequence` alias), `--expected-run-sequence`, `--binding-digest`, and `--reason-code`. Use the approval’s `requested_sequence` and the current run’s `sequence`, respectively. Run commands support `--customer` for authorized customer-wide inspection.
 
 Human-readable mode is for a terminal; `--json` is for automation. Errors exit with code 2. Do not attach output containing private result values or credentials to public issues.

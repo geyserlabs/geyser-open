@@ -51,6 +51,10 @@ class ResultResponse(PublicModel):
 class TaskCreate(StrictInput):
     input_ref: str
     input_digest: str
+    require_write_approval: bool = Field(default=False, strict=True)
+    bundle_package_id: str = Field(default="", max_length=80)
+    skill_package_ids: list[str] = Field(default_factory=list, max_length=32)
+    model_profile_package_id: str = Field(default="", max_length=80)
     required_capabilities: list[str] = Field(default_factory=list, max_length=64)
     outcome_contract_ref: str = Field(default="", max_length=1000)
     budget: dict[str, Any] = Field(default_factory=dict)
@@ -150,7 +154,12 @@ class CapabilityResponse(PublicModel):
 
 class Approval(PublicModel):
     approval_id: str
+    run_id: str = ""
     state: str
+    requested_sequence: int = Field(default=0, ge=0)
+    effect_id: str = ""
+    tool_name: str = ""
+    arguments_digest: str = ""
     version: int = 0
     binding_digest: str = ""
     consequence_summary: str = ""
@@ -217,6 +226,7 @@ class Run(PublicModel):
     qualification_evidence_digest: str
     usage: dict[str, Any]
     budget_enforcement: dict[str, Any]
+    execution: dict[str, Any] = Field(default_factory=dict)
     effect_count: int = Field(ge=0)
     approval_count: int = Field(ge=0)
     artifact_count: int = Field(ge=0)
@@ -337,6 +347,17 @@ class ForkCreate(StrictInput):
     authority_ref: str = Field(default="", max_length=512)
     sanitized: bool = False
     budget: dict[str, Any] = Field(default_factory=dict)
+
+
+class ReplayCreate(ForkCreate):
+    """Start a new project task from the original input with fresh authority."""
+
+    stubs_ref: str = Field(default="", max_length=1000)
+
+    @field_validator("budget")
+    @classmethod
+    def valid_replay_budget(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return TaskCreate.valid_budget(value)
 
 
 class PackageRecord(PublicModel):

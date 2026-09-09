@@ -102,6 +102,7 @@ def scaffold_files(kind: str, name: str) -> dict[str, str]:
             ),
         }
     if kind == "skill":
+        common.pop("evals/cases.json")
         return {
             **common,
             "SKILL.md": (
@@ -110,38 +111,46 @@ def scaffold_files(kind: str, name: str) -> dict[str, str]:
             ),
         }
     if kind == "model-profile":
+        common.pop("evals/cases.json")
         return {
             **common,
             "model-profile.json": _json(
                 {
                     "schema_version": 1,
-                    "profile_id": name,
-                    "qualified": False,
-                    "qualification_ref": "",
-                    "custody": "declare-before-use",
-                    "fallback": "none",
-                    "task_performance_cards": {},
+                    "model_ref": "open:replace-with-your-qualified-model",
+                    "model_profile_digest": "sha256:" + "0" * 64,
+                    "policy_ref": "",
                 }
             ),
         }
+    common.pop("evals/cases.json")
+    common["README.md"] += (
+        "\nPublish and install this signed package in your developer project, then "
+        "select its package ID in TaskCreate.bundle_package_id. The Agent applies "
+        "these instructions and attributed context only to that task. References "
+        "listed without their contents are reported as omitted. Shared settings, "
+        "permissions, credentials, and provider sessions are never imported.\n"
+    )
     return {
         **common,
-        "agent-bundle-selection.json": _json(
+        "agent-bundle.json": _json(
             {
                 "schema_version": 1,
                 "name": name,
-                "components": [
-                    "identity_persona",
-                    "skills",
-                    "policy_references",
-                    "brain_export",
-                    "history_index",
-                    "artifact_manifest",
+                "persona": "Explain decisions clearly and state unresolved assumptions.",
+                "skills": [
+                    {
+                        "name": "review-facts",
+                        "description": "Check supplied claims.",
+                        "instructions": (
+                            "Identify claims supported by the supplied input "
+                            "and label uncertain claims."
+                        ),
+                    }
                 ],
-                "owner_review_required": True,
-                "include_credentials": False,
-                "include_provider_sessions": False,
-                "include_hidden_reasoning": False,
+                "context": [],
+                "selection": {},
+                "references": [],
             }
         ),
     }
