@@ -4,7 +4,7 @@ Your app can call the models your workspace runs on its own Geyser Host, using t
 
 Requests go to your Customer Cell, which checks the credential and the model’s access and then passes the request to the computer running the model. The Geyser SDK helps you find the right base URL and list your models. It doesn’t wrap or depend on the OpenAI or Anthropic packages; install whichever one you use.
 
-The OpenAI and Anthropic calls work once your workspace runs the matching Cell release. `list_models()`, the base URL helpers and `geyser models list` are new since SDK/CLI 0.2.0 and ship in the next release; until then, install from source or use the `curl` call below.
+The OpenAI and Anthropic calls work once your workspace runs the matching Cell release. `list_models()`, the base URL helpers and `geyser models list` are new in SDK/CLI 0.3.0.
 
 ## How the loop works
 

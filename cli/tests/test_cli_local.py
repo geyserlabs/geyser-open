@@ -125,4 +125,4 @@ def test_explicit_restricted_file_credential_fallback(
 
 def test_version_is_machine_readable(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["--json", "version"]) == 0
-    assert json.loads(capsys.readouterr().out)["geyser_open"] == "0.2.0"
+    assert json.loads(capsys.readouterr().out)["geyser_open"] == "0.3.0"
