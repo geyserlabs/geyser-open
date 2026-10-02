@@ -1,8 +1,8 @@
 # Customer custody and transport
 
-The Customer Cell owns developer projects, credential verifiers, task inputs/results, package bytes and run state. In a dedicated Cell, JSON objects and new package archives use its encrypted Data Home. Raw input/result bytes do not enter the Agent’s durable control spool. Legacy monolith installations retain their existing local storage boundary; a dedicated Cell does not silently fall back to a Global content copy.
+Every workspace runs on its own Customer Cell: a managed Cell, or a Host Cell on the customer’s own computer. The Cell owns developer projects, credential verifiers, task inputs/results, package bytes and run state. JSON objects and new package archives use its encrypted Data Home. Raw input/result bytes do not enter the Agent’s durable control spool. Global never holds a copy of this content, and a Cell never falls back to one.
 
-Global sign-in bootstraps a human session and selects the current Cell. The credential response includes an API URL bound to that Cell generation. Global’s developer relay forwards a project bearer unchanged, uses only registered active Cell routes, and does not exchange it for customer or Fleet authority. A changed generation requires authentication again.
+Global sign-in bootstraps a human session and selects the current Cell. While a brand-new workspace’s Cell is still starting, requests get a “workspace is still being set up” answer instead; Global does not serve them in the meantime. The credential response includes an API URL bound to that Cell generation. Global’s developer relay forwards a project bearer unchanged, uses only registered active Cell routes, and does not exchange it for customer or Fleet authority. A changed generation requires authentication again.
 
 **The compatibility relay processes plaintext content transiently.** TLS protects each network leg; this is not end-to-end encryption from your application to the Cell. Responses identify customer-cell custody and compatibility-relay transit. Storage location, relay transit, Agent compute and model/provider processing are separate choices.
 
