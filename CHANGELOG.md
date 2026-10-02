@@ -3,7 +3,7 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
-## Unreleased
+## 0.3.0
 
 - Call your workspace’s own models (for example, one taught with Teach a new model) from your code with the
   official OpenAI or Anthropic SDK: `models:infer` scope, `list_models()`, `openai_base_url()` and
