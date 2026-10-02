@@ -9,7 +9,7 @@ The OpenAI and Anthropic calls work once your workspace runs the matching Cell r
 ## How the loop works
 
 1. **Teach a model.** On the console, use **Teach a new model**. When the model passes its test, Geyser starts it on one of your Hosts.
-2. **Open it to your project.** Open the model’s **Access** settings and add your project under **Developer projects**. Giving “Everyone” access lets your Agents use the model; it doesn’t open it to developer projects. Each model is opened to each project on purpose.
+2. **Open it to your project.** On the console’s **Models** page, choose **Who can use it** for the model and add your project under **Developer projects**. This takes someone who manages models: the Owner, or an Admin allowed to manage models. Giving “Everyone” access lets your Agents use the model; it doesn’t open it to developer projects. Each model is opened to each project on purpose.
 3. **Create a credential** with the `models:infer` scope (below).
 4. **Build your app** against `private/<deployment_id>` with the OpenAI or Anthropic SDK.
 
@@ -142,9 +142,9 @@ Errors use the shape each SDK expects, so the SDK raises its usual exception. Op
 |---|---|---|
 | `invalid_api_key` | 401 | The credential is missing, expired or revoked. Create a new one. |
 | `insufficient_scope` | 403 | The credential doesn’t have `models:infer`. Create one that does. |
-| `developer_inference_disabled` | 403 | Your workspace or Geyser has turned off model use from code. If your workspace turned it off, an Owner can turn it back on in the console. |
+| `developer_inference_disabled` | 403 | Your workspace or Geyser has turned off model use from code. If your workspace turned it off, the Owner can turn it back on from the **Developers** page. |
 | `model_not_found` | 404 | The model doesn’t exist or isn’t open to this project. Check `geyser models list` and the model’s **Developer projects**. |
-| `model_changed` | 409 | The model was replaced by one that needs to be confirmed again. An Owner or Admin confirms it on the console. |
+| `model_changed` | 409 | The model was replaced by one that needs to be confirmed again. Someone who manages models confirms it under **Who can use it** on the console. |
 | `rate_limited` | 429 | The project already has 2 requests running, or the computer is busy. Wait for the `Retry-After` seconds and try again. |
 | `model_unavailable` | 503 | The computer is asleep or offline, or the model isn’t running. Wake the computer or start the model, then retry. |
 
@@ -160,4 +160,4 @@ Some models learn from more than examples you typed or pasted into **Teach a new
 
 When you teach a new version the same way (from examples typed or pasted into **Teach a new model**) and roll it out in place of the current version, your app starts using it on the next request with no code change.
 
-If the replacement learned from conversations, Room decisions or Apprentice, requests return `409 model_changed` and your app pauses until an Owner or Admin confirms the new model on the console.
+If the replacement learned from conversations, Room decisions or Apprentice, requests return `409 model_changed` and your app pauses until someone who manages models confirms the new model on the console.

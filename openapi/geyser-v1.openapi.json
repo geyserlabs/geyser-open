@@ -21,12 +21,17 @@
       },
       "AnthropicCompatibleErrorBody": {
         "properties": {
+          "code": {
+            "default": "",
+            "description": "Stable error code: invalid_api_key, insufficient_scope, developer_inference_disabled, model_not_found, model_changed, rate_limited, model_unavailable. Upstream model errors may use other codes.",
+            "title": "Code",
+            "type": "string"
+          },
           "message": {
             "title": "Message",
             "type": "string"
           },
           "type": {
-            "description": "Stable error code: invalid_api_key, insufficient_scope, developer_inference_disabled, model_not_found, model_changed, rate_limited, model_unavailable. Upstream model errors may use other types.",
             "title": "Type",
             "type": "string"
           }
@@ -40,7 +45,7 @@
       },
       "AnthropicMessagesRequest": {
         "additionalProperties": true,
-        "description": "An Anthropic Messages-compatible request body, passed through to the model. Output tokens are capped at 8192 per request. Set stream to true for server-sent events.",
+        "description": "An Anthropic Messages-compatible request body, passed through to the model.\n\nOutput tokens are capped at 8192 per request. Set stream to true for\nserver-sent events.",
         "properties": {
           "model": {
             "description": "A `private/<deployment_id>` id from GET /api/v1/openai/models.",
@@ -63,6 +68,7 @@
       "AnthropicMessagesResponse": {
         "additionalProperties": true,
         "description": "The model's Anthropic Messages-compatible response, passed through unchanged.",
+        "properties": {},
         "title": "AnthropicMessagesResponse",
         "type": "object"
       },
@@ -398,7 +404,7 @@
       },
       "OpenAICompatibleRequest": {
         "additionalProperties": true,
-        "description": "An OpenAI-compatible request body, passed through to the model. Output tokens are capped at 8192 per request. On Exo/MLX engines a json_schema response_format becomes json_object. Set stream to true for server-sent events.",
+        "description": "An OpenAI-compatible request body, passed through to the model.\n\nOutput tokens are capped at 8192 per request. On Exo/MLX engines a\njson_schema response_format becomes json_object. Set stream to true for\nserver-sent events.",
         "properties": {
           "model": {
             "description": "A `private/<deployment_id>` id from GET /api/v1/openai/models.",
@@ -421,6 +427,7 @@
       "OpenAICompatibleResponse": {
         "additionalProperties": true,
         "description": "The model's OpenAI-compatible response, passed through unchanged.",
+        "properties": {},
         "title": "OpenAICompatibleResponse",
         "type": "object"
       },
@@ -1956,8 +1963,14 @@
       "WorkspaceModelDetails": {
         "additionalProperties": true,
         "properties": {
+          "access": {
+            "default": "open",
+            "description": "open, or model_changed when the model was replaced and someone must confirm it on Geyser before the app can use it again.",
+            "title": "Access",
+            "type": "string"
+          },
           "context_window": {
-            "minimum": 0,
+            "minimum": 0.0,
             "title": "Context Window",
             "type": "integer"
           },
@@ -2053,42 +2066,8 @@
   "paths": {
     "/api/v1/anthropic/v1/messages": {
       "post": {
-        "description": "Anthropic Messages-compatible, passed through. Accepts the credential as x-api-key or Bearer. Calls one of this workspace's own models running on its Geyser Host. Server-side only; no browser (CORS) access. At most 2 requests in flight per project. The Host's computer sees the prompts. Usage is free.",
+        "description": "Anthropic Messages-compatible call on one of this workspace's own\nmodels, passed through. Accepts the credential as x-api-key or Bearer.\nServer-side only; at most 2 requests in flight per project.",
         "operationId": "developer_anthropic_messages_api_v1_anthropic_v1_messages_post",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          },
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Api-Key"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2124,7 +2103,7 @@
                 }
               }
             },
-            "description": "Unauthorized. invalid_api_key: the credential is missing, expired or revoked."
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
           },
           "403": {
             "content": {
@@ -2134,7 +2113,7 @@
                 }
               }
             },
-            "description": "Forbidden. insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
           },
           "404": {
             "content": {
@@ -2144,7 +2123,7 @@
                 }
               }
             },
-            "description": "Not Found. model_not_found: the model is unknown or not opened to this project."
+            "description": "model_not_found: unknown, or not opened to this project."
           },
           "409": {
             "content": {
@@ -2154,7 +2133,7 @@
                 }
               }
             },
-            "description": "Conflict. model_changed: the model was replaced by one that must be confirmed again on the console."
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
           },
           "429": {
             "content": {
@@ -2164,7 +2143,7 @@
                 }
               }
             },
-            "description": "Too Many Requests. rate_limited: the project already has 2 requests in flight, or the computer is busy. Retry after Retry-After.",
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
@@ -2182,22 +2161,18 @@
                 }
               }
             },
-            "description": "Service Unavailable. model_unavailable: the computer is asleep or offline, or the model is not running."
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
           }
         },
         "security": [
           {
-            "ProjectCredential": [
-              "models:infer"
-            ]
+            "ProjectCredential": []
           },
           {
-            "ProjectCredentialApiKey": [
-              "models:infer"
-            ]
+            "ProjectCredentialApiKey": []
           }
         ],
-        "summary": "Anthropic-Compatible Messages"
+        "summary": "Messages"
       }
     },
     "/api/v1/capabilities": {
@@ -2318,7 +2293,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -2497,7 +2472,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -2665,7 +2640,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -2847,7 +2822,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3015,7 +2990,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3211,7 +3186,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3398,7 +3373,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3585,7 +3560,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3776,7 +3751,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -3963,7 +3938,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -4150,7 +4125,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -4318,7 +4293,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -4471,7 +4446,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -4828,26 +4803,8 @@
     },
     "/api/v1/openai/chat/completions": {
       "post": {
-        "description": "OpenAI-compatible chat completions, passed through. Calls one of this workspace's own models running on its Geyser Host. Server-side only; no browser (CORS) access. At most 2 requests in flight per project. The Host's computer sees the prompts. Usage is free.",
+        "description": "OpenAI-compatible chat completions on one of this workspace's own\nmodels, passed through. Server-side only; at most 2 requests in flight\nper project. The computer running the model sees the prompts.",
         "operationId": "developer_openai_chat_completions_api_v1_openai_chat_completions_post",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -4883,7 +4840,7 @@
                 }
               }
             },
-            "description": "Unauthorized. invalid_api_key: the credential is missing, expired or revoked."
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
           },
           "403": {
             "content": {
@@ -4893,7 +4850,7 @@
                 }
               }
             },
-            "description": "Forbidden. insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
           },
           "404": {
             "content": {
@@ -4903,7 +4860,7 @@
                 }
               }
             },
-            "description": "Not Found. model_not_found: the model is unknown or not opened to this project."
+            "description": "model_not_found: unknown, or not opened to this project."
           },
           "409": {
             "content": {
@@ -4913,7 +4870,7 @@
                 }
               }
             },
-            "description": "Conflict. model_changed: the model was replaced by one that must be confirmed again on the console."
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
           },
           "429": {
             "content": {
@@ -4923,7 +4880,7 @@
                 }
               }
             },
-            "description": "Too Many Requests. rate_limited: the project already has 2 requests in flight, or the computer is busy. Retry after Retry-After.",
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
@@ -4941,41 +4898,21 @@
                 }
               }
             },
-            "description": "Service Unavailable. model_unavailable: the computer is asleep or offline, or the model is not running."
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
           }
         },
         "security": [
           {
-            "ProjectCredential": [
-              "models:infer"
-            ]
+            "ProjectCredential": []
           }
         ],
-        "summary": "OpenAI-Compatible Chat Completions"
+        "summary": "Chat Completions"
       }
     },
     "/api/v1/openai/models": {
       "get": {
-        "description": "OpenAI-compatible list of this workspace's own models that are opened to the credential's project.",
+        "description": "OpenAI-compatible list of this workspace's own models that are opened\nto the credential's project. Requires models:infer.",
         "operationId": "developer_openai_models_api_v1_openai_models_get",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "content": {
@@ -4995,7 +4932,7 @@
                 }
               }
             },
-            "description": "Unauthorized. invalid_api_key: the credential is missing, expired or revoked."
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
           },
           "403": {
             "content": {
@@ -5005,7 +4942,17 @@
                 }
               }
             },
-            "description": "Forbidden. insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_not_found: unknown, or not opened to this project."
           },
           "429": {
             "content": {
@@ -5015,7 +4962,7 @@
                 }
               }
             },
-            "description": "Too Many Requests. rate_limited: the project already has 2 requests in flight, or the computer is busy. Retry after Retry-After.",
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
@@ -5028,9 +4975,7 @@
         },
         "security": [
           {
-            "ProjectCredential": [
-              "models:infer"
-            ]
+            "ProjectCredential": []
           }
         ],
         "summary": "List Workspace Models"
@@ -5038,26 +4983,8 @@
     },
     "/api/v1/openai/responses": {
       "post": {
-        "description": "OpenAI-compatible Responses API, passed through. Calls one of this workspace's own models running on its Geyser Host. Server-side only; no browser (CORS) access. At most 2 requests in flight per project. The Host's computer sees the prompts. Usage is free.",
+        "description": "OpenAI-compatible Responses API on one of this workspace's own models,\npassed through. Server-side only; at most 2 requests in flight per\nproject. The computer running the model sees the prompts.",
         "operationId": "developer_openai_responses_api_v1_openai_responses_post",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -5093,7 +5020,7 @@
                 }
               }
             },
-            "description": "Unauthorized. invalid_api_key: the credential is missing, expired or revoked."
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
           },
           "403": {
             "content": {
@@ -5103,7 +5030,7 @@
                 }
               }
             },
-            "description": "Forbidden. insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
           },
           "404": {
             "content": {
@@ -5113,7 +5040,7 @@
                 }
               }
             },
-            "description": "Not Found. model_not_found: the model is unknown or not opened to this project."
+            "description": "model_not_found: unknown, or not opened to this project."
           },
           "409": {
             "content": {
@@ -5123,7 +5050,7 @@
                 }
               }
             },
-            "description": "Conflict. model_changed: the model was replaced by one that must be confirmed again on the console."
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
           },
           "429": {
             "content": {
@@ -5133,7 +5060,7 @@
                 }
               }
             },
-            "description": "Too Many Requests. rate_limited: the project already has 2 requests in flight, or the computer is busy. Retry after Retry-After.",
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
@@ -5151,17 +5078,15 @@
                 }
               }
             },
-            "description": "Service Unavailable. model_unavailable: the computer is asleep or offline, or the model is not running."
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
           }
         },
         "security": [
           {
-            "ProjectCredential": [
-              "models:infer"
-            ]
+            "ProjectCredential": []
           }
         ],
-        "summary": "OpenAI-Compatible Responses"
+        "summary": "Responses"
       }
     },
     "/api/v1/packages": {
@@ -5294,7 +5219,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -5451,7 +5376,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -5611,7 +5536,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -5779,7 +5704,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -5942,7 +5867,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6091,7 +6016,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6263,7 +6188,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6412,7 +6337,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6575,7 +6500,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6732,7 +6657,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -6881,7 +6806,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
@@ -7030,7 +6955,7 @@
               },
               "application/problem+json": {}
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "429": {
             "content": {
