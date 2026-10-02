@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "WorkspaceModel": {
+      "additionalProperties": true,
+      "description": "One of the workspace's own models that is open to this project.",
+      "properties": {
+        "created": {
+          "default": 0,
+          "title": "Created",
+          "type": "integer"
+        },
+        "geyser": {
+          "$ref": "#/$defs/WorkspaceModelDetails"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "object": {
+          "const": "model",
+          "default": "model",
+          "title": "Object",
+          "type": "string"
+        },
+        "owned_by": {
+          "default": "geyser",
+          "title": "Owned By",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "WorkspaceModel",
+      "type": "object"
+    },
+    "WorkspaceModelDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "context_window": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Context Window",
+          "type": "integer"
+        },
+        "display_name": {
+          "default": "",
+          "title": "Display Name",
+          "type": "string"
+        },
+        "state": {
+          "default": "",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "title": "WorkspaceModelDetails",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "description": "OpenAI-compatible model list; only models opened to this project appear.",
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/$defs/WorkspaceModel"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "object": {
+      "const": "list",
+      "default": "list",
+      "title": "Object",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data"
+  ],
+  "title": "WorkspaceModelList",
+  "type": "object"
+}

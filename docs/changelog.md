@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Call your workspace’s own models, such as one you taught, from your code with the official OpenAI or Anthropic SDK. New `models:infer` credential scope, `client.list_models()`, `openai_base_url()` / `anthropic_base_url()` helpers, `geyser models list`, OpenAPI routes under `/api/v1/openai` and `/api/v1/anthropic`, and a [Use your own models](models.md) guide. Requires the matching Cell release.
+
 ## 0.2.0
 
 - Current membership, Agent assignment, session audience, project and Cell generation are rechecked for developer access.

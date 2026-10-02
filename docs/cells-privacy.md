@@ -8,6 +8,8 @@ Global sign-in bootstraps a human session and selects the current Cell. The cred
 
 Pure JSON extensions run without network or credential access. Open Agent tasks use the workspace’s configured model and tool routes, which can process authorized content outside the Cell. Moving compute to your hardware does not automatically move its data home or replace an external model provider.
 
+When your code calls the workspace’s own models ([Use your own models](models.md)), prompts and answers travel through your Customer Cell to the Geyser Host computer running the model, and that computer sees them.
+
 Retention follows the customer policy and excludes active task inputs. Agent deletion erases its owned developer objects and package records. Your integration must include its own downloads, logs, backups and result copies in its retention/deletion workflow. See [costs and limits](program.md) and the [privacy architecture](https://www.geyserlabs.ai/privacy-architecture).
 
 Project erasure also removes its run streams and adapter checkpoints. An online Agent removes the marked developer task workspaces and Open session caches once its current Cell confirms that the project no longer belongs to it. Unavailable or changed routing defers local cleanup; offline Agents clean up when they reconnect. Revocation stops work but preserves retained records until erasure or the configured retention cutoff.

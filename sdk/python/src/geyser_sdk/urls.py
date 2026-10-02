@@ -30,3 +30,17 @@ def require_credential_destination(stored_url: str, requested_url: str) -> str:
     if not stored_url or validate_api_url(stored_url) != destination:
         raise ValueError("credential belongs to a different API URL; log in for this destination")
     return destination
+
+
+OPENAI_COMPATIBLE_PATH = "/api/v1/openai"
+ANTHROPIC_COMPATIBLE_PATH = "/api/v1/anthropic"
+
+
+def openai_base_url(api_url: str) -> str:
+    """Base URL for the OpenAI SDK when calling this workspace's own models."""
+    return validate_api_url(api_url) + OPENAI_COMPATIBLE_PATH
+
+
+def anthropic_base_url(api_url: str) -> str:
+    """Base URL for the Anthropic SDK when calling this workspace's own models."""
+    return validate_api_url(api_url) + ANTHROPIC_COMPATIBLE_PATH

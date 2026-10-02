@@ -422,6 +422,34 @@ class TypedTask(StrictInput):
         return normalized
 
 
+MODELS_INFER_SCOPE = "models:infer"
+"""Scope a project credential needs to call the workspace's own models."""
+
+
+class WorkspaceModelDetails(PublicModel):
+    display_name: str = ""
+    # Open-ended: "running", "starting", "stopped", "error", and future states.
+    state: str = ""
+    context_window: int = Field(default=0, ge=0)
+
+
+class WorkspaceModel(PublicModel):
+    """One of the workspace's own models that is open to this project."""
+
+    id: str
+    object: Literal["model"] = "model"
+    created: int = 0
+    owned_by: str = "geyser"
+    geyser: WorkspaceModelDetails = Field(default_factory=WorkspaceModelDetails)
+
+
+class WorkspaceModelList(PublicModel):
+    """OpenAI-compatible model list; only models opened to this project appear."""
+
+    object: Literal["list"] = "list"
+    data: list[WorkspaceModel]
+
+
 TERMINAL_RUN_STATES = frozenset({"completed", "failed", "canceled"})
 
 

@@ -27,6 +27,8 @@ Owners/admins can request additional scopes when needed:
 geyser login --scope development:read --scope runs:read --scope runs:manage --scope approvals:decide
 ```
 
+To call your workspace’s own models from your code, request `models:infer` (`geyser login --scope models:infer`). See [Use your own models](models.md).
+
 For package work, request `packages:upload`, `packages:stage`, `packages:canary`, and, only when needed, `packages:promote`. Member grants require a current Agent assignment. Removing a member, changing their role, revoking the project, or changing Cell assignment invalidates their old grant. A service credential belongs to the project and has its own lifecycle.
 
 ## CI and applications
@@ -51,5 +53,6 @@ geyser --api-url YOUR_ISSUED_API_URL login --service-token-stdin
 | `runs:manage`, `approvals:decide` | Current customer owner/admin decisions; service credentials cannot impersonate a person |
 | `packages:upload`, `packages:stage` | Upload/stage signed bytes |
 | `packages:canary`, `packages:promote` | Owner/admin activation authority |
+| `models:infer` | Use this workspace’s models from your code. Never granted by default; only Owners and Admins can issue it. A service credential with it lasts at most 90 days and stops working if the Admin who created it leaves the workspace or is demoted. Each model must also be opened to the project. |
 
 Agent keys produce runtime events; Fleet sessions operate the physical fleet. Neither is a substitute for a developer credential. The current OAuth client is the Geyser CLI; arbitrary third-party OAuth client registration is not offered. Device flow and loopback PKCE use single-use grants. Token and device-code endpoints accept JSON and standard URL-encoded forms.

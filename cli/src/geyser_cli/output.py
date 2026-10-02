@@ -31,4 +31,23 @@ def emit(value: Any, *, machine: bool) -> None:
         print(json.dumps(normalized, indent=2, sort_keys=True, ensure_ascii=False))
 
 
-__all__ = ["emit", "serializable"]
+def _printable(value: str) -> str:
+    # Server-supplied names must not carry terminal control sequences.
+    return "".join(char if char.isprintable() else "?" for char in value)
+
+
+def table(headers: list[str], rows: list[list[str]]) -> str:
+    """Left-aligned plain-text columns for human-readable listings."""
+    rows = [[_printable(cell) for cell in row] for row in rows]
+    widths = [
+        max(len(header), *(len(row[index]) for row in rows)) if rows else len(header)
+        for index, header in enumerate(headers)
+    ]
+    lines = [headers, *rows]
+    return "\n".join(
+        "  ".join(cell.ljust(width) for cell, width in zip(line, widths, strict=True)).rstrip()
+        for line in lines
+    )
+
+
+__all__ = ["emit", "serializable", "table"]

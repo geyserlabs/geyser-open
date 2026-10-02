@@ -3,6 +3,13 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
+## Unreleased
+
+- Call your workspace’s own models (for example, one taught with Teach a new model) from your code with the
+  official OpenAI or Anthropic SDK: `models:infer` scope, `list_models()`, `openai_base_url()` and
+  `anthropic_base_url()`, `geyser models list`, and OpenAPI routes under `/api/v1/openai` and
+  `/api/v1/anthropic`. Requires the matching Cell release. See `docs/models.md`.
+
 ## 0.1.0 — Production
 
 `v0.1.0` promotes the qualified public SDK, CLI, signed standalone assets, Homebrew distribution,

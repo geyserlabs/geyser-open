@@ -86,6 +86,10 @@ Forks are **preview inspection records**. They create a paused child record from
 
 The SDK raises `ProblemError` for RFC problem details, `ResponseValidationError` for an incompatible response and `TransportError` when no response is available. Retries are bounded and honor `Retry-After`; long retry delays are returned to your application instead of sleeping indefinitely. Idempotent creation can be retried; unknown consequential effects require reconciliation, not blind resubmission.
 
+## Call your workspace’s own models
+
+`client.list_models()` lists the models your project may call, and `client.openai_base_url()` and `client.anthropic_base_url()` return the `base_url` for the official OpenAI and Anthropic SDKs. The credential needs `models:infer`. The SDK doesn’t wrap those packages. See [Use your own models](models.md).
+
 ## Async applications
 
 `AsyncGeyserClient` exposes the same operations with `await`, async context management and async iterators. Reuse a client and close it. Do not store credentials in source code; a token-provider callback can read your own secret manager.

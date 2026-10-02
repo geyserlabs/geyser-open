@@ -12,6 +12,7 @@ Geyser is useful when your application needs an Agent to do bounded work, return
 | Output review gate | A deterministic check that every claim cites a supplied source ID | [Reference applications](recipes.md) |
 | Agent document review | A budgeted Open Agent task with a JSON result and inspectable run | [Python SDK](sdk.md) |
 | An existing integration | Idempotent task submission, event cursors, scoped access and result retrieval | [Authentication](authentication.md) |
+| An app on your own model | Calls to a model you taught, running on your Geyser Host, through the OpenAI or Anthropic SDK | [Use your own models](models.md) |
 
 The review gate checks reference coverage. It does not establish that a claim is factually true. Keep the human or domain-specific review your application needs.
 
@@ -19,7 +20,7 @@ The review gate checks reference coverage. It does not establish that a claim is
 
 Use Geyser when you need durable task identity, current workspace authority, inspectable effects and approvals, and customer-controlled data custody together. A direct model API may be enough for a one-shot text transformation. A normal function is simpler for isolated deterministic business logic; packaging that function is useful when you want the same validated bytes tested locally and installed on a customer Agent.
 
-The public SDK and CLI are MIT-licensed. Models, Agent compute, and external tools come from your workspace and may incur charges. See [costs, limits and support](program.md).
+The public SDK and CLI are MIT-licensed. Models, Agent compute, and external tools come from your workspace and may incur charges. Calling your workspace’s own models from your code is free, because they run on your own computer; see [Use your own models](models.md) and [costs, limits and support](program.md).
 
 ## First success
 

@@ -10,6 +10,7 @@ The standalone download needs no separate Python for remote API commands or loca
 | `login --service-token-stdin` | Save a bounded service token from stdin with its explicit issued API URL |
 | `logout` | Remove the local profile; remote revocation is separate |
 | `doctor` | Check the selected/stored API URL, schema version and local credential presence |
+| `models list` | List the workspace’s own models open to this project; needs `models:infer` (see [Use your own models](models.md)) |
 | `capabilities [--agent NAME]` | Read the project Agent’s execution readiness and runtime matrix; optional name must match |
 | `init KIND NAME` | Create a scaffold |
 | `validate PATH` | Validate package declarations and bounded file layout |

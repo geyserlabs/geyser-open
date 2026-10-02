@@ -35,6 +35,7 @@ from geyser_sdk.models import (
     TaskPage,
     TaskResponse,
     TraceResponse,
+    WorkspaceModelList,
 )
 from geyser_sdk.replay import ToolStubs
 from pydantic import BaseModel
@@ -72,6 +73,7 @@ MODELS: dict[str, type[BaseModel]] = {
         TaskPage,
         TaskResponse,
         TraceResponse,
+        WorkspaceModelList,
     )
 }
 
