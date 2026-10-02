@@ -35,7 +35,7 @@ jobs:
           test "$(python scripts/release_assets.py version)" = "$DOCS_VERSION"
           gh release view "v$DOCS_VERSION" --json tagName,isDraft,isPrerelease |
             python -c 'import json,os,sys; r=json.load(sys.stdin); assert r["tagName"] == "v"+os.environ["DOCS_VERSION"] and not r["isDraft"] and not r["isPrerelease"]'
-      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.11"
           enable-cache: true
