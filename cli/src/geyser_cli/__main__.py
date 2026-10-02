@@ -27,6 +27,7 @@ from geyser_sdk import (
     ProblemError,
     ReplayCreate,
     TaskCreate,
+    WorkspaceModelList,
     normalize_contract,
     validate_outcome,
 )
@@ -37,7 +38,7 @@ from . import __version__
 from .auth import DeviceAuthorization, login_device, login_service_token
 from .credentials import CredentialStore
 from .extensions import inspect_archive, package_extension, test_extension, validate_extension
-from .output import emit
+from .output import emit, table
 from .scaffolds import KINDS, scaffold
 
 DEFAULT_API_URL = "https://agents.geyserlabs.ai"
@@ -57,7 +58,12 @@ def _parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     login = commands.add_parser("login", help="authenticate with OAuth device flow")
-    login.add_argument("--scope", action="append", dest="scopes")
+    login.add_argument(
+        "--scope",
+        action="append",
+        dest="scopes",
+        help="request a scope (repeatable), for example models:infer",
+    )
     login.add_argument("--no-browser", action="store_true")
     login.add_argument(
         "--service-token-stdin",
@@ -176,6 +182,9 @@ def _parser() -> argparse.ArgumentParser:
     decide.add_argument("--binding-digest", required=True)
     decide.add_argument("--reason-code", required=True)
     decide.add_argument("--yes", action="store_true")
+    models = commands.add_parser("models", help="this workspace's own models open to the project")
+    model_commands = models.add_subparsers(dest="models_command", required=True)
+    model_commands.add_parser("list", help="list models your code can call (needs models:infer)")
     capabilities = commands.add_parser("capabilities")
     capabilities.add_argument(
         "--agent", default="", help="optionally assert the project's assigned Agent name"
@@ -266,6 +275,24 @@ def _doctor(args: argparse.Namespace) -> dict[str, Any]:
         "authenticated": credential is not None,
         "profile": args.profile,
     }
+
+
+def _models_table(listed: WorkspaceModelList, base_url: str) -> str:
+    if not listed.data:
+        return (
+            "No models are open to this project. On the Geyser console, open a model's "
+            "Access settings and add this project under Developer projects."
+        )
+    rows = [
+        [
+            model.id,
+            model.geyser.display_name,
+            model.geyser.state,
+            str(model.geyser.context_window or ""),
+        ]
+        for model in listed.data
+    ]
+    return table(["ID", "NAME", "STATE", "CONTEXT"], rows) + f"\n\nOpenAI base URL: {base_url}"
 
 
 def _handle_network(args: argparse.Namespace) -> Any:
@@ -505,6 +532,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             with _client(args) as client:
                 for event in client.watch_events(args.run_id, customer=args.customer):
                     emit(event, machine=args.json)
+            return 0
+        elif args.command == "models":
+            with _client(args) as client:
+                listed = client.list_models()
+                if args.json:
+                    emit(listed, machine=True)
+                else:
+                    print(_models_table(listed, client.openai_base_url()))
             return 0
         elif args.command == "logout":
             value = {"removed": _store(args).delete(), "profile": args.profile}

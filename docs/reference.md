@@ -18,8 +18,11 @@ The live `/api/v1/openapi.json` at your issued API URL describes the software ac
 | `/api/v1/customer/runs/{id}/replays` | Create a new project task with an enforced replay mode and immutable lineage |
 | `/api/v1/customer/...` | Authorized human inspection/decisions; project grants remain project-scoped |
 | `/api/v1/oauth/...` | Geyser CLI device and loopback-PKCE authentication |
+| `/api/v1/openai/models` | List the workspace’s own models opened to the project (`models:infer`) |
+| `/api/v1/openai/chat/completions`, `/api/v1/openai/responses` | OpenAI-compatible calls to those models, passed through, streaming included |
+| `/api/v1/anthropic/v1/messages` | Anthropic Messages-compatible calls; accepts `x-api-key` or Bearer |
 
-Success bodies include `api_version`. Public failures use RFC problem details; OAuth failures use OAuth error responses. Mutations use `Idempotency-Key` and/or `If-Match` as shown in the specification. `429` includes `Retry-After`. Cursor pagination can return an empty page with a next cursor after authorization filtering; continue until the cursor is empty.
+Success bodies include `api_version`, except on the OpenAI- and Anthropic-compatible routes, which return those APIs’ own shapes. Public failures use RFC problem details; OAuth failures use OAuth error responses; the model routes use the OpenAI or Anthropic error shape described in [Use your own models](models.md#errors). Mutations use `Idempotency-Key` and/or `If-Match` as shown in the specification. `429` includes `Retry-After`. Cursor pagination can return an empty page with a next cursor after authorization filtering; continue until the cursor is empty.
 
 Regenerate SDK schemas with `python scripts/generate_schemas.py`. The OpenAPI snapshot is copied from `fleet-coordinator/scripts/export-developer-openapi.py`, never re-created as a handwritten approximation of the SDK. The API contract version remains `2026-08-24`; the SDK’s 0.2.0 version identifies the compatibility corrections described in the [changelog](changelog.md).
 

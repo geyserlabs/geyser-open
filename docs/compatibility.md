@@ -14,6 +14,7 @@
 | Approval-required tasks | Every consequential call waits for an exact human decision | `write_approval_tasks: true`; current owner/admin |
 | Replays | Four enforced execution modes create a new task | Advertised mode; current administrator/owner and target binding |
 | Forks | Paused inspection records | No public replay dispatch |
+| Your own models from code | OpenAI- and Anthropic-compatible calls to models opened to the project | Matching Cell release; `models:infer` credential; a running model on your Geyser Host |
 | Third-party OAuth applications | Not offered | Current OAuth client is the Geyser CLI |
 | Windows extension execution | Not offered | HTTP SDK remains usable |
 

@@ -1,6 +1,77 @@
 {
   "components": {
     "schemas": {
+      "AnthropicCompatibleError": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/AnthropicCompatibleErrorBody"
+          },
+          "type": {
+            "const": "error",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "error"
+        ],
+        "title": "AnthropicCompatibleError",
+        "type": "object"
+      },
+      "AnthropicCompatibleErrorBody": {
+        "properties": {
+          "code": {
+            "default": "",
+            "description": "Stable error code: invalid_api_key, insufficient_scope, developer_inference_disabled, model_not_found, model_changed, rate_limited, model_unavailable. Upstream model errors may use other codes.",
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "message"
+        ],
+        "title": "AnthropicCompatibleErrorBody",
+        "type": "object"
+      },
+      "AnthropicMessagesRequest": {
+        "additionalProperties": true,
+        "description": "An Anthropic Messages-compatible request body, passed through to the model.\n\nOutput tokens are capped at 8192 per request. Set stream to true for\nserver-sent events.",
+        "properties": {
+          "model": {
+            "description": "A `private/<deployment_id>` id from GET /api/v1/openai/models.",
+            "pattern": "^private/.+$",
+            "title": "Model",
+            "type": "string"
+          },
+          "stream": {
+            "default": false,
+            "title": "Stream",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "model"
+        ],
+        "title": "AnthropicMessagesRequest",
+        "type": "object"
+      },
+      "AnthropicMessagesResponse": {
+        "additionalProperties": true,
+        "description": "The model's Anthropic Messages-compatible response, passed through unchanged.",
+        "properties": {},
+        "title": "AnthropicMessagesResponse",
+        "type": "object"
+      },
       "ApprovalDecisionRequest": {
         "additionalProperties": false,
         "description": "Human decision carrying optimistic approval/run preconditions.",
@@ -293,6 +364,71 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "OpenAICompatibleError": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/OpenAICompatibleErrorBody"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "OpenAICompatibleError",
+        "type": "object"
+      },
+      "OpenAICompatibleErrorBody": {
+        "properties": {
+          "code": {
+            "description": "Stable error code: invalid_api_key, insufficient_scope, developer_inference_disabled, model_not_found, model_changed, rate_limited, model_unavailable. Upstream model errors may use other codes.",
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "type",
+          "code"
+        ],
+        "title": "OpenAICompatibleErrorBody",
+        "type": "object"
+      },
+      "OpenAICompatibleRequest": {
+        "additionalProperties": true,
+        "description": "An OpenAI-compatible request body, passed through to the model.\n\nOutput tokens are capped at 8192 per request. On Exo/MLX engines a\njson_schema response_format becomes json_object. Set stream to true for\nserver-sent events.",
+        "properties": {
+          "model": {
+            "description": "A `private/<deployment_id>` id from GET /api/v1/openai/models.",
+            "pattern": "^private/.+$",
+            "title": "Model",
+            "type": "string"
+          },
+          "stream": {
+            "default": false,
+            "title": "Stream",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "model"
+        ],
+        "title": "OpenAICompatibleRequest",
+        "type": "object"
+      },
+      "OpenAICompatibleResponse": {
+        "additionalProperties": true,
+        "description": "The model's OpenAI-compatible response, passed through unchanged.",
+        "properties": {},
+        "title": "OpenAICompatibleResponse",
         "type": "object"
       },
       "ProblemDetails": {
@@ -1785,6 +1921,100 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      },
+      "WorkspaceModel": {
+        "additionalProperties": true,
+        "properties": {
+          "created": {
+            "description": "Unix time in seconds.",
+            "title": "Created",
+            "type": "integer"
+          },
+          "geyser": {
+            "$ref": "#/components/schemas/WorkspaceModelDetails"
+          },
+          "id": {
+            "description": "Pass this exact value as `model`.",
+            "pattern": "^private/.+$",
+            "title": "Id",
+            "type": "string"
+          },
+          "object": {
+            "const": "model",
+            "title": "Object",
+            "type": "string"
+          },
+          "owned_by": {
+            "const": "geyser",
+            "title": "Owned By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "created",
+          "owned_by",
+          "geyser"
+        ],
+        "title": "WorkspaceModel",
+        "type": "object"
+      },
+      "WorkspaceModelDetails": {
+        "additionalProperties": true,
+        "properties": {
+          "access": {
+            "default": "open",
+            "description": "open, or model_changed when the model was replaced and someone must confirm it on Geyser before the app can use it again.",
+            "title": "Access",
+            "type": "string"
+          },
+          "context_window": {
+            "minimum": 0.0,
+            "title": "Context Window",
+            "type": "integer"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "state": {
+            "description": "running, starting, stopped, error, or a later state; only running models answer.",
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "display_name",
+          "state",
+          "context_window"
+        ],
+        "title": "WorkspaceModelDetails",
+        "type": "object"
+      },
+      "WorkspaceModelList": {
+        "additionalProperties": true,
+        "description": "OpenAI-compatible model list. Only models opened to this project appear.",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceModel"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "object": {
+            "const": "list",
+            "title": "Object",
+            "type": "string"
+          }
+        },
+        "required": [
+          "object",
+          "data"
+        ],
+        "title": "WorkspaceModelList",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -1800,6 +2030,7 @@
             "scopes": {
               "approvals:decide": "approvals:decide",
               "development:read": "development:read",
+              "models:infer": "models:infer",
               "packages:canary": "packages:canary",
               "packages:promote": "packages:promote",
               "packages:stage": "packages:stage",
@@ -1817,6 +2048,12 @@
         "description": "Developer or service credential scoped to one project. It cannot be exchanged for an Agent or customer credential.",
         "scheme": "bearer",
         "type": "http"
+      },
+      "ProjectCredentialApiKey": {
+        "description": "The same project credential sent as x-api-key, as the Anthropic SDK does. Accepted only on the Anthropic-compatible route.",
+        "in": "header",
+        "name": "x-api-key",
+        "type": "apiKey"
       }
     }
   },
@@ -1827,6 +2064,117 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/anthropic/v1/messages": {
+      "post": {
+        "description": "Anthropic Messages-compatible call on one of this workspace's own\nmodels, passed through. Accepts the credential as x-api-key or Bearer.\nServer-side only; at most 2 requests in flight per project.",
+        "operationId": "developer_anthropic_messages_api_v1_anthropic_v1_messages_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnthropicMessagesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicMessagesResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "description": "Server-sent events when the request sets stream to true, passed through unchanged.",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "model_not_found: unknown, or not opened to this project."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnthropicCompatibleError"
+                }
+              }
+            },
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
+          }
+        },
+        "security": [
+          {
+            "ProjectCredential": []
+          },
+          {
+            "ProjectCredentialApiKey": []
+          }
+        ],
+        "summary": "Messages"
+      }
+    },
     "/api/v1/capabilities": {
       "get": {
         "operationId": "public_capabilities_api_v1_capabilities_get",
@@ -4451,6 +4799,294 @@
         },
         "security": [],
         "summary": "Developer Oauth Token"
+      }
+    },
+    "/api/v1/openai/chat/completions": {
+      "post": {
+        "description": "OpenAI-compatible chat completions on one of this workspace's own\nmodels, passed through. Server-side only; at most 2 requests in flight\nper project. The computer running the model sees the prompts.",
+        "operationId": "developer_openai_chat_completions_api_v1_openai_chat_completions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAICompatibleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "description": "Server-sent events when the request sets stream to true, passed through unchanged.",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_not_found: unknown, or not opened to this project."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
+          }
+        },
+        "security": [
+          {
+            "ProjectCredential": []
+          }
+        ],
+        "summary": "Chat Completions"
+      }
+    },
+    "/api/v1/openai/models": {
+      "get": {
+        "description": "OpenAI-compatible list of this workspace's own models that are opened\nto the credential's project. Requires models:infer.",
+        "operationId": "developer_openai_models_api_v1_openai_models_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceModelList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_not_found: unknown, or not opened to this project."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ProjectCredential": []
+          }
+        ],
+        "summary": "List Workspace Models"
+      }
+    },
+    "/api/v1/openai/responses": {
+      "post": {
+        "description": "OpenAI-compatible Responses API on one of this workspace's own models,\npassed through. Server-side only; at most 2 requests in flight per\nproject. The computer running the model sees the prompts.",
+        "operationId": "developer_openai_responses_api_v1_openai_responses_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAICompatibleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "description": "Server-sent events when the request sets stream to true, passed through unchanged.",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "invalid_api_key: the credential is missing, expired or revoked."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "insufficient_scope: the credential lacks models:infer. developer_inference_disabled: the workspace or Geyser turned off model use from code."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_not_found: unknown, or not opened to this project."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_changed: the model was replaced and must be confirmed on Geyser before the app can use it again."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "rate_limited: too many requests, the project already has 2 in flight, or the computer is busy. Retry after Retry-After.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAICompatibleError"
+                }
+              }
+            },
+            "description": "model_unavailable: the computer running the model is asleep, off or unreachable."
+          }
+        },
+        "security": [
+          {
+            "ProjectCredential": []
+          }
+        ],
+        "summary": "Responses"
       }
     },
     "/api/v1/packages": {

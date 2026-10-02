@@ -2,7 +2,7 @@
 
 ## Costs
 
-The open SDK, CLI and examples have an MIT license. Local pure handlers require no model and make no network calls. Remote work uses your workspace’s Agent compute, models and authorized services, which may be billable under your existing account configuration. No free compute allowance, special developer credit, or fixed per-task price is promised here.
+The open SDK, CLI and examples have an MIT license. Local pure handlers require no model and make no network calls. Remote work uses your workspace’s Agent compute, models and authorized services, which may be billable under your existing account configuration. Calling your workspace’s own models from your code ([Use your own models](models.md)) is free, because they run on your own Geyser Host. No free compute allowance, special developer credit, or fixed per-task price is promised here.
 
 Set task ceilings for elapsed seconds, provider requests, tool calls and cost. Admission preserves the submitted ceilings and required capabilities. Runtime budget enforcement follows the qualified adapter and provider accounting; cost estimates and in-flight requests are not a guarantee of a provider’s final invoice. Compare measured task quality, latency and actual account usage against your baseline before increasing traffic.
 
@@ -18,9 +18,10 @@ Set task ceilings for elapsed seconds, provider requests, tool calls and cost. A
 | Installation tests | 1–32 cases; two seconds each and ten seconds total |
 | Desired package assignments | 200 per Agent |
 | Developer worker | One task at a time per Agent; shares the Agent’s compute |
+| Your own models from code | 2 requests in flight per project; 8192 output tokens per request; `429` includes `Retry-After` |
 | Task ownership | Expiring lease, renewed while running; stale owners cannot publish |
 | CLI-created service credential | Explicit issued API URL; console expiry choices 1, 7 or 30 days |
-| API credential lifetime | Human grants at most 30 days; service credentials at most 366 days; default OAuth token one day |
+| API credential lifetime | Human grants at most 30 days; service credentials at most 366 days, or 90 days with `models:infer`; default OAuth token one day |
 
 An Agent can be unavailable or occupied. Queue time is not a latency SLA. Human approval and effect reconciliation can delay completion. Cancellation is acknowledged only after the execution adapter stops; already committed external effects are not undone.
 

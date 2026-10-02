@@ -21,6 +21,7 @@ from .structured_outcomes import (
     pydantic_output_type,
     validate_outcome,
 )
+from .urls import anthropic_base_url, openai_base_url
 
 __version__ = "0.2.0"
 
@@ -37,12 +38,14 @@ __all__ = [
     "ResponseValidationError",
     "TokenProvider",
     "TransportError",
+    "anthropic_base_url",
     "bytes_digest",
     "canonical_bytes",
     "checkpoint_value",
     "digest",
     "evidence_refs",
     "normalize_contract",
+    "openai_base_url",
     "parse_candidate",
     "pydantic_output_type",
     "validate_outcome",

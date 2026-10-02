@@ -18,6 +18,9 @@ class Problem:
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any], status: int) -> Problem:
+        error = value.get("error")
+        if isinstance(error, Mapping) and "code" not in value:
+            return cls._from_compatible_error(error, status)
         current = value.get("current_version")
         return cls(
             type=str(value.get("type") or "about:blank"),
@@ -28,6 +31,19 @@ class Problem:
             instance=str(value.get("instance") or ""),
             request_id=str(value.get("request_id") or ""),
             current_version=int(current) if isinstance(current, int) else None,
+        )
+
+    @classmethod
+    def _from_compatible_error(cls, error: Mapping[str, Any], status: int) -> Problem:
+        # OpenAI-compatible routes return {"error": {"message", "type", "code"}};
+        # the Anthropic-compatible route returns {"type": "error", "error": {"type", "message"}}.
+        kind = str(error.get("type") or "")
+        return cls(
+            type="about:blank",
+            title=kind or "Geyser request failed",
+            status=status,
+            detail=str(error.get("message") or "The request was rejected."),
+            code=str(error.get("code") or kind or "request_failed"),
         )
 
 

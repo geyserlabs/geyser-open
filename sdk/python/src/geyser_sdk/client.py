@@ -44,8 +44,9 @@ from .models import (
     TaskPage,
     TaskResponse,
     TraceResponse,
+    WorkspaceModelList,
 )
-from .urls import validate_api_url
+from .urls import anthropic_base_url, openai_base_url, validate_api_url
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 TokenProvider = Callable[[], str]
@@ -121,6 +122,7 @@ class AsyncGeyserClient:
         base_url = validate_api_url(base_url)
         if max_retries < 0 or max_retries > 8:
             raise ValueError("max_retries must be between 0 and 8")
+        self._api_url = base_url
         self._token = _token_provider(token)
         self._max_retries = max_retries
         self._client = httpx.AsyncClient(
@@ -214,6 +216,23 @@ class AsyncGeyserClient:
         return await self._request(
             "GET", "/api/v1/capabilities", CapabilityResponse, params={"agent_name": agent_name}
         )
+
+    async def list_models(self) -> WorkspaceModelList:
+        """List this workspace's own models that are open to the project.
+
+        Requires a project credential with the ``models:infer`` scope. Call the
+        models with the OpenAI or Anthropic SDK at ``openai_base_url()`` or
+        ``anthropic_base_url()`` using the same credential.
+        """
+        return await self._request("GET", "/api/v1/openai/models", WorkspaceModelList)
+
+    def openai_base_url(self) -> str:
+        """``base_url`` for the OpenAI SDK, derived from this client's API URL."""
+        return openai_base_url(self._api_url)
+
+    def anthropic_base_url(self) -> str:
+        """``base_url`` for the Anthropic SDK, derived from this client's API URL."""
+        return anthropic_base_url(self._api_url)
 
     async def get_run(self, run_id: str, *, customer: bool = False) -> RunResponse:
         prefix = "/api/v1/customer" if customer else "/api/v1"
@@ -406,6 +425,7 @@ class GeyserClient:
         base_url = validate_api_url(base_url)
         if max_retries < 0 or max_retries > 8:
             raise ValueError("max_retries must be between 0 and 8")
+        self._api_url = base_url
         self._token = _token_provider(token)
         self._max_retries = max_retries
         self._client = httpx.Client(
@@ -497,6 +517,23 @@ class GeyserClient:
         return self._request(
             "GET", "/api/v1/capabilities", CapabilityResponse, params={"agent_name": agent_name}
         )
+
+    def list_models(self) -> WorkspaceModelList:
+        """List this workspace's own models that are open to the project.
+
+        Requires a project credential with the ``models:infer`` scope. Call the
+        models with the OpenAI or Anthropic SDK at ``openai_base_url()`` or
+        ``anthropic_base_url()`` using the same credential.
+        """
+        return self._request("GET", "/api/v1/openai/models", WorkspaceModelList)
+
+    def openai_base_url(self) -> str:
+        """``base_url`` for the OpenAI SDK, derived from this client's API URL."""
+        return openai_base_url(self._api_url)
+
+    def anthropic_base_url(self) -> str:
+        """``base_url`` for the Anthropic SDK, derived from this client's API URL."""
+        return anthropic_base_url(self._api_url)
 
     def get_run(self, run_id: str, *, customer: bool = False) -> RunResponse:
         prefix = "/api/v1/customer" if customer else "/api/v1"
