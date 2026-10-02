@@ -195,6 +195,10 @@ jobs:
 
   publish-github-release:
     needs: [publish-pypi-sdk, publish-pypi-open]
+    # Without an explicit condition the job inherits success() over every
+    # ancestor, and reuse-artifacts is always skipped in one of the two paths,
+    # so the GitHub release was silently skipped (v0.3.0).
+    if: ${{ !cancelled() && needs.publish-pypi-sdk.result == 'success' && needs.publish-pypi-open.result == 'success' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: write
