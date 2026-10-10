@@ -1,6 +1,6 @@
 # Run your first handler
 
-This is the **SDK/CLI 0.3.0**. It executes real Python code in an OS sandbox. You do not need an account, a model, or credentials.
+This is the **SDK/CLI 0.3.1**. It executes real Python code in an OS sandbox. You do not need an account, a model, or credentials.
 
 ## Install from source
 
@@ -15,7 +15,7 @@ python -m pip install -e ./sdk/python -e ./cli
 geyser --json version
 ```
 
-The source version should be `0.3.0`. On Ubuntu, install `bubblewrap` using your administrator’s normal package-management process. Do not disable host security policy to bypass a failed sandbox check.
+The source version should be `0.3.1`. On Ubuntu, install `bubblewrap` using your administrator’s normal package-management process. Do not disable host security policy to bypass a failed sandbox check.
 
 ## Execute a tool
 
