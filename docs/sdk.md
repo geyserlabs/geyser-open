@@ -1,6 +1,6 @@
 # Python SDK
 
-The examples below target the **SDK/CLI 0.3.0** and an upgraded, ready workspace. Use your issued Cell API URL, not a guessed global API host.
+The examples below target the **SDK/CLI 0.3.1** and an upgraded, ready workspace. Use your issued Cell API URL, not a guessed global API host.
 
 ## Submit a bounded task and retrieve its result
 

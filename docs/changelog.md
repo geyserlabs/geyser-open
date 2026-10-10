@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- `geyser login` works again with browser sign-in. The server no longer sends a pre-filled approval link (so a device code can't be used to trick someone into approving it), and the CLI crashed without one. It now opens the approval page, where you type the code it shows.
+
 ## 0.3.0
 
 - Call your workspace’s own models, such as one you taught, from your code with the official OpenAI or Anthropic SDK. New `models:infer` credential scope, `client.list_models()`, `openai_base_url()` / `anthropic_base_url()` helpers, `geyser models list`, OpenAPI routes under `/api/v1/openai` and `/api/v1/anthropic`, and a [Use your own models](models.md) guide. Requires the matching Cell release.

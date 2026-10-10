@@ -3,6 +3,10 @@
 This project follows Semantic Versioning. Developer API compatibility is tracked separately by
 the date-versioned schema/API contract.
 
+## 0.3.1
+
+- `geyser login` works again with browser sign-in. The server no longer sends a pre-filled approval link (so a device code can't be used to trick someone into approving it), and the CLI crashed without one. It now opens the approval page, where you type the code it shows.
+
 ## 0.3.0
 
 - Call your workspace’s own models (for example, one taught with Teach a new model) from your code with the

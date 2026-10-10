@@ -2,9 +2,9 @@
 
 ## Release status
 
-**These docs target SDK/CLI 0.3.0.** Use the exact matching artifact from [releases](releases.md). An untagged source checkout may contain changes that are not published yet. A source merge, a published package and a running Cell/Agent are distinct states. Do not assume the new execution path exists on a workspace running older software.
+**These docs target SDK/CLI 0.3.1.** Use the exact matching artifact from [releases](releases.md). An untagged source checkout may contain changes that are not published yet. A source merge, a published package and a running Cell/Agent are distinct states. Do not assume the new execution path exists on a workspace running older software.
 
-| Surface | 0.3.0 behavior | Prerequisite |
+| Surface | 0.3.1 behavior | Prerequisite |
 |---|---|---|
 | Sync/async SDK | Owned input upload, tasks, results, events, traces, decisions and package lifecycle | Python 3.11–3.13; matching public API |
 | Local JSON extensions | Real handler tests and execution | Python 3.11+ (also for the standalone CLI), macOS sandbox-exec, or Linux bubblewrap with permitted user namespaces |

@@ -2,7 +2,7 @@
 
 Build applications around bounded Agent work, typed results, durable state and current customer authority. The repository contains the MIT-licensed sync/async Python SDK, CLI, OS-sandboxed JSON extension contract, deterministic emulator, actual server-exported OpenAPI, and executable reference applications.
 
-**This source targets SDK/CLI 0.3.0.** Use the matching [published release](https://github.com/geyserlabs/geyser-open/releases/tag/v0.3.0) when available; an untagged checkout may include unreleased changes. Remote execution requires matching Cell and Agent software; a source merge is not a deployment.
+**This source targets SDK/CLI 0.3.1.** Use the matching [published release](https://github.com/geyserlabs/geyser-open/releases/tag/v0.3.1) when available; an untagged checkout may include unreleased changes. Remote execution requires matching Cell and Agent software; a source merge is not a deployment.
 
 ```console
 python3 -m venv .venv

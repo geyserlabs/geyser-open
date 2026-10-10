@@ -1,6 +1,6 @@
 # Security policy
 
-This checkout contains the Geyser Open 0.3.0 source preview. Published 0.1.0 artifacts and running services are separate release states. Report suspected vulnerabilities privately to
+This checkout contains the Geyser Open 0.3.1 source preview. Published 0.1.0 artifacts and running services are separate release states. Report suspected vulnerabilities privately to
 **security@geyserlabs.ai**. Do not open a public issue containing exploit details, credentials,
 customer identifiers, or tenant content. We acknowledge reports within two business days and
 coordinate validation, remediation, disclosure, and credit with the reporter.

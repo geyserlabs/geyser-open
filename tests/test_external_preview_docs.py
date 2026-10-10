@@ -7,7 +7,7 @@ def test_preview_uses_own_workspace_and_real_execution() -> None:
     page = (ROOT / "docs/external-preview.md").read_text()
     assert "external-preview.md" in (ROOT / "mkdocs.yml").read_text()
     for required in (
-        "SDK/CLI 0.3.0",
+        "SDK/CLI 0.3.1",
         "own authorized test workspace",
         "typed result",
         "idempotency key",
