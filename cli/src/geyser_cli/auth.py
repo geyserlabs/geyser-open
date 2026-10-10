@@ -22,7 +22,6 @@ class DeviceAuthorization:
     device_code: str
     user_code: str
     verification_uri: str
-    verification_uri_complete: str
     expires_in: int
     interval: int
 
@@ -44,11 +43,20 @@ def login_device(
         )
         if response.status_code >= 400:
             raise RuntimeError(f"device authorization could not start ({response.status_code})")
-        device = DeviceAuthorization(**response.json())
+        body = response.json()
+        # The server leaves out verification_uri_complete on purpose (RFC 8628
+        # section 5.4), so read only the fields this flow uses.
+        device = DeviceAuthorization(
+            device_code=body["device_code"],
+            user_code=body["user_code"],
+            verification_uri=body["verification_uri"],
+            expires_in=int(body["expires_in"]),
+            interval=int(body["interval"]),
+        )
         if notify:
             notify(device)
         if open_browser:
-            webbrowser.open(device.verification_uri_complete or device.verification_uri)
+            webbrowser.open(device.verification_uri)
         deadline = time.monotonic() + device.expires_in
         interval = max(1, device.interval)
         while time.monotonic() < deadline:
