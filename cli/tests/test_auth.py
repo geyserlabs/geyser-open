@@ -22,7 +22,6 @@ def test_device_flow(monkeypatch: pytest.MonkeyPatch) -> None:
             "device_code": "device-secret",
             "user_code": "ABCD-EFGH",
             "verification_uri": "https://auth.example/device",
-            "verification_uri_complete": "https://auth.example/device?code=ABCD-EFGH",
             "expires_in": 60,
             "interval": 1,
         }),
